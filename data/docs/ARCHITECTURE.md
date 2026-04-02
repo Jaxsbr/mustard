@@ -20,10 +20,10 @@ Implemented after [INC-2026-04-02](INCIDENT-2026-04-02-db-corruption.md), where 
 
 | Component | Path |
 |---|---|
-| Backup script | `mustard-data/backup.sh` |
-| launchd plist | `~/Library/LaunchAgents/com.jaco.mustard-backup.plist` |
-| Backup directory | `mustard-data/backups/` (gitignored) |
-| Log file | `mustard-data/backups/backup.log` |
+| Backup script | `data/backup.sh` |
+| launchd plist | `~/Library/LaunchAgents/com.mustard.backup.plist` |
+| Backup directory | `data/backups/` (gitignored) |
+| Log file | `data/backups/backup.log` |
 
 ### How it works
 
@@ -34,7 +34,7 @@ Implemented after [INC-2026-04-02](INCIDENT-2026-04-02-db-corruption.md), where 
 
 ### Schedule
 
-The launchd agent (`com.jaco.mustard-backup`) runs the backup script daily at **06:00 NZST**. If the machine is asleep at 06:00, launchd runs it at the next wake.
+The launchd agent (`com.mustard.backup`) runs the backup script daily at **06:00**. If the machine is asleep at the scheduled time, launchd runs it at the next wake.
 
 ### Managing the agent
 
@@ -43,14 +43,14 @@ The launchd agent (`com.jaco.mustard-backup`) runs the backup script daily at **
 launchctl list | grep mustard
 
 # Unload (stop scheduling)
-launchctl unload ~/Library/LaunchAgents/com.jaco.mustard-backup.plist
+launchctl unload ~/Library/LaunchAgents/com.mustard.backup.plist
 
 # Reload after editing the plist
-launchctl unload ~/Library/LaunchAgents/com.jaco.mustard-backup.plist
-launchctl load ~/Library/LaunchAgents/com.jaco.mustard-backup.plist
+launchctl unload ~/Library/LaunchAgents/com.mustard.backup.plist
+launchctl load ~/Library/LaunchAgents/com.mustard.backup.plist
 
 # Run manually
-~/dev/mustard-data/backup.sh
+<mustard-root>/data/backup.sh
 ```
 
 ### Restoring from backup

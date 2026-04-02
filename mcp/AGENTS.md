@@ -2,12 +2,12 @@
 
 ## Purpose
 
-MCP server for Jaco's personal knowledge store. Exposes todos, people notes, daily logs, ideas, and **projects** via the Model Context Protocol so Claude Desktop, Cursor, and Claude Code can read and write records through a single SQLite database. A **knowledge graph** (links table) connects records to each other, enabling context-aware retrieval.
+MCP server for the Mustard personal knowledge store. Exposes todos, people notes, daily logs, ideas, and **projects** via the Model Context Protocol so Claude Desktop, Cursor, and Claude Code can read and write records through a single SQLite database. A **knowledge graph** (links table) connects records to each other, enabling context-aware retrieval.
 
 ## Directory layout
 
 ```
-mustard-mcp/
+mcp/                    -- (subdirectory of mustard monorepo)
 ├── src/
 │   ├── server.ts       -- MCP server setup, tool registration, STDIO transport
 │   ├── db.ts           -- SQLite connection, schema init, FTS triggers, links table
@@ -20,8 +20,6 @@ mustard-mcp/
 │   └── migrate.ts      -- One-time YAML → SQLite migration script
 ├── tests/
 │   └── tools.test.ts   -- Tool logic tests
-├── docs/product/
-│   └── PRD.md          -- Product requirements
 ├── package.json
 ├── tsconfig.json
 └── AGENTS.md
@@ -88,7 +86,7 @@ Constraints: UNIQUE(source_id, target_id, relation). Indexes on source_id, targe
 
 ## Capture conventions
 
-Agents should organically capture project context as a side-effect of work. Full rules in `~/dev/.cursor/rules/mustard-capture.mdc`. Summary:
+Agents should organically capture project context as a side-effect of work. Summary:
 
 | Convention | When | Action |
 |------------|------|--------|
@@ -101,9 +99,9 @@ Agents should organically capture project context as a side-effect of work. Full
 
 ## Documentation
 
-- `docs/architecture.md` — Technical architecture, schema, migration strategy, tool registry
-- `docs/guide.md` — Human usage guide with workflows and examples
-- `docs/mustard-mcp.flow.yaml` — Flow-mo visual data flow diagram
+See the monorepo-level docs:
+- `docs/architecture/ARCHITECTURE.md` — System architecture, data model, setup guide
+- `docs/architecture/mustard.flow.yaml` — Flow-mo visual data flow diagram
 
 ## Quality checks
 
