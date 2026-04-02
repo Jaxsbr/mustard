@@ -18,13 +18,14 @@ config:
   quality_check_suppressions: []
   build_loop_version:
     init_version: 12
-    builds: []
+    builds:
+      - 12
 
 state:
   # --- Lifecycle (owner: iterator) ---
-  phase: null
+  phase: monorepo-foundation
   phase_complete: false
-  status: idle
+  status: running
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 1

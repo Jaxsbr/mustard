@@ -4,4 +4,4 @@ Monorepo that consolidates the existing mustard-{function} projects (mustard-dat
 
 <!-- build-loop -->
 ---
-*Built with [build-loop](docs/plan/) — init v12*
+*Built with [build-loop](docs/plan/) — init v12 | builds v12*
