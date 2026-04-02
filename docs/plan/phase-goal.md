@@ -30,10 +30,10 @@ Consolidate the existing mustard-data, mustard-mcp, and mustard-tui satellite re
 - [x] `README.md` at monorepo root is a public-facing README with: project description, module overview, quickstart (clone, install, configure MCP, run TUI), and links to architecture docs [US-M4]
 - [x] `mcp/AGENTS.md` purpose statement and documentation use generic language (not person-specific) [US-M4]
 - [x] AGENTS.md at monorepo root contains a documentation section referencing `docs/architecture/ARCHITECTURE.md` and `docs/architecture/mustard.flow.yaml` with a rule: "Update architecture docs and flow diagram when adding or changing modules, tools, or data flows" [US-M4]
-- [ ] `npm run build` succeeds in `mcp/` producing `mcp/dist/server.js` [US-M5]
-- [ ] `npm test` in `mcp/` passes all existing tests (tests use temp database, not live data) [US-M5]
-- [ ] A TUI verification test exists (script or test file) that opens a temp test database via tui/src/db.js and successfully queries records [US-M5]
-- [ ] A root-level `package.json` exists with a `test` script that orchestrates running mcp tests and tui verification [US-M5]
+- [x] `npm run build` succeeds in `mcp/` producing `mcp/dist/server.js` [US-M5]
+- [x] `npm test` in `mcp/` passes all existing tests (tests use temp database, not live data) [US-M5]
+- [x] A TUI verification test exists (script or test file) that opens a temp test database via tui/src/db.js and successfully queries records [US-M5]
+- [x] A root-level `package.json` exists with a `test` script that orchestrates running mcp tests and tui verification [US-M5]
 - [ ] AGENTS.md directory layout section reflects the new monorepo structure (data/, mcp/, tui/) and module responsibilities [phase]
 
 ### Golden principles (phase-relevant)
