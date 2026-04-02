@@ -34,7 +34,7 @@ Consolidate the existing mustard-data, mustard-mcp, and mustard-tui satellite re
 - [x] `npm test` in `mcp/` passes all existing tests (tests use temp database, not live data) [US-M5]
 - [x] A TUI verification test exists (script or test file) that opens a temp test database via tui/src/db.js and successfully queries records [US-M5]
 - [x] A root-level `package.json` exists with a `test` script that orchestrates running mcp tests and tui verification [US-M5]
-- [ ] AGENTS.md directory layout section reflects the new monorepo structure (data/, mcp/, tui/) and module responsibilities [phase]
+- [x] AGENTS.md directory layout section reflects the new monorepo structure (data/, mcp/, tui/) and module responsibilities [phase]
 
 ### Golden principles (phase-relevant)
 - no-silent-pass: Test files must not have early returns before assertions

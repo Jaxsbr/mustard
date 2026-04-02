@@ -108,3 +108,16 @@ entries:
     notes: "✓ US-M5 complete"
     timestamp: "2026-04-02T20:04:00Z"
     tokens: ~4000
+  - task: 12
+    story: phase
+    type: implement
+    description: "Added directory layout and module responsibilities to root AGENTS.md. Orphan [phase] criterion satisfied."
+    result: pass
+    timestamp: "2026-04-02T20:05:00Z"
+    tokens: ~2000
+  - task: 13
+    type: gate
+    description: "Phase Completion Gate — all 25 done-when criteria met. Verify passes (91 mcp tests + 2 tui tests). AGENTS.md consistent. No new endpoints requiring error-path checks."
+    result: pass
+    timestamp: "2026-04-02T20:06:00Z"
+    tokens: ~3000
