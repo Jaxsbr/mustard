@@ -65,3 +65,10 @@ entries:
     result: pass
     timestamp: "2026-04-02T19:53:00Z"
     tokens: ~3000
+  - task: 7
+    story: US-M4
+    type: implement
+    description: "Created docs/architecture/mustard.flow.yaml — flow-mo v1 diagram with MCP clients, server, TUI, SQLite, backup system."
+    result: pass
+    timestamp: "2026-04-02T19:55:00Z"
+    tokens: ~4000

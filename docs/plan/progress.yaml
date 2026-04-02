@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 7
-  next_task: "[US-M4] Create docs/architecture/mustard.flow.yaml — flow-mo v1 diagram covering MCP clients, MCP server, TUI, SQLite data layer, backup system"
+  task_number: 8
+  next_task: "[US-M4] Genericize mcp/AGENTS.md and data/docs/ARCHITECTURE.md — remove person-specific names, create public README.md, add documentation section to root AGENTS.md"
   last_result: pass
   consecutive_fails: 0
 
