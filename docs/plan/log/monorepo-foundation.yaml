@@ -93,3 +93,10 @@ entries:
     result: pass
     timestamp: "2026-04-02T20:00:00Z"
     tokens: ~3000
+  - task: 10
+    story: US-M5
+    type: implement
+    description: "Fixed test seed data — set status='logged' for people_note and daily_log records. All 91 mcp tests pass. npm run build produces dist/server.js."
+    result: pass
+    timestamp: "2026-04-02T20:02:00Z"
+    tokens: ~3000
