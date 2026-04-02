@@ -10,11 +10,11 @@ Consolidate the existing mustard-data, mustard-mcp, and mustard-tui satellite re
 - US-M5 — Monorepo verification tests
 
 ### Done-when (observable)
-- [ ] `data/` directory exists in monorepo root containing backup.sh, docs/ (database files are gitignored but present on disk) [US-M1]
-- [ ] `mcp/` directory exists in monorepo root with full TypeScript MCP server source, package.json, tsconfig.json, vitest.config.ts, tests/ [US-M1]
-- [ ] `tui/` directory exists in monorepo root with TUI source (src/index.js, src/db.js, src/render.js) and package.json [US-M1]
-- [ ] No `.git` directory exists inside `data/`, `mcp/`, or `tui/` (verified: `find data mcp tui -name .git -type d` returns empty) [US-M1]
-- [ ] `~/dev/archived/mustard-data`, `~/dev/archived/mustard-mcp`, `~/dev/archived/mustard-tui` exist with original contents including .git directories [US-M1]
+- [x] `data/` directory exists in monorepo root containing backup.sh, docs/ (database files are gitignored but present on disk) [US-M1]
+- [x] `mcp/` directory exists in monorepo root with full TypeScript MCP server source, package.json, tsconfig.json, vitest.config.ts, tests/ [US-M1]
+- [x] `tui/` directory exists in monorepo root with TUI source (src/index.js, src/db.js, src/render.js) and package.json [US-M1]
+- [x] No `.git` directory exists inside `data/`, `mcp/`, or `tui/` (verified: `find data mcp tui -name .git -type d` returns empty) [US-M1]
+- [x] `~/dev/archived/mustard-data`, `~/dev/archived/mustard-mcp`, `~/dev/archived/mustard-tui` exist with original contents including .git directories [US-M1]
 - [ ] `mcp/src/db.ts` DEFAULT_DB_PATH resolves to `<monorepo-root>/data/mustard.db` using `import.meta.url` or `path.resolve(__dirname)` relative navigation [US-M2]
 - [ ] `tui/src/db.js` DB_PATH resolves to `<monorepo-root>/data/mustard.db` using relative path from module location [US-M2]
 - [ ] `MUSTARD_DB` environment variable override still works in both mcp/src/db.ts and tui/src/db.js (existing code path preserved) [US-M2]
