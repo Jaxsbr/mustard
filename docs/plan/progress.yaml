@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 3
-  next_task: null
+  next_task: "[US-M2] Investigate: read current path resolution in mcp/src/db.ts, tui/src/db.js, data/backup.sh — confirm exact lines to change and target resolution strategy"
   last_result: pass
   consecutive_fails: 0
 
