@@ -58,3 +58,10 @@ entries:
     description: "Queued investigation of docs status against US-M4 criteria"
     result: queued
     timestamp: "2026-04-02T19:52:00Z"
+  - task: 6
+    story: US-M4
+    type: investigate
+    description: "Checked US-M4 criteria — ARCHITECTURE.md, setup guide, flow diagram ref already done. Gaps: mustard.flow.yaml (create), README.md (rewrite as quickstart), mcp/AGENTS.md (genericize), root AGENTS.md (add doc section), data/docs (genericize)."
+    result: pass
+    timestamp: "2026-04-02T19:53:00Z"
+    tokens: ~3000
