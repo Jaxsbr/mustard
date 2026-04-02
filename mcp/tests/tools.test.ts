@@ -29,9 +29,9 @@ function seedTestData(database: Database.Database): void {
     insert.run('id-todo-1', 'todo', 'Buy groceries', 'Need milk, eggs, bread', today, null, 'open', today, 'personal', null, null, 'mustard-app', '[]', null, null, now, now)
     insert.run('id-todo-2', 'todo', 'Fix CI pipeline', 'The deploy step is flaky', today, null, 'open', '2026-03-24', 'work', null, null, 'mustard-app', '["devops","ci"]', null, null, now, now)
     insert.run('id-todo-3', 'todo', 'Review PR', 'Review Sway PR #42', today, null, 'done', today, 'work', null, null, 'mustard-app', '[]', null, null, now, now)
-    insert.run('id-note-1', 'people_note', null, 'Tatai called about AI upskilling initiative. Very productive call.', '2026-03-20', 'tatai', null, null, null, null, null, 'manual-extract', '["coaching","ai"]', null, null, now, now)
-    insert.run('id-note-2', 'people_note', null, 'Sway mentioned interest in compound engineering patterns.', '2026-03-22', 'sway', null, null, null, null, null, 'cursor-skill', '["engineering"]', null, null, now, now)
-    insert.run('id-log-1', 'daily_log', null, 'Big day. Shipped the MCP migration and it works great.', today, null, null, null, null, 'shipping', 'day', 'mustard-app', '["milestone"]', null, null, now, now)
+    insert.run('id-note-1', 'people_note', null, 'Tatai called about AI upskilling initiative. Very productive call.', '2026-03-20', 'tatai', 'logged', null, null, null, null, 'manual-extract', '["coaching","ai"]', null, null, now, now)
+    insert.run('id-note-2', 'people_note', null, 'Sway mentioned interest in compound engineering patterns.', '2026-03-22', 'sway', 'logged', null, null, null, null, 'cursor-skill', '["engineering"]', null, null, now, now)
+    insert.run('id-log-1', 'daily_log', null, 'Big day. Shipped the MCP migration and it works great.', today, null, 'logged', null, null, 'shipping', 'day', 'mustard-app', '["milestone"]', null, null, now, now)
     insert.run('id-idea-1', 'idea', 'MCP Dashboard', 'A minimal read-only dashboard that queries SQLite directly.', today, null, 'open', null, null, null, null, 'mustard-app', '["tooling"]', null, null, now, now)
   })
   txn()
@@ -661,12 +661,12 @@ describe('project_summary', () => {
     `)
 
     insert.run('id-sum-proj', 'project', 'Summary Project', 'For summary tests', '2026-03-25', null, 'open', null, '2026-03-25 10:00:00', '2026-03-25 10:00:00')
-    insert.run('id-sum-person', 'people_note', null, 'Alice is the lead', '2026-03-25', 'alice', null, null, '2026-03-25 10:00:00', '2026-03-25 10:00:00')
+    insert.run('id-sum-person', 'people_note', null, 'Alice is the lead', '2026-03-25', 'alice', 'logged', null, '2026-03-25 10:00:00', '2026-03-25 10:00:00')
     insert.run('id-sum-todo-open', 'todo', 'Ship v2', 'Release new version', '2026-03-25', null, 'open', '2026-03-30', '2026-03-25 10:00:00', '2026-03-25 10:00:00')
     insert.run('id-sum-todo-done', 'todo', 'Write tests', 'Test coverage', '2026-03-25', null, 'done', '2026-03-24', '2026-03-25 10:00:00', '2026-03-25 10:00:00')
     insert.run('id-sum-idea', 'idea', 'Auto-linking', 'Detect context automatically', '2026-03-25', null, 'open', null, '2026-03-25 10:00:00', '2026-03-25 10:00:00')
     // Old record — outside 7-day window from 2026-03-25
-    insert.run('id-sum-old', 'daily_log', null, 'Old activity', '2026-01-01', null, null, null, '2026-01-01 10:00:00', '2026-01-01 10:00:00')
+    insert.run('id-sum-old', 'daily_log', null, 'Old activity', '2026-01-01', null, 'logged', null, '2026-01-01 10:00:00', '2026-01-01 10:00:00')
 
     linkRecords(db, { source_id: 'id-sum-person', target_id: 'id-sum-proj', relation: 'member_of' })
     linkRecords(db, { source_id: 'id-sum-todo-open', target_id: 'id-sum-proj', relation: 'assigned_to' })
