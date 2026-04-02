@@ -38,3 +38,9 @@ entries:
     notes: "✓ US-M2 complete"
     timestamp: "2026-04-02T19:49:00Z"
     tokens: ~3000
+  - task: 5
+    story: US-M3
+    type: implement
+    description: "Queued gitignore update — root needs data/-scoped DB patterns and mcp/dist/"
+    result: queued
+    timestamp: "2026-04-02T19:50:00Z"

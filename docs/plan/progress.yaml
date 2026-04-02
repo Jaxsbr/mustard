@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 5
-  next_task: null
+  next_task: "[US-M3] Add data-scoped gitignore patterns and build artifact exclusions to root .gitignore"
   last_result: pass
   consecutive_fails: 0
 
