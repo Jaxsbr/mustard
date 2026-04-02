@@ -80,3 +80,9 @@ entries:
     notes: "✓ US-M4 complete"
     timestamp: "2026-04-02T19:57:00Z"
     tokens: ~5000
+  - task: 9
+    story: US-M5
+    type: investigate
+    description: "Queued investigation of MCP build/test status and TUI verification needs"
+    result: queued
+    timestamp: "2026-04-02T19:58:00Z"

@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 9
-  next_task: null
+  next_task: "[US-M5] Investigate: install mcp dependencies, try build and test, assess what works and what needs fixing"
   last_result: pass
   consecutive_fails: 0
 
