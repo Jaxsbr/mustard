@@ -1,12 +1,9 @@
 import Database from 'better-sqlite3'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const DEFAULT_DB_PATH = path.join(
-  process.env.HOME ?? '',
-  'dev',
-  'mustard-data',
-  'mustard.db',
-)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const DEFAULT_DB_PATH = path.resolve(__dirname, '..', '..', 'data', 'mustard.db')
 
 let _db: Database.Database | null = null
 

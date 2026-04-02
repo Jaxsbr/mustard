@@ -4,8 +4,9 @@
 
 set -euo pipefail
 
-DB_PATH="$HOME/dev/mustard-data/mustard.db"
-BACKUP_DIR="$HOME/dev/mustard-data/backups"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+DB_PATH="$SCRIPT_DIR/mustard.db"
+BACKUP_DIR="$SCRIPT_DIR/backups"
 KEEP_DAYS=7
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 BACKUP_FILE="$BACKUP_DIR/mustard-$TIMESTAMP.db"

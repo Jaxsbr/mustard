@@ -1,15 +1,16 @@
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(
-  path.join(os.homedir(), 'dev', 'mustard-mcp', 'node_modules', '_'),
+  path.resolve(__dirname, '..', '..', 'mcp', 'node_modules', '_'),
 );
 const Database = require('better-sqlite3');
 
 const DB_PATH =
   process.env.MUSTARD_DB ??
-  path.join(os.homedir(), 'dev', 'mustard-data', 'mustard.db');
+  path.resolve(__dirname, '..', '..', 'data', 'mustard.db');
 
 let db;
 
