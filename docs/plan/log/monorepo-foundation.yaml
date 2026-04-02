@@ -30,3 +30,11 @@ entries:
     result: pass
     timestamp: "2026-04-02T19:48:00Z"
     tokens: ~2000
+  - task: 4
+    story: US-M2
+    type: implement
+    description: "Updated mcp/src/db.ts, tui/src/db.js, data/backup.sh to use module-relative and script-relative paths. MUSTARD_DB env override preserved."
+    result: pass
+    notes: "✓ US-M2 complete"
+    timestamp: "2026-04-02T19:49:00Z"
+    tokens: ~3000
