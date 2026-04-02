@@ -122,49 +122,99 @@ Daily automated backups via launchd (macOS) or cron.
 
 See the setup guide below for configuration.
 
-## Setup guide (planned for `monorepo-foundation` phase)
+## Setup guide
 
-### MCP client configuration
+### Prerequisites
 
-Configure your MCP client to point to the mustard server:
+- Node.js >= 20
+- npm
 
-**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+### 1. Install and build
+
+```bash
+cd mustard
+cd mcp && npm install && npm run build && cd ..
+```
+
+Verify: `node mcp/dist/server.js` should print "Mustard MCP server running on stdio" (Ctrl+C to exit).
+
+### 2. MCP client configuration
+
+Every MCP client needs the **absolute path** to `mcp/dist/server.js`. Find yours with:
+
+```bash
+echo "$(cd mustard && pwd)/mcp/dist/server.js"
+```
+
+Replace `/absolute/path/to/mustard` in the examples below with your actual path.
+
+**Claude Desktop** — edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
     "mustard": {
       "command": "node",
-      "args": ["<mustard-root>/mcp/dist/server.js"]
+      "args": ["/absolute/path/to/mustard/mcp/dist/server.js"]
     }
   }
 }
 ```
+Quit and relaunch Claude Desktop (Cmd+Q — closing the window is not enough).
 
-**Cursor** (MCP settings):
-```json
-{
-  "mustard": {
-    "command": "node",
-    "args": ["<mustard-root>/mcp/dist/server.js"]
-  }
-}
-```
-
-**Claude Code** (`.claude/settings.json` or project MCP config):
+**Claude Code** — edit `.mcp.json` in your project root (the directory you run `claude` from):
 ```json
 {
   "mcpServers": {
     "mustard": {
       "command": "node",
-      "args": ["<mustard-root>/mcp/dist/server.js"]
+      "args": ["/absolute/path/to/mustard/mcp/dist/server.js"]
     }
   }
 }
 ```
+Restart Claude Code. Run `/mcp` to verify mustard shows as connected.
 
-### Automated backups (macOS launchd)
+**Cursor** — edit `~/.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "mustard": {
+      "command": "node",
+      "args": ["/absolute/path/to/mustard/mcp/dist/server.js"]
+    }
+  }
+}
+```
+Restart Cursor.
 
-Create `~/Library/LaunchAgents/com.mustard.backup.plist`:
+> **Troubleshooting:** If the server shows as "failed" in your client, run `node /absolute/path/to/mustard/mcp/dist/server.js` in a terminal. If you see a module error, run `cd mcp && npm install && npm run build`. If the path is wrong, the client will silently fail to connect.
+
+> **No MUSTARD_DB needed.** The server auto-resolves the database path to `data/mustard.db` relative to the monorepo root. Override with `MUSTARD_DB=/path/to/db` env var only if you need a custom location.
+
+### 3. TUI installation (optional)
+
+The terminal UI lets you browse records with an arrow-key interface.
+
+```bash
+cd mustard/tui
+npm link
+```
+
+This installs the `mustard` command globally. Run from any terminal:
+
+```bash
+mustard
+```
+
+> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`. The TUI depends on `better-sqlite3` from `mcp/node_modules` — install MCP dependencies first.
+
+### 4. Database
+
+The MCP server creates `data/mustard.db` automatically on first connection. If you have an existing mustard database, copy it to `data/mustard.db`.
+
+### 5. Automated backups (optional)
+
+**macOS (launchd)** — create `~/Library/LaunchAgents/com.mustard.backup.plist`:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -175,7 +225,7 @@ Create `~/Library/LaunchAgents/com.mustard.backup.plist`:
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>
-    <string><!-- replace with absolute path -->/mustard/data/backup.sh</string>
+    <string>/absolute/path/to/mustard/data/backup.sh</string>
   </array>
   <key>StartCalendarInterval</key>
   <dict>
@@ -188,15 +238,16 @@ Create `~/Library/LaunchAgents/com.mustard.backup.plist`:
 </plist>
 ```
 
-Load with:
+Replace `/absolute/path/to/mustard` with your actual path, then load:
 ```bash
 launchctl load ~/Library/LaunchAgents/com.mustard.backup.plist
 ```
 
-### Automated backups (Linux cron)
-
+**Linux (cron):**
 ```bash
 crontab -e
-# Add:
-0 6 * * * /path/to/mustard/data/backup.sh
+# Add (replace path):
+0 6 * * * /absolute/path/to/mustard/data/backup.sh
 ```
+
+The backup script uses script-relative paths — it finds the database automatically. It checkpoints WAL, copies a timestamped snapshot to `data/backups/`, verifies integrity, and prunes backups older than 7 days.
