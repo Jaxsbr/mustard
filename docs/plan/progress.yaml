@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 2
-  next_task: "[US-M1] Copy satellite repo contents into monorepo subdirectories (data/, mcp/, tui/), remove nested .git dirs, move originals to ~/dev/archived/"
+  task_number: 3
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 

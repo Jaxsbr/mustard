@@ -9,3 +9,11 @@ entries:
     result: pass
     timestamp: "2026-04-02T19:45:30Z"
     tokens: ~5000
+  - task: 2
+    story: US-M1
+    type: implement
+    description: "Copied satellite repos into data/, mcp/, tui/ subdirectories. Moved originals to ~/dev/archived/. Verified no .git dirs inside modules."
+    result: pass
+    notes: "✓ US-M1 complete"
+    timestamp: "2026-04-02T19:46:30Z"
+    tokens: ~3000
