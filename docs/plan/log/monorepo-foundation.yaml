@@ -44,3 +44,11 @@ entries:
     description: "Queued gitignore update — root needs data/-scoped DB patterns and mcp/dist/"
     result: queued
     timestamp: "2026-04-02T19:50:00Z"
+  - task: 5
+    story: US-M3
+    type: implement
+    description: "Added data/-scoped DB patterns, mcp/dist/, mcp/node_modules/, tui/node_modules/ to root .gitignore. git status confirms 0 .db files."
+    result: pass
+    notes: "✓ US-M3 complete"
+    timestamp: "2026-04-02T19:51:00Z"
+    tokens: ~1500
