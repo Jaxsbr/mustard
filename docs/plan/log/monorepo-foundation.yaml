@@ -5,6 +5,7 @@ entries:
   - task: 1
     story: US-M1
     type: investigate
-    description: "Queued investigation of satellite repos before porting"
-    result: queued
-    timestamp: "2026-04-02T19:44:58Z"
+    description: "Investigated satellite repo contents — mustard-data (backup.sh, docs), mustard-mcp (src, tests, config), mustard-tui (src, package.json). Identified files to copy vs exclude, paths needing update for US-M2."
+    result: pass
+    timestamp: "2026-04-02T19:45:30Z"
+    tokens: ~5000

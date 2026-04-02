@@ -28,9 +28,9 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 1
-  next_task: "[US-M1] Investigate: check satellite repo contents (mustard-data, mustard-mcp, mustard-tui), identify files to copy vs exclude, plan copy commands and .git removal"
-  last_result: null
+  task_number: 2
+  next_task: "[US-M1] Copy satellite repo contents into monorepo subdirectories (data/, mcp/, tui/), remove nested .git dirs, move originals to ~/dev/archived/"
+  last_result: pass
   consecutive_fails: 0
 
   # --- Review (owner: iterator) ---
