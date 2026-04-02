@@ -1,0 +1,6 @@
+*.db
+*.db-shm
+*.db-wal
+*.db.corrupt
+*.db.corrupt2
+backups/
