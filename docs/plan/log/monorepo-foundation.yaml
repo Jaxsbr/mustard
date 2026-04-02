@@ -72,3 +72,11 @@ entries:
     result: pass
     timestamp: "2026-04-02T19:55:00Z"
     tokens: ~4000
+  - task: 8
+    story: US-M4
+    type: implement
+    description: "Genericized mcp/AGENTS.md and data/docs/ARCHITECTURE.md. Created public README.md with quickstart. Added documentation section to root AGENTS.md with flow diagram update rule."
+    result: pass
+    notes: "✓ US-M4 complete"
+    timestamp: "2026-04-02T19:57:00Z"
+    tokens: ~5000

@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 8
-  next_task: "[US-M4] Genericize mcp/AGENTS.md and data/docs/ARCHITECTURE.md — remove person-specific names, create public README.md, add documentation section to root AGENTS.md"
+  task_number: 9
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
