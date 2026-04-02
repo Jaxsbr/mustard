@@ -13,8 +13,18 @@ credentials.json
 # OS
 .DS_Store
 
+# Database and backups (data/)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.db.corrupt*
+data/backups/
+
 # Node
 node_modules/
+mcp/node_modules/
+mcp/dist/
+tui/node_modules/
 
 # Python
 __pycache__/
