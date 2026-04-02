@@ -23,3 +23,10 @@ entries:
     description: "Queued investigation of current path resolution before updating"
     result: queued
     timestamp: "2026-04-02T19:47:00Z"
+  - task: 3
+    story: US-M2
+    type: investigate
+    description: "Confirmed exact lines to change: mcp/src/db.ts L4-9 (import.meta.url + fileURLToPath), tui/src/db.js L5-12 (same + createRequire fix), data/backup.sh L7-8 (SCRIPT_DIR-relative). MUSTARD_DB env override preserved."
+    result: pass
+    timestamp: "2026-04-02T19:48:00Z"
+    tokens: ~2000
