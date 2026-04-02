@@ -1,0 +1,141 @@
+# Phase log: monorepo-foundation
+# Started: 2026-04-02T19:44:58Z
+
+entries:
+  - task: 1
+    story: US-M1
+    type: investigate
+    description: "Investigated satellite repo contents — mustard-data (backup.sh, docs), mustard-mcp (src, tests, config), mustard-tui (src, package.json). Identified files to copy vs exclude, paths needing update for US-M2."
+    result: pass
+    timestamp: "2026-04-02T19:45:30Z"
+    tokens: ~5000
+  - task: 2
+    story: US-M1
+    type: implement
+    description: "Copied satellite repos into data/, mcp/, tui/ subdirectories. Moved originals to ~/dev/archived/. Verified no .git dirs inside modules."
+    result: pass
+    notes: "✓ US-M1 complete"
+    timestamp: "2026-04-02T19:46:30Z"
+    tokens: ~3000
+  - task: 3
+    story: US-M2
+    type: investigate
+    description: "Queued investigation of current path resolution before updating"
+    result: queued
+    timestamp: "2026-04-02T19:47:00Z"
+  - task: 3
+    story: US-M2
+    type: investigate
+    description: "Confirmed exact lines to change: mcp/src/db.ts L4-9 (import.meta.url + fileURLToPath), tui/src/db.js L5-12 (same + createRequire fix), data/backup.sh L7-8 (SCRIPT_DIR-relative). MUSTARD_DB env override preserved."
+    result: pass
+    timestamp: "2026-04-02T19:48:00Z"
+    tokens: ~2000
+  - task: 4
+    story: US-M2
+    type: implement
+    description: "Updated mcp/src/db.ts, tui/src/db.js, data/backup.sh to use module-relative and script-relative paths. MUSTARD_DB env override preserved."
+    result: pass
+    notes: "✓ US-M2 complete"
+    timestamp: "2026-04-02T19:49:00Z"
+    tokens: ~3000
+  - task: 5
+    story: US-M3
+    type: implement
+    description: "Queued gitignore update — root needs data/-scoped DB patterns and mcp/dist/"
+    result: queued
+    timestamp: "2026-04-02T19:50:00Z"
+  - task: 5
+    story: US-M3
+    type: implement
+    description: "Added data/-scoped DB patterns, mcp/dist/, mcp/node_modules/, tui/node_modules/ to root .gitignore. git status confirms 0 .db files."
+    result: pass
+    notes: "✓ US-M3 complete"
+    timestamp: "2026-04-02T19:51:00Z"
+    tokens: ~1500
+  - task: 6
+    story: US-M4
+    type: investigate
+    description: "Queued investigation of docs status against US-M4 criteria"
+    result: queued
+    timestamp: "2026-04-02T19:52:00Z"
+  - task: 6
+    story: US-M4
+    type: investigate
+    description: "Checked US-M4 criteria — ARCHITECTURE.md, setup guide, flow diagram ref already done. Gaps: mustard.flow.yaml (create), README.md (rewrite as quickstart), mcp/AGENTS.md (genericize), root AGENTS.md (add doc section), data/docs (genericize)."
+    result: pass
+    timestamp: "2026-04-02T19:53:00Z"
+    tokens: ~3000
+  - task: 7
+    story: US-M4
+    type: implement
+    description: "Created docs/architecture/mustard.flow.yaml — flow-mo v1 diagram with MCP clients, server, TUI, SQLite, backup system."
+    result: pass
+    timestamp: "2026-04-02T19:55:00Z"
+    tokens: ~4000
+  - task: 8
+    story: US-M4
+    type: implement
+    description: "Genericized mcp/AGENTS.md and data/docs/ARCHITECTURE.md. Created public README.md with quickstart. Added documentation section to root AGENTS.md with flow diagram update rule."
+    result: pass
+    notes: "✓ US-M4 complete"
+    timestamp: "2026-04-02T19:57:00Z"
+    tokens: ~5000
+  - task: 9
+    story: US-M5
+    type: investigate
+    description: "Queued investigation of MCP build/test status and TUI verification needs"
+    result: queued
+    timestamp: "2026-04-02T19:58:00Z"
+  - task: 9
+    story: US-M5
+    type: investigate
+    description: "npm install + build succeeded (dist/server.js produced). npm test fails: NOT NULL constraint on status — test seed passes null for people_note/daily_log status. Fix: set 'logged' for those records."
+    result: pass
+    timestamp: "2026-04-02T20:00:00Z"
+    tokens: ~3000
+  - task: 10
+    story: US-M5
+    type: implement
+    description: "Fixed test seed data — set status='logged' for people_note and daily_log records. All 91 mcp tests pass. npm run build produces dist/server.js."
+    result: pass
+    timestamp: "2026-04-02T20:02:00Z"
+    tokens: ~3000
+  - task: 11
+    story: US-M5
+    type: implement
+    description: "Created tui/tests/db.test.js (opens temp DB, queries records). Created root package.json with test script orchestrating mcp + tui tests. All pass."
+    result: pass
+    notes: "✓ US-M5 complete"
+    timestamp: "2026-04-02T20:04:00Z"
+    tokens: ~4000
+  - task: 12
+    story: phase
+    type: implement
+    description: "Added directory layout and module responsibilities to root AGENTS.md. Orphan [phase] criterion satisfied."
+    result: pass
+    timestamp: "2026-04-02T20:05:00Z"
+    tokens: ~2000
+  - task: 13
+    type: gate
+    description: "Phase Completion Gate — all 25 done-when criteria met. Verify passes (91 mcp tests + 2 tui tests). AGENTS.md consistent. No new endpoints requiring error-path checks."
+    result: pass
+    timestamp: "2026-04-02T20:06:00Z"
+    tokens: ~3000
+  - task: 14
+    type: review
+    description: "Created PR #1 from build/monorepo-foundation to main. Queued review-pr."
+    result: pass
+    timestamp: "2026-04-02T20:08:00Z"
+    tokens: ~1000
+  - task: 14
+    type: review
+    description: "review-pr posted: 0 critical, 1 concern (TUI cross-module dependency), 1 nit (incident report paths). Queued handle-pr-review."
+    result: pass
+    timestamp: "2026-04-02T20:10:00Z"
+    tokens: ~8000
+  - task: 15
+    type: review
+    description: "handle-pr-review: fixed TUI error message for missing deps, added historical note to incident report. Both threads resolved. Summary posted."
+    result: pass
+    timestamp: "2026-04-02T20:12:00Z"
+    tokens: ~6000

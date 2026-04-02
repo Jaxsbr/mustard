@@ -1,0 +1,12 @@
+{
+  "name": "mustard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal knowledge store — monorepo for MCP server, TUI, and data layer",
+  "scripts": {
+    "test": "cd mcp && npm test && cd .. && node tui/tests/db.test.js",
+    "test:mcp": "cd mcp && npm test",
+    "test:tui": "node tui/tests/db.test.js",
+    "build": "cd mcp && npm run build"
+  }
+}
