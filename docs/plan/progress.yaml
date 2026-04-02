@@ -1,0 +1,44 @@
+# Build Loop — Progress State
+# Schema: config + state read every iteration. Validate with yamllint.
+#
+# Field ownership — each field has exactly one owner responsible for writes.
+# Other commands may READ any field but must never WRITE fields they don't own.
+#
+#   Owner key:
+#     init        = build-loop-init (scaffolding, one-time creation)
+#     orchestrator = build-loop (dispatcher: resume, skip, abort, pause)
+#     iterator    = build-loop-iterate (continuous loop: start, iterate)
+#     retro       = phase-retro (retrospective gate)
+#
+# See MANUAL.md § State ownership for the full ownership table.
+
+config:
+  verify: "echo \"no verify command configured\""
+  max_tasks_per_phase: 200
+  quality_check_suppressions: []
+  build_loop_version:
+    init_version: 12
+    builds: []
+
+state:
+  # --- Lifecycle (owner: iterator) ---
+  phase: null
+  phase_complete: false
+  status: idle
+
+  # --- Task orchestration (owner: iterator) ---
+  task_number: 1
+  next_task: null
+  last_result: null
+  consecutive_fails: 0
+
+  # --- Review (owner: iterator) ---
+  review_stage: null
+  review_complete: false
+  pr_number: null
+
+  # --- Retrospective (owner: retro) ---
+  retro_complete: false
+
+  # --- Tracking (owner: iterator) ---
+  completed_stories: []
