@@ -86,3 +86,10 @@ entries:
     description: "Queued investigation of MCP build/test status and TUI verification needs"
     result: queued
     timestamp: "2026-04-02T19:58:00Z"
+  - task: 9
+    story: US-M5
+    type: investigate
+    description: "npm install + build succeeded (dist/server.js produced). npm test fails: NOT NULL constraint on status — test seed passes null for people_note/daily_log status. Fix: set 'logged' for those records."
+    result: pass
+    timestamp: "2026-04-02T20:00:00Z"
+    tokens: ~3000

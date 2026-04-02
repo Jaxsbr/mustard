@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 9
-  next_task: "[US-M5] Investigate: install mcp dependencies, try build and test, assess what works and what needs fixing"
+  task_number: 10
+  next_task: "[US-M5] Fix test seed data — set status to 'logged' for people_note and daily_log records in mcp/tests/tools.test.ts lines 32-34"
   last_result: pass
   consecutive_fails: 0
 
