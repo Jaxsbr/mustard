@@ -133,3 +133,9 @@ entries:
     result: pass
     timestamp: "2026-04-02T20:10:00Z"
     tokens: ~8000
+  - task: 15
+    type: review
+    description: "handle-pr-review: fixed TUI error message for missing deps, added historical note to incident report. Both threads resolved. Summary posted."
+    result: pass
+    timestamp: "2026-04-02T20:12:00Z"
+    tokens: ~6000
