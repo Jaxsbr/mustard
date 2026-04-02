@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 6
-  next_task: null
+  next_task: "[US-M4] Investigate: check existing docs (ARCHITECTURE.md, mcp/AGENTS.md, README.md) against US-M4 criteria, identify gaps"
   last_result: pass
   consecutive_fails: 0
 

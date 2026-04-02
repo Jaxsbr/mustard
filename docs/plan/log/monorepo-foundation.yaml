@@ -52,3 +52,9 @@ entries:
     notes: "✓ US-M3 complete"
     timestamp: "2026-04-02T19:51:00Z"
     tokens: ~1500
+  - task: 6
+    story: US-M4
+    type: investigate
+    description: "Queued investigation of docs status against US-M4 criteria"
+    result: queued
+    timestamp: "2026-04-02T19:52:00Z"
