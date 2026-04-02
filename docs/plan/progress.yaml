@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 11
-  next_task: "[US-M5] Create TUI verification test and root package.json with test orchestrator"
+  task_number: 12
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 

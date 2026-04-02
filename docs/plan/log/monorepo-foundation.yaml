@@ -100,3 +100,11 @@ entries:
     result: pass
     timestamp: "2026-04-02T20:02:00Z"
     tokens: ~3000
+  - task: 11
+    story: US-M5
+    type: implement
+    description: "Created tui/tests/db.test.js (opens temp DB, queries records). Created root package.json with test script orchestrating mcp + tui tests. All pass."
+    result: pass
+    notes: "✓ US-M5 complete"
+    timestamp: "2026-04-02T20:04:00Z"
+    tokens: ~4000
