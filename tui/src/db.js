@@ -6,7 +6,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(
   path.resolve(__dirname, '..', '..', 'mcp', 'node_modules', '_'),
 );
-const Database = require('better-sqlite3');
+let Database;
+try {
+  Database = require('better-sqlite3');
+} catch {
+  console.error('Error: better-sqlite3 not found. Run "cd mcp && npm install" first.');
+  process.exit(1);
+}
 
 const DB_PATH =
   process.env.MUSTARD_DB ??

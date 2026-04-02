@@ -1,3 +1,5 @@
+> **Note:** Paths in this report reference the pre-monorepo layout (`mustard-data/`). The database now lives at `data/mustard.db` within the mustard monorepo.
+
 # INC-2026-04-02: Mustard database corruption — data inaccessible for ~15 minutes
 
 **Severity:** High (data access loss, write path broken)
