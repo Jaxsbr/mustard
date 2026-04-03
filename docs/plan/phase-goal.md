@@ -54,13 +54,13 @@ Extract a shared `core/` TypeScript package from the existing MCP server, contai
 - [x] README.md TUI setup section no longer mentions needing MCP installed first [US-C4]
 
 #### Phase-level documentation
-- [ ] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `core/` between consumers (MCP, TUI) and SQLite [phase]
-- [ ] `docs/architecture/ARCHITECTURE.md` directory layout includes `core/` with description [phase]
-- [ ] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes core (Role: shared data-access library, DB access: read/write, Language: TypeScript) [phase]
-- [ ] `docs/architecture/mustard.flow.yaml` updated with core layer in the data flow [phase]
-- [ ] `AGENTS.md` directory layout includes `core/` entry [phase]
-- [ ] `AGENTS.md` module responsibilities table includes core [phase]
-- [ ] Recommendations 1 and 4 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [phase]
+- [x] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `core/` between consumers (MCP, TUI) and SQLite [phase]
+- [x] `docs/architecture/ARCHITECTURE.md` directory layout includes `core/` with description [phase]
+- [x] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes core (Role: shared data-access library, DB access: read/write, Language: TypeScript) [phase]
+- [x] `docs/architecture/mustard.flow.yaml` updated with core layer in the data flow [phase]
+- [x] `AGENTS.md` directory layout includes `core/` entry [phase]
+- [x] `AGENTS.md` module responsibilities table includes core [phase]
+- [x] Recommendations 1 and 4 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [phase]
 
 ### Golden principles (phase-relevant)
 - no-silent-pass — core tests must make real assertions on return values, not just "doesn't throw"

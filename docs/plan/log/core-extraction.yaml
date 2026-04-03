@@ -62,3 +62,16 @@ entries:
     notes: "✓ US-C4 complete"
     timestamp: "2026-04-03T02:14:00Z"
     tokens: ~5000
+  - task: 7
+    story: phase
+    type: implement
+    description: "Updated ARCHITECTURE.md (removed 'planned' markers, core is shipped), mustard.flow.yaml (added core layer), AGENTS.md (core in layout + module table), THESIS (struck through recommendations 1+4). All 7 [phase] criteria met."
+    result: pass
+    timestamp: "2026-04-03T02:15:00Z"
+    tokens: ~5000
+  - task: 8
+    type: gate
+    description: "Phase Completion Gate — all 35 done-when criteria met. Verify passes (146 tests: 53 core + 91 mcp + 2 tui). AGENTS.md consistent with core/ addition. Error-path tests: invalid log_type, empty text, self-link rejection, record not found."
+    result: pass
+    timestamp: "2026-04-03T02:16:00Z"
+    tokens: ~3000

@@ -24,12 +24,12 @@ config:
 state:
   # --- Lifecycle (owner: iterator) ---
   phase: core-extraction
-  phase_complete: false
+  phase_complete: true
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 7
-  next_task: "[phase] Update documentation — ARCHITECTURE.md (system overview, directory layout, module table), mustard.flow.yaml, AGENTS.md, and THESIS strikethrough for completed recommendations"
+  task_number: 8
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
