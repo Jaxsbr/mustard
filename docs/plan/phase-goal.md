@@ -44,14 +44,14 @@ Extract a shared `core/` TypeScript package from the existing MCP server, contai
 - [x] Root `package.json` `test` script includes `core` package tests [US-C3]
 
 #### US-C4 — TUI migration
-- [ ] `tui/src/db.js` imports `getDb` and `initSchema` (or equivalent read functions) from `mustard-core`, not from `mcp/node_modules` [US-C4]
-- [ ] `tui/package.json` has `"mustard-core": "*"` (or workspace protocol) in dependencies [US-C4]
-- [ ] `grep -r "mcp/node_modules" tui/` returns no matches [US-C4]
-- [ ] TUI opens database with `{ readonly: true }` (read-only safety boundary preserved) [US-C4]
-- [ ] TUI's per-type ordering (ORDER_BY map) and filtering (FILTER map) produce the same query results as before migration [US-C4]
-- [ ] `node tui/tests/db.test.js` passes (existing TUI verification test) [US-C4]
-- [ ] `cd tui && npm link` succeeds and `mustard` command launches without `mcp/` being built [US-C4]
-- [ ] README.md TUI setup section no longer mentions needing MCP installed first [US-C4]
+- [x] `tui/src/db.js` imports `getDb` and `initSchema` (or equivalent read functions) from `mustard-core`, not from `mcp/node_modules` [US-C4]
+- [x] `tui/package.json` has `"mustard-core": "*"` (or workspace protocol) in dependencies [US-C4]
+- [x] `grep -r "mcp/node_modules" tui/` returns no matches [US-C4]
+- [x] TUI opens database with `{ readonly: true }` (read-only safety boundary preserved) [US-C4]
+- [x] TUI's per-type ordering (ORDER_BY map) and filtering (FILTER map) produce the same query results as before migration [US-C4]
+- [x] `node tui/tests/db.test.js` passes (existing TUI verification test) [US-C4]
+- [x] `cd tui && npm link` succeeds and `mustard` command launches without `mcp/` being built [US-C4]
+- [x] README.md TUI setup section no longer mentions needing MCP installed first [US-C4]
 
 #### Phase-level documentation
 - [ ] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `core/` between consumers (MCP, TUI) and SQLite [phase]
