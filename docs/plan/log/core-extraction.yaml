@@ -47,3 +47,10 @@ entries:
     notes: "✓ US-C3 complete"
     timestamp: "2026-04-03T02:09:00Z"
     tokens: ~8000
+  - task: 5
+    story: US-C4
+    type: investigate
+    description: "Read tui/src/db.js — uses createRequire into mcp/node_modules for better-sqlite3. FILTER/ORDER_BY maps stay in TUI. readonly: true must be preserved. Test file also uses the hack. Both need migration to mustard-core workspace import."
+    result: pass
+    timestamp: "2026-04-03T02:12:00Z"
+    tokens: ~3000
