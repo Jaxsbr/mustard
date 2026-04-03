@@ -168,10 +168,10 @@ All three personas agree on these points:
 
 | # | Recommendation | Impact | Effort |
 |---|---|---|---|
-| 1 | Extract `core/` library — db connection, schema, validation, CRUD, search, summary | Unblocks everything else | Medium (refactor, no new features) |
+| 1 | ~~Extract `core/` library — db connection, schema, validation, CRUD, search, summary~~ | ~~Unblocks everything else~~ | ~~Medium (refactor, no new features)~~ |
 | 2 | Add `cli/` package that imports `core` — `mustard-cli create`, `update`, `search`, etc. | Unblocks scheduled jobs | Low (thin wrapper over core) |
 | 3 | Migrate MCP tools to import `core` instead of inline SQL | Eliminates validation duplication | Medium (11 tools to rewire) |
-| 4 | Migrate TUI to import `core` for reads | Fixes `node_modules` dependency hack | Low |
+| 4 | ~~Migrate TUI to import `core` for reads~~ | ~~Fixes `node_modules` dependency hack~~ | ~~Low~~ |
 | 5 | Add GitHub Actions CI (test all packages) | Portfolio credibility | Low |
 | 6 | Add encrypted off-machine backup (iCloud, S3, or git-crypt'd private repo) | Data safety | Low |
 | 7 | Add demo mode (`mustard demo`) with sample data | Portfolio presentation | Low |

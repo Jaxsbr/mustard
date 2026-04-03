@@ -7,6 +7,11 @@ Monorepo that consolidates the existing mustard-{function} projects (mustard-dat
 
 ```
 mustard/
+├── core/               — Shared data-access library (TypeScript)
+│   ├── src/            — db, types, records, search, links, context, summary
+│   ├── tests/          — Vitest test suite (53 tests)
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json    — mustard-core package
 ├── data/               — SQLite database, backup script, data docs
 │   ├── backup.sh       — Daily backup (WAL checkpoint, copy, verify, prune)
 │   └── docs/           — Data-layer architecture and incident reports
@@ -32,9 +37,10 @@ mustard/
 
 | Module | Role | DB access | Language |
 |---|---|---|---|
+| **core** | Shared data-access library — db, schema, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — SQLite database and backup infrastructure | N/A (is the database) | Bash |
 | **mcp** | MCP server — 11 tools for CRUD, search, linking, context, summaries | Read/write | TypeScript |
-| **tui** | Terminal browser — tabs per record type, detail views | Read-only | JavaScript (Node.js) |
+| **tui** | Terminal browser — tabs per record type, detail views | Read-only (via core) | JavaScript (Node.js) |
 
 ## Documentation
 

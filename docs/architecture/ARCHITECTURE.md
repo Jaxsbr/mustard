@@ -1,6 +1,6 @@
 # Mustard — Architecture
 
-> This document is the structural intent for the monorepo. Sections marked "(planned for `monorepo-foundation` phase)" describe the target state after the first build phase ships.
+> System architecture for the mustard monorepo.
 
 ## System overview
 
@@ -11,8 +11,7 @@ MCP Clients (Claude Desktop / Cursor / Claude Code)
   ↓ MCP (STDIO)
 Mustard MCP Server (TypeScript)          Mustard TUI (Node.js)
   ↓ imports                               ↓ imports
-Mustard Core (TypeScript) ← shared data-access library (planned for `core-extraction` phase)
-  ↓ better-sqlite3
+Mustard Core (TypeScript) ← shared data-access library  ↓ better-sqlite3
 SQLite Database (data/mustard.db)
   ├── records table (6 types, unified)
   ├── links table (knowledge graph)
@@ -21,12 +20,10 @@ SQLite Database (data/mustard.db)
 
 See `mustard.flow.yaml` in this directory for the visual flow-mo diagram. **Update `mustard.flow.yaml` when adding modules, tools, or data flows.**
 
-## Monorepo structure (planned for `monorepo-foundation` phase)
-
+## Monorepo structure
 ```
 mustard/
-├── core/               — Shared data-access library (planned for `core-extraction` phase)
-│   ├── src/
+├── core/               — Shared data-access library│   ├── src/
 │   │   ├── db.ts       — Connection management, schema init, migrations, FTS health
 │   │   ├── types.ts    — Shared interfaces (RecordRow, params types)
 │   │   ├── records.ts  — CRUD operations with validation
@@ -55,8 +52,7 @@ mustard/
 ├── tui/                — Node.js terminal UI
 │   ├── src/
 │   │   ├── index.js    — Main entry, keyboard handling, state management
-│   │   ├── db.js       — Imports from mustard-core (planned for `core-extraction` phase)
-│   │   └── render.js   — Terminal rendering, tab bar, list/detail/expand views
+│   │   ├── db.js       — Imports from mustard-core│   │   └── render.js   — Terminal rendering, tab bar, list/detail/expand views
 │   └── package.json
 ├── docs/
 │   ├── architecture/   — This file + flow-mo diagram
