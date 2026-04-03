@@ -31,3 +31,10 @@ entries:
     notes: "✓ US-I3 complete"
     timestamp: "2026-04-03T04:37:00Z"
     tokens: ~3000
+  - task: 4
+    story: US-I1
+    type: gate
+    description: "US-I1 Story Completion Gate — all 22 criteria met. npm link verified after TUI rename. Global mustard command works: create, get, update, delete, search, list, link, unlink, context, daily, project. US-I3 also completed (3/3 criteria)."
+    result: pass
+    timestamp: "2026-04-03T04:39:00Z"
+    tokens: ~3000
