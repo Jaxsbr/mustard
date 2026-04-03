@@ -50,9 +50,9 @@ Integrate consumers with the shared core library. Create a new CLI package (`mus
 - [ ] All 11 MCP tools produce the same output format as before migration (backward-compatible) [US-I2]
 
 #### US-I3 — TUI command rename
-- [ ] `tui/package.json` bin field changed from `"mustard"` to `"mtui"` [US-I3]
-- [ ] `cd tui && npm link` installs `mtui` command globally and it launches correctly [US-I3]
-- [ ] Running `mtui` opens the terminal browser with the same behavior as before [US-I3]
+- [x] `tui/package.json` bin field changed from `"mustard"` to `"mtui"` [US-I3]
+- [x] `cd tui && npm link` installs `mtui` command globally and it launches correctly [US-I3]
+- [x] Running `mtui` opens the terminal browser with the same behavior as before [US-I3]
 
 #### US-I4 — Documentation and install guide
 - [ ] README.md has a "CLI installation" section with `cd cli && npm install && npm run build && npm link` instructions and example usage of at least 3 commands (create, search, list) [US-I4]
