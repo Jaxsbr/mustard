@@ -12,8 +12,8 @@
 
  Test Files  6 passed (6)
       Tests  53 passed (53)
-   Start at  17:34:20
-   Duration  133ms (transform 100ms, setup 0ms, import 203ms, tests 58ms, environment 0ms)
+   Start at  17:37:02
+   Duration  138ms (transform 105ms, setup 0ms, import 194ms, tests 60ms, environment 0ms)
 
 
 > mustard-mcp@1.0.0 test
@@ -25,8 +25,8 @@
 
  Test Files  1 passed (1)
       Tests  91 passed (91)
-   Start at  17:34:20
-   Duration  167ms (transform 43ms, setup 0ms, import 57ms, tests 47ms, environment 0ms)
+   Start at  17:37:02
+   Duration  162ms (transform 43ms, setup 0ms, import 57ms, tests 42ms, environment 0ms)
 
 PASS: getRecords("todo") returns 1 record
 PASS: getRecords("people_note") returns 1 record
