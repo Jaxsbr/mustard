@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 7
-  next_task: null
+  next_task: "[phase] Update documentation — ARCHITECTURE.md (system overview, directory layout, module table), mustard.flow.yaml, AGENTS.md, and THESIS strikethrough for completed recommendations"
   last_result: pass
   consecutive_fails: 0
 
