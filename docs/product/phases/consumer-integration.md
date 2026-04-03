@@ -1,6 +1,6 @@
 # Phase: consumer-integration
 
-Status: draft
+Status: shipped
 
 ## Stories
 

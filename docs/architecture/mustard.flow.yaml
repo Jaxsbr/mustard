@@ -36,28 +36,46 @@
       "shape": "rectangle"
       "width": 180
       "height": 56
-  - "id": "sqlite_db"
+  - "id": "cli"
     "position":
-      "x": 310
+      "x": 80
       "y": 232
     "data":
-      "label": "SQLite (records, links, FTS5)"
-      "shape": "circle"
-      "width": 140
-      "height": 140
+      "label": "Mustard CLI (TypeScript)"
+      "shape": "rectangle"
+      "width": 180
+      "height": 56
   - "id": "tui"
     "position":
-      "x": 530
-      "y": 274
+      "x": 560
+      "y": 232
     "data":
       "label": "Mustard TUI (Node.js)"
       "shape": "rectangle"
       "width": 180
       "height": 56
+  - "id": "core"
+    "position":
+      "x": 290
+      "y": 348
+    "data":
+      "label": "Mustard Core (TypeScript)"
+      "shape": "rectangle"
+      "width": 200
+      "height": 56
+  - "id": "sqlite_db"
+    "position":
+      "x": 310
+      "y": 464
+    "data":
+      "label": "SQLite (records, links, FTS5)"
+      "shape": "circle"
+      "width": 140
+      "height": 140
   - "id": "backup"
     "position":
       "x": 290
-      "y": 432
+      "y": 664
     "data":
       "label": "Backup System (bash)"
       "shape": "rectangle"
@@ -88,22 +106,38 @@
     "label": "MCP (STDIO)"
     "source_handle": "left-source"
     "target_handle": "right-target"
-  - "id": "e_mcp_sqlite"
+  - "id": "e_mcp_core"
     "source": "mcp_server"
+    "target": "core"
+    "marker_start": "none"
+    "marker_end": "arrow"
+    "label": "imports"
+    "source_handle": "bottom-source"
+    "target_handle": "top-target"
+  - "id": "e_cli_core"
+    "source": "cli"
+    "target": "core"
+    "marker_start": "none"
+    "marker_end": "arrow"
+    "label": "imports"
+    "source_handle": "right-source"
+    "target_handle": "left-target"
+  - "id": "e_tui_core"
+    "source": "tui"
+    "target": "core"
+    "marker_start": "none"
+    "marker_end": "arrow"
+    "label": "imports"
+    "source_handle": "left-source"
+    "target_handle": "right-target"
+  - "id": "e_core_sqlite"
+    "source": "core"
     "target": "sqlite_db"
     "marker_start": "none"
     "marker_end": "arrow"
     "label": "read/write"
     "source_handle": "bottom-source"
     "target_handle": "top-target"
-  - "id": "e_tui_sqlite"
-    "source": "tui"
-    "target": "sqlite_db"
-    "marker_start": "none"
-    "marker_end": "arrow"
-    "label": "read-only"
-    "source_handle": "left-source"
-    "target_handle": "right-target"
   - "id": "e_sqlite_backup"
     "source": "sqlite_db"
     "target": "backup"
