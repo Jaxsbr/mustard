@@ -39,3 +39,11 @@ entries:
     notes: "✓ US-C2 complete"
     timestamp: "2026-04-03T02:06:00Z"
     tokens: ~10000
+  - task: 4
+    story: US-C3
+    type: implement
+    description: "Created 6 test files: db.test.ts (schema/FTS/triggers), records.test.ts (CRUD/validation), search.test.ts (FTS/list), links.test.ts (link/unlink/self-link/idempotent), context.test.ts (depth 1+2), summary.test.ts (daily/project). vitest.config.ts. Updated root test script. 53 tests all pass."
+    result: pass
+    notes: "✓ US-C3 complete"
+    timestamp: "2026-04-03T02:09:00Z"
+    tokens: ~8000

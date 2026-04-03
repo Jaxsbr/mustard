@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 4
-  next_task: "[US-C3] Implement core test suite — create core/tests/ with vitest tests for db, records, search, links, context, summary against temp databases"
+  task_number: 5
+  next_task: "[US-C4] Investigate: read tui/src/db.js to understand current createRequire hack and query patterns before migrating to core"
   last_result: pass
   consecutive_fails: 0
 
