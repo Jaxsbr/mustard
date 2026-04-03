@@ -1,43 +1,69 @@
 ## Phase goal
 
-Consolidate the existing mustard-data, mustard-mcp, and mustard-tui satellite repositories into a single monorepo structure. Port all modules as subdirectories, update internal path resolution, protect sensitive data with gitignore, add comprehensive documentation with a flow-mo diagram, and verify the migration with integration tests.
+Extract a shared `core/` TypeScript package from the existing MCP server, containing the database layer, all data operations (CRUD, search, links, context, summaries), and shared types. Migrate the TUI to consume `core/` instead of reaching into `mcp/node_modules`. This decouples consumers from the MCP server and makes the TUI independently installable.
 
 ### Stories in scope
-- US-M1 — Port modules into monorepo
-- US-M2 — Update database path resolution
-- US-M3 — Protect sensitive data with gitignore
-- US-M4 — Documentation, flow-mo diagram, and public readiness
-- US-M5 — Monorepo verification tests
+- US-C1 — Create core package with database and schema layer
+- US-C2 — Extract data operations and shared types into core
+- US-C3 — Core test suite
+- US-C4 — Migrate TUI to import core for reads
 
 ### Done-when (observable)
-- [x] `data/` directory exists in monorepo root containing backup.sh, docs/ (database files are gitignored but present on disk) [US-M1]
-- [x] `mcp/` directory exists in monorepo root with full TypeScript MCP server source, package.json, tsconfig.json, vitest.config.ts, tests/ [US-M1]
-- [x] `tui/` directory exists in monorepo root with TUI source (src/index.js, src/db.js, src/render.js) and package.json [US-M1]
-- [x] No `.git` directory exists inside `data/`, `mcp/`, or `tui/` (verified: `find data mcp tui -name .git -type d` returns empty) [US-M1]
-- [x] `~/dev/archived/mustard-data`, `~/dev/archived/mustard-mcp`, `~/dev/archived/mustard-tui` exist with original contents including .git directories [US-M1]
-- [x] `mcp/src/db.ts` DEFAULT_DB_PATH resolves to `<monorepo-root>/data/mustard.db` using `import.meta.url` or `path.resolve(__dirname)` relative navigation [US-M2]
-- [x] `tui/src/db.js` DB_PATH resolves to `<monorepo-root>/data/mustard.db` using relative path from module location [US-M2]
-- [x] `MUSTARD_DB` environment variable override still works in both mcp/src/db.ts and tui/src/db.js (existing code path preserved) [US-M2]
-- [x] `data/backup.sh` DB_PATH and BACKUP_DIR variables reference the monorepo data directory using script-relative paths (not hardcoded absolute) [US-M2]
-- [x] Root `.gitignore` contains patterns: `data/*.db`, `data/*.db-shm`, `data/*.db-wal`, `data/*.db.corrupt*`, `data/backups/` [US-M3]
-- [x] Root `.gitignore` contains patterns: `mcp/node_modules/`, `mcp/dist/`, `tui/node_modules/` [US-M3]
-- [x] Running `git status` in the monorepo after file copy shows no .db files, no .db-shm/.db-wal files, no backup files as untracked (test: `git status --porcelain | grep -c '\.db'` returns 0) [US-M3]
-- [x] `docs/architecture/ARCHITECTURE.md` exists documenting: monorepo directory layout, module responsibilities (data, mcp, tui), data model (records + links tables), MCP tool inventory (11 tools), backup infrastructure [US-M4]
-- [x] `docs/architecture/mustard.flow.yaml` exists as a valid flow-mo v1 diagram covering: MCP clients (Claude Desktop, Cursor, Claude Code), MCP server, TUI, SQLite data layer (records, links, FTS5), backup system [US-M4]
-- [x] Architecture doc contains a section referencing the flow-mo diagram with an explicit update rule: "Update mustard.flow.yaml when adding modules, tools, or data flows" [US-M4]
-- [x] `docs/architecture/ARCHITECTURE.md` includes a "Setup guide" section documenting: how to configure automated backups (launchd/cron with example plist), how to configure MCP clients (Claude Desktop, Cursor, Claude Code — with example config snippets pointing to `mcp/dist/server.js`) [US-M4]
-- [x] All documentation uses generic language — no person-specific names, slugs, or paths; examples use placeholders like "alice", "project-x" instead of real people; paths use `<mustard-root>` notation [US-M4]
-- [x] `README.md` at monorepo root is a public-facing README with: project description, module overview, quickstart (clone, install, configure MCP, run TUI), and links to architecture docs [US-M4]
-- [x] `mcp/AGENTS.md` purpose statement and documentation use generic language (not person-specific) [US-M4]
-- [x] AGENTS.md at monorepo root contains a documentation section referencing `docs/architecture/ARCHITECTURE.md` and `docs/architecture/mustard.flow.yaml` with a rule: "Update architecture docs and flow diagram when adding or changing modules, tools, or data flows" [US-M4]
-- [x] `npm run build` succeeds in `mcp/` producing `mcp/dist/server.js` [US-M5]
-- [x] `npm test` in `mcp/` passes all existing tests (tests use temp database, not live data) [US-M5]
-- [x] A TUI verification test exists (script or test file) that opens a temp test database via tui/src/db.js and successfully queries records [US-M5]
-- [x] A root-level `package.json` exists with a `test` script that orchestrates running mcp tests and tui verification [US-M5]
-- [x] AGENTS.md directory layout section reflects the new monorepo structure (data/, mcp/, tui/) and module responsibilities [phase]
+
+#### US-C1 — Core package scaffold
+- [ ] `core/package.json` exists with `name: "mustard-core"`, `type: "module"`, `better-sqlite3` in dependencies, and a `build` script [US-C1]
+- [ ] `core/tsconfig.json` exists targeting ES2022+ with ESM module output to `core/dist/` [US-C1]
+- [ ] `core/src/db.ts` exports `getDb`, `initSchema`, `checkFtsHealth`, `rebuildFts`, `closeDb` [US-C1]
+- [ ] `core/src/db.ts` `initSchema` creates identical tables, indexes, triggers, and runs identical migrations as `mcp/src/db.ts` (same CREATE TABLE, same CHECK constraints, same FTS5 config) [US-C1]
+- [ ] Root `package.json` has `"workspaces": ["core", "mcp", "tui"]` (or equivalent) [US-C1]
+- [ ] `npm run build` in `core/` succeeds and produces `core/dist/db.js` [US-C1]
+- [ ] `cd mcp && npm install && npm run build` still succeeds after workspace configuration [US-C1]
+
+#### US-C2 — Data operations
+- [ ] `core/src/types.ts` exports `RecordRow`, `CreateParams`, `UpdateParams`, `SearchParams`, `ListParams`, `LinkParams`, `GetContextParams`, `ProjectSummaryParams` interfaces [US-C2]
+- [ ] `core/src/records.ts` exports `getRecord` returning `RecordRow | null` and `createRecord` returning `RecordRow` [US-C2]
+- [ ] `core/src/records.ts` exports `updateRecord` returning `RecordRow` and `deleteRecord` returning `{ id, log_type, title }` [US-C2]
+- [ ] `core/src/records.ts` rejects invalid `log_type` values and empty `text` with thrown errors [US-C2]
+- [ ] `core/src/search.ts` exports `searchRecords` returning `RecordRow[]` and `listRecords` returning `{ records: RecordRow[], total: number }` [US-C2]
+- [ ] `core/src/links.ts` exports `linkRecords` returning `{ id, source_id, target_id, relation }` and `unlinkRecords` returning `{ changes: number }` [US-C2]
+- [ ] `core/src/links.ts` rejects self-links (source_id === target_id) with a thrown error [US-C2]
+- [ ] `core/src/context.ts` exports `getContext` returning `{ anchors: RecordRow[], linked: LinkedRecord[] }` [US-C2]
+- [ ] `core/src/summary.ts` exports `dailySummary` and `projectSummary` returning structured data objects (not strings) [US-C2]
+- [ ] `core/src/index.ts` re-exports all public functions and types [US-C2]
+- [ ] `VALID_LOG_TYPES` and default status map are exported from core [US-C2]
+- [ ] `npm run build` in `core/` succeeds with all modules compiled [US-C2]
+
+#### US-C3 — Core tests
+- [ ] `core/tests/db.test.ts` exists and tests schema creation on a fresh temp database (tables, indexes, FTS triggers all created) [US-C3]
+- [ ] `core/tests/records.test.ts` exists and tests create, get, update, delete with assertions on returned data shapes [US-C3]
+- [ ] `core/tests/search.test.ts` exists and tests FTS search and list with filter/sort params [US-C3]
+- [ ] `core/tests/links.test.ts` exists and tests link, unlink, self-link rejection, and idempotent link creation [US-C3]
+- [ ] `core/tests/context.test.ts` exists and tests getContext at depth 1 and depth 2 [US-C3]
+- [ ] `core/tests/summary.test.ts` exists and tests dailySummary and projectSummary with deterministic dates [US-C3]
+- [ ] `npm test` in `core/` runs all tests and all pass [US-C3]
+- [ ] Root `package.json` `test` script includes `core` package tests [US-C3]
+
+#### US-C4 — TUI migration
+- [ ] `tui/src/db.js` imports `getDb` and `initSchema` (or equivalent read functions) from `mustard-core`, not from `mcp/node_modules` [US-C4]
+- [ ] `tui/package.json` has `"mustard-core": "*"` (or workspace protocol) in dependencies [US-C4]
+- [ ] `grep -r "mcp/node_modules" tui/` returns no matches [US-C4]
+- [ ] TUI opens database with `{ readonly: true }` (read-only safety boundary preserved) [US-C4]
+- [ ] TUI's per-type ordering (ORDER_BY map) and filtering (FILTER map) produce the same query results as before migration [US-C4]
+- [ ] `node tui/tests/db.test.js` passes (existing TUI verification test) [US-C4]
+- [ ] `cd tui && npm link` succeeds and `mustard` command launches without `mcp/` being built [US-C4]
+- [ ] README.md TUI setup section no longer mentions needing MCP installed first [US-C4]
+
+#### Phase-level documentation
+- [ ] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `core/` between consumers (MCP, TUI) and SQLite [phase]
+- [ ] `docs/architecture/ARCHITECTURE.md` directory layout includes `core/` with description [phase]
+- [ ] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes core (Role: shared data-access library, DB access: read/write, Language: TypeScript) [phase]
+- [ ] `docs/architecture/mustard.flow.yaml` updated with core layer in the data flow [phase]
+- [ ] `AGENTS.md` directory layout includes `core/` entry [phase]
+- [ ] `AGENTS.md` module responsibilities table includes core [phase]
+- [ ] Recommendations 1 and 4 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [phase]
 
 ### Golden principles (phase-relevant)
-- no-silent-pass: Test files must not have early returns before assertions
-- no-bare-except: No exception swallowing without logging
-- error-path-coverage: New or modified endpoints must have at least one error-path test
-- agents-consistency: AGENTS.md must accurately reflect the current project structure and rules
+- no-silent-pass — core tests must make real assertions on return values, not just "doesn't throw"
+- no-bare-except — no empty catch blocks in core; errors propagate or are handled with specific recovery
+- error-path-coverage — validation errors (invalid log_type, empty text, self-link) have explicit test coverage
+- agents-consistency — AGENTS.md updated to reflect core/ addition

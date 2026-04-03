@@ -23,28 +23,23 @@ config:
 
 state:
   # --- Lifecycle (owner: iterator) ---
-  phase: monorepo-foundation
-  phase_complete: true
+  phase: core-extraction
+  phase_complete: false
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 16
+  task_number: 1
   next_task: null
-  last_result: pass
+  last_result: null
   consecutive_fails: 0
 
   # --- Review (owner: iterator) ---
-  review_stage: review_posted
-  review_complete: true
-  pr_number: 1
+  review_stage: null
+  review_complete: false
+  pr_number: null
 
   # --- Retrospective (owner: retro) ---
-  retro_complete: true
+  retro_complete: false
 
   # --- Tracking (owner: iterator) ---
-  completed_stories:
-    - US-M1
-    - US-M2
-    - US-M3
-    - US-M4
-    - US-M5
+  completed_stories: []
