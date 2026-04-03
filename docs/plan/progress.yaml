@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 1
-  next_task: null
+  next_task: "[US-I1] Investigate: review core API surface, tsconfig patterns, and TUI bin config to plan CLI package scaffold"
   last_result: pass
   consecutive_fails: 0
 

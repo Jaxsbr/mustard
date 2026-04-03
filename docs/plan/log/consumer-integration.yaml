@@ -1,4 +1,11 @@
 # Phase log: consumer-integration
 # Started: 2026-04-03T04:26:05Z
 
-entries: []
+entries:
+  - task: 0
+    story: phase
+    type: setup
+    description: "Phase start — archived core-extraction (reconciliation R0-R5), created build/consumer-integration branch, wrote phase-goal.md with 4 stories (US-I1-I4), 146 tests pass."
+    result: pass
+    timestamp: "2026-04-03T04:26:05Z"
+    tokens: ~10000
