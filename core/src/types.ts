@@ -49,6 +49,7 @@ export interface CreateParams {
   theme?: string | null
   period?: string | null
   tags?: string[]
+  source_origin?: string
   source_url?: string | null
   delegate?: string | null
 }

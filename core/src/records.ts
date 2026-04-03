@@ -34,7 +34,7 @@ export function createRecord(db: Database.Database, params: CreateParams): Recor
       id, log_type, title, text, capture_date,
       person, status, due_date, category, theme, period,
       source_origin, tags, source_url, delegate, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'mustard-mcp', ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     params.log_type,
@@ -47,6 +47,7 @@ export function createRecord(db: Database.Database, params: CreateParams): Recor
     params.category ?? null,
     params.theme ?? null,
     params.period ?? null,
+    params.source_origin ?? 'mustard-core',
     tags,
     params.source_url ?? null,
     params.delegate ?? null,

@@ -23,7 +23,8 @@ See `mustard.flow.yaml` in this directory for the visual flow-mo diagram. **Upda
 ## Monorepo structure
 ```
 mustard/
-├── core/               — Shared data-access library│   ├── src/
+├── core/               — Shared data-access library
+│   ├── src/
 │   │   ├── db.ts       — Connection management, schema init, migrations, FTS health
 │   │   ├── types.ts    — Shared interfaces (RecordRow, params types)
 │   │   ├── records.ts  — CRUD operations with validation
@@ -52,7 +53,8 @@ mustard/
 ├── tui/                — Node.js terminal UI
 │   ├── src/
 │   │   ├── index.js    — Main entry, keyboard handling, state management
-│   │   ├── db.js       — Imports from mustard-core│   │   └── render.js   — Terminal rendering, tab bar, list/detail/expand views
+│   │   ├── db.js       — Imports from mustard-core
+│   │   └── render.js   — Terminal rendering, tab bar, list/detail/expand views
 │   └── package.json
 ├── docs/
 │   ├── architecture/   — This file + flow-mo diagram
@@ -67,7 +69,7 @@ mustard/
 
 | Module | Role | DB access | Language |
 |--------|------|-----------|----------|
-| **core** | Shared data-access library — db connection, schema, validation, CRUD, search, links, context, summaries (planned for `core-extraction` phase) | Read/write | TypeScript |
+| **core** | Shared data-access library — db connection, schema, validation, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — hosts the SQLite database and backup infrastructure | N/A (is the database) | Bash (backup script) |
 | **mcp** | MCP server — exposes 11 tools for CRUD, search, linking, context retrieval, and summaries | Read/write | TypeScript |
 | **tui** | Terminal browser — arrow-key TUI with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
