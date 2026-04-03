@@ -23,3 +23,11 @@ entries:
     result: pass
     timestamp: "2026-04-03T04:35:00Z"
     tokens: ~15000
+  - task: 3
+    story: US-I3
+    type: implement
+    description: "Changed tui/package.json bin from 'mustard' to 'mtui'. npm link installs /opt/homebrew/bin/mtui. All 3 US-I3 criteria met. 146 tests pass."
+    result: pass
+    notes: "✓ US-I3 complete"
+    timestamp: "2026-04-03T04:37:00Z"
+    tokens: ~3000
