@@ -28,9 +28,9 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 1
-  next_task: "[US-C1] Investigate: read mcp/src/db.ts to catalog all exports, schema DDL, migrations, FTS config, and dependencies needed for core/src/db.ts extraction"
-  last_result: null
+  task_number: 2
+  next_task: "[US-C1] Implement core/ package scaffold — create core/package.json, core/tsconfig.json, core/src/db.ts (extract from mcp/src/db.ts), configure npm workspaces in root package.json"
+  last_result: pass
   consecutive_fails: 0
 
   # --- Review (owner: iterator) ---

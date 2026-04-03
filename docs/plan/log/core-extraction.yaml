@@ -9,3 +9,10 @@ entries:
     result: pass
     timestamp: "2026-04-03T01:54:58Z"
     tokens: ~8000
+  - task: 1
+    story: US-C1
+    type: investigate
+    description: "Read mcp/src/db.ts and all tools (crud.ts, search.ts, links.ts, context.ts, summary.ts). Cataloged: db.ts exports getDb (singleton), initSchema (4 migrations + DDL), checkFtsHealth, rebuildFts, closeDb. All MCP tools return formatted strings — core must return typed data objects. RecordRow defined 3x — core unifies. VALID_LOG_TYPES + DEFAULT_STATUS in crud.ts → move to core. projectSummary lives in context.ts not summary.ts."
+    result: pass
+    timestamp: "2026-04-03T01:58:00Z"
+    tokens: ~12000
