@@ -24,3 +24,10 @@ entries:
     notes: "✓ US-C1 complete"
     timestamp: "2026-04-03T02:02:00Z"
     tokens: ~8000
+  - task: 3
+    story: US-C2
+    type: investigate
+    description: "Investigation already done in task 1 — MCP tools return strings, core must return typed objects. RecordRow defined 3x needs unification. VALID_LOG_TYPES + DEFAULT_STATUS move to core. Skipping redundant investigate, proceeding to implement types.ts + records.ts."
+    result: pass
+    timestamp: "2026-04-03T02:03:00Z"
+    tokens: ~1000

@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 3
-  next_task: null
+  next_task: "[US-C2] Implement core/src/types.ts and core/src/records.ts — define shared interfaces (RecordRow, CreateParams, UpdateParams), extract CRUD operations returning typed data objects instead of formatted strings"
   last_result: pass
   consecutive_fails: 0
 
