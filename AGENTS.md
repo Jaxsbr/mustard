@@ -10,7 +10,8 @@ mustard/
 ├── cli/                — CLI binary (`mustard` command, TypeScript)
 │   ├── src/            — index.ts (entry point, subcommand dispatcher)
 │   ├── dist/           — (gitignored) compiled output
-│   └── package.json    — mustard-cli package
+│   ├── package.json    — mustard-cli package
+│   └── AGENTS.md       — CLI command reference, record schema, conventions
 ├── core/               — Shared data-access library (TypeScript)
 │   ├── src/            — db, types, records, search, links, context, summary
 │   ├── tests/          — Vitest test suite (53 tests)
