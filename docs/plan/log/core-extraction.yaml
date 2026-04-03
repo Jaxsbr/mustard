@@ -1,4 +1,11 @@
 # Phase log: core-extraction
 # Started: 2026-04-03T01:54:58Z
 
-entries: []
+entries:
+  - task: 0
+    story: phase
+    type: setup
+    description: "Phase start — archived monorepo-foundation, ran reconciliation gate (R0-R5), created build/core-extraction branch, wrote phase-goal.md with 4 stories (35 criteria), set verify to npm test."
+    result: pass
+    timestamp: "2026-04-03T01:54:58Z"
+    tokens: ~8000

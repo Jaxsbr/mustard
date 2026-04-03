@@ -13,7 +13,7 @@
 # See MANUAL.md § State ownership for the full ownership table.
 
 config:
-  verify: "echo \"no verify command configured\""
+  verify: "npm test"
   max_tasks_per_phase: 200
   quality_check_suppressions: []
   build_loop_version:
@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 1
-  next_task: null
+  next_task: "[US-C1] Investigate: read mcp/src/db.ts to catalog all exports, schema DDL, migrations, FTS config, and dependencies needed for core/src/db.ts extraction"
   last_result: null
   consecutive_fails: 0
 
