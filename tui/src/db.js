@@ -1,19 +1,8 @@
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getDb } from 'mustard-core';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(
-  path.resolve(__dirname, '..', '..', 'mcp', 'node_modules', '_'),
-);
-let Database;
-try {
-  Database = require('better-sqlite3');
-} catch {
-  console.error('Error: better-sqlite3 not found. Run "cd mcp && npm install" first.');
-  process.exit(1);
-}
-
 const DB_PATH =
   process.env.MUSTARD_DB ??
   path.resolve(__dirname, '..', '..', 'data', 'mustard.db');
@@ -21,8 +10,7 @@ const DB_PATH =
 let db;
 
 export function openDb() {
-  db = new Database(DB_PATH, { readonly: true });
-  db.pragma('journal_mode = WAL');
+  db = getDb(DB_PATH, { readonly: true });
 }
 
 export function closeDb() {

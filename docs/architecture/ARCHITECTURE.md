@@ -243,7 +243,7 @@ This installs the `mustard` command globally. Run from any terminal:
 mustard
 ```
 
-> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`. The TUI depends on `better-sqlite3` from `mcp/node_modules` — install MCP dependencies first.
+> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`.
 
 ### 4. Database
 
