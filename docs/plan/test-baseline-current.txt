@@ -1,19 +1,32 @@
 
 > mustard@1.0.0 test
-> cd mcp && npm test && cd .. && node tui/tests/db.test.js
+> cd core && npm test && cd ../mcp && npm test && cd .. && node tui/tests/db.test.js
+
+
+> mustard-core@1.0.0 test
+> vitest run
+
+
+ RUN  v4.1.2 /Users/jacobusbrink/dev/mustard/core
+
+
+ Test Files  6 passed (6)
+      Tests  53 passed (53)
+   Start at  15:14:57
+   Duration  128ms (transform 93ms, setup 0ms, import 176ms, tests 56ms, environment 0ms)
 
 
 > mustard-mcp@1.0.0 test
 > vitest run
 
 
-[1m[46m RUN [49m[22m [36mv4.1.1 [39m[90m/Users/jacobusbrink/dev/mustard/mcp[39m
+ RUN  v4.1.2 /Users/jacobusbrink/dev/mustard/mcp
 
 
-[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
-[2m      Tests [22m [1m[32m91 passed[39m[22m[90m (91)[39m
-[2m   Start at [22m 09:02:52
-[2m   Duration [22m 167ms[2m (transform 42ms, setup 0ms, import 57ms, tests 43ms, environment 0ms)[22m
+ Test Files  1 passed (1)
+      Tests  91 passed (91)
+   Start at  15:14:57
+   Duration  163ms (transform 44ms, setup 0ms, import 59ms, tests 43ms, environment 0ms)
 
 PASS: getRecords("todo") returns 1 record
 PASS: getRecords("people_note") returns 1 record

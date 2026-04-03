@@ -1,6 +1,6 @@
 # Mustard — Architecture
 
-> This document is the structural intent for the monorepo. Sections marked "(planned for `monorepo-foundation` phase)" describe the target state after the first build phase ships.
+> System architecture for the mustard monorepo.
 
 ## System overview
 
@@ -10,7 +10,8 @@ Mustard is a personal knowledge store backed by SQLite, accessed via MCP (Model 
 MCP Clients (Claude Desktop / Cursor / Claude Code)
   ↓ MCP (STDIO)
 Mustard MCP Server (TypeScript)          Mustard TUI (Node.js)
-  ↓ better-sqlite3 (read/write)           ↓ better-sqlite3 (read-only)
+  ↓ imports                               ↓ imports
+Mustard Core (TypeScript) ← shared data-access library  ↓ better-sqlite3
 SQLite Database (data/mustard.db)
   ├── records table (6 types, unified)
   ├── links table (knowledge graph)
@@ -19,10 +20,22 @@ SQLite Database (data/mustard.db)
 
 See `mustard.flow.yaml` in this directory for the visual flow-mo diagram. **Update `mustard.flow.yaml` when adding modules, tools, or data flows.**
 
-## Monorepo structure (planned for `monorepo-foundation` phase)
-
+## Monorepo structure
 ```
 mustard/
+├── core/               — Shared data-access library
+│   ├── src/
+│   │   ├── db.ts       — Connection management, schema init, migrations, FTS health
+│   │   ├── types.ts    — Shared interfaces (RecordRow, params types)
+│   │   ├── records.ts  — CRUD operations with validation
+│   │   ├── search.ts   — FTS search, list with filters
+│   │   ├── links.ts    — Link/unlink operations
+│   │   ├── context.ts  — Context retrieval (graph traversal)
+│   │   ├── summary.ts  — Daily and project summaries
+│   │   └── index.ts    — Public API re-exports
+│   ├── tests/          — Vitest test suite
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json
 ├── data/               — SQLite database, backup script, data docs
 │   ├── mustard.db      — (gitignored) live database
 │   ├── backups/        — (gitignored) timestamped snapshots
@@ -40,7 +53,7 @@ mustard/
 ├── tui/                — Node.js terminal UI
 │   ├── src/
 │   │   ├── index.js    — Main entry, keyboard handling, state management
-│   │   ├── db.js       — SQLite read-only connection
+│   │   ├── db.js       — Imports from mustard-core
 │   │   └── render.js   — Terminal rendering, tab bar, list/detail/expand views
 │   └── package.json
 ├── docs/
@@ -56,9 +69,10 @@ mustard/
 
 | Module | Role | DB access | Language |
 |--------|------|-----------|----------|
+| **core** | Shared data-access library — db connection, schema, validation, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — hosts the SQLite database and backup infrastructure | N/A (is the database) | Bash (backup script) |
 | **mcp** | MCP server — exposes 11 tools for CRUD, search, linking, context retrieval, and summaries | Read/write | TypeScript |
-| **tui** | Terminal browser — arrow-key TUI with tabs per record type, detail views, text expansion | Read-only | JavaScript (Node.js) |
+| **tui** | Terminal browser — arrow-key TUI with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
 
 ## Data model
 
@@ -227,7 +241,7 @@ This installs the `mustard` command globally. Run from any terminal:
 mustard
 ```
 
-> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`. The TUI depends on `better-sqlite3` from `mcp/node_modules` — install MCP dependencies first.
+> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`.
 
 ### 4. Database
 

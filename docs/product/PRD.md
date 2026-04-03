@@ -43,3 +43,4 @@ The system is designed to be self-hosted: clone the repo, point your MCP clients
 | Phase | Status | Stories | Spec |
 |---|---|---|---|
 | monorepo-foundation | Shipped | US-M1, US-M2, US-M3, US-M4, US-M5 | [phases/monorepo-foundation.md](phases/monorepo-foundation.md) |
+| core-extraction | Shipped | US-C1, US-C2, US-C3, US-C4 | [phases/core-extraction.md](phases/core-extraction.md) |

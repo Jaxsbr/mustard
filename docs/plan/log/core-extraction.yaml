@@ -1,0 +1,95 @@
+# Phase log: core-extraction
+# Started: 2026-04-03T01:54:58Z
+
+entries:
+  - task: 0
+    story: phase
+    type: setup
+    description: "Phase start — archived monorepo-foundation, ran reconciliation gate (R0-R5), created build/core-extraction branch, wrote phase-goal.md with 4 stories (35 criteria), set verify to npm test."
+    result: pass
+    timestamp: "2026-04-03T01:54:58Z"
+    tokens: ~8000
+  - task: 1
+    story: US-C1
+    type: investigate
+    description: "Read mcp/src/db.ts and all tools (crud.ts, search.ts, links.ts, context.ts, summary.ts). Cataloged: db.ts exports getDb (singleton), initSchema (4 migrations + DDL), checkFtsHealth, rebuildFts, closeDb. All MCP tools return formatted strings — core must return typed data objects. RecordRow defined 3x — core unifies. VALID_LOG_TYPES + DEFAULT_STATUS in crud.ts → move to core. projectSummary lives in context.ts not summary.ts."
+    result: pass
+    timestamp: "2026-04-03T01:58:00Z"
+    tokens: ~12000
+  - task: 2
+    story: US-C1
+    type: implement
+    description: "Created core/ package scaffold — package.json (mustard-core, ESM, better-sqlite3), tsconfig.json (ES2022+), src/db.ts (extracted from mcp/src/db.ts with identical schema/migrations/FTS), src/index.ts barrel. Configured npm workspaces in root package.json. Build and tests pass."
+    result: pass
+    notes: "✓ US-C1 complete"
+    timestamp: "2026-04-03T02:02:00Z"
+    tokens: ~8000
+  - task: 3
+    story: US-C2
+    type: investigate
+    description: "Investigation already done in task 1 — MCP tools return strings, core must return typed objects. RecordRow defined 3x needs unification. VALID_LOG_TYPES + DEFAULT_STATUS move to core. Skipping redundant investigate, proceeding to implement types.ts + records.ts."
+    result: pass
+    timestamp: "2026-04-03T02:03:00Z"
+    tokens: ~1000
+  - task: 3
+    story: US-C2
+    type: implement
+    description: "Created types.ts (RecordRow, LinkedRecord, all param interfaces, VALID_LOG_TYPES, DEFAULT_STATUS), records.ts (CRUD returning typed objects, throws on invalid input), search.ts (searchRecords → RecordRow[], listRecords → {records, total}), links.ts (linkRecords → {id,source_id,target_id,relation}, unlinkRecords → {changes}), context.ts (getContext → {anchors, linked}), summary.ts (dailySummary, projectSummary → structured data). Updated index.ts barrel."
+    result: pass
+    notes: "✓ US-C2 complete"
+    timestamp: "2026-04-03T02:06:00Z"
+    tokens: ~10000
+  - task: 4
+    story: US-C3
+    type: implement
+    description: "Created 6 test files: db.test.ts (schema/FTS/triggers), records.test.ts (CRUD/validation), search.test.ts (FTS/list), links.test.ts (link/unlink/self-link/idempotent), context.test.ts (depth 1+2), summary.test.ts (daily/project). vitest.config.ts. Updated root test script. 53 tests all pass."
+    result: pass
+    notes: "✓ US-C3 complete"
+    timestamp: "2026-04-03T02:09:00Z"
+    tokens: ~8000
+  - task: 5
+    story: US-C4
+    type: investigate
+    description: "Read tui/src/db.js — uses createRequire into mcp/node_modules for better-sqlite3. FILTER/ORDER_BY maps stay in TUI. readonly: true must be preserved. Test file also uses the hack. Both need migration to mustard-core workspace import."
+    result: pass
+    timestamp: "2026-04-03T02:12:00Z"
+    tokens: ~3000
+  - task: 6
+    story: US-C4
+    type: implement
+    description: "Migrated TUI: replaced createRequire hack with mustard-core import in db.js and tests/db.test.js. Added mustard-core as workspace dependency. Updated README and ARCHITECTURE.md to remove MCP dependency notes. All 146 tests pass."
+    result: pass
+    notes: "✓ US-C4 complete"
+    timestamp: "2026-04-03T02:14:00Z"
+    tokens: ~5000
+  - task: 7
+    story: phase
+    type: implement
+    description: "Updated ARCHITECTURE.md (removed 'planned' markers, core is shipped), mustard.flow.yaml (added core layer), AGENTS.md (core in layout + module table), THESIS (struck through recommendations 1+4). All 7 [phase] criteria met."
+    result: pass
+    timestamp: "2026-04-03T02:15:00Z"
+    tokens: ~5000
+  - task: 8
+    type: gate
+    description: "Phase Completion Gate — all 35 done-when criteria met. Verify passes (146 tests: 53 core + 91 mcp + 2 tui). AGENTS.md consistent with core/ addition. Error-path tests: invalid log_type, empty text, self-link rejection, record not found."
+    result: pass
+    timestamp: "2026-04-03T02:16:00Z"
+    tokens: ~3000
+  - task: 9
+    type: review
+    description: "Created PR #3 from build/core-extraction to main. Queued review-pr."
+    result: pass
+    timestamp: "2026-04-03T02:17:00Z"
+    tokens: ~2000
+  - task: 10
+    type: review
+    description: "review-pr posted: 0 critical, 2 concerns (source_origin hardcoded to mustard-mcp in core, ARCHITECTURE.md leftover planned marker), 3 nits (tree formatting, duplicated RECORD_COLUMNS, duplicated getLinkedRecords). Queued handle-pr-review."
+    result: pass
+    timestamp: "2026-04-03T02:19:00Z"
+    tokens: ~8000
+  - task: 11
+    type: review
+    description: "handle-pr-review: fixed 3 (source_origin param in CreateParams, ARCHITECTURE.md leftover marker, tree formatting). Skipped 2 nits (RECORD_COLUMNS duplication — different contexts; getLinkedRecords duplication — different signatures). All 146 tests pass. Summary posted."
+    result: pass
+    timestamp: "2026-04-03T02:22:00Z"
+    tokens: ~8000

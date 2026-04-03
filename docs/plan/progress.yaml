@@ -13,7 +13,7 @@
 # See MANUAL.md § State ownership for the full ownership table.
 
 config:
-  verify: "echo \"no verify command configured\""
+  verify: "npm test"
   max_tasks_per_phase: 200
   quality_check_suppressions: []
   build_loop_version:
@@ -23,12 +23,12 @@ config:
 
 state:
   # --- Lifecycle (owner: iterator) ---
-  phase: monorepo-foundation
+  phase: core-extraction
   phase_complete: true
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 16
+  task_number: 11
   next_task: null
   last_result: pass
   consecutive_fails: 0
@@ -36,15 +36,14 @@ state:
   # --- Review (owner: iterator) ---
   review_stage: review_posted
   review_complete: true
-  pr_number: 1
+  pr_number: 3
 
   # --- Retrospective (owner: retro) ---
   retro_complete: true
 
   # --- Tracking (owner: iterator) ---
   completed_stories:
-    - US-M1
-    - US-M2
-    - US-M3
-    - US-M4
-    - US-M5
+    - US-C1
+    - US-C2
+    - US-C3
+    - US-C4

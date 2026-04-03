@@ -78,7 +78,7 @@ Then restart Cursor.
 
 ### 3. Install the TUI (optional)
 
-The terminal UI lets you browse records directly. It requires the MCP server's `node_modules` (for `better-sqlite3`), so install those first if you haven't already.
+The terminal UI lets you browse records directly.
 
 ```bash
 # From the mustard root directory:

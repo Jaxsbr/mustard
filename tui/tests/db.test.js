@@ -1,45 +1,13 @@
-import { createRequire } from 'node:module';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import fs from 'node:fs';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(
-  path.resolve(__dirname, '..', '..', 'mcp', 'node_modules', '_'),
-);
-const Database = require('better-sqlite3');
+import { getDb, initSchema } from 'mustard-core';
 
 const testDbPath = path.join(os.tmpdir(), `mustard-tui-test-${Date.now()}.db`);
 
-// Create temp database with mustard schema
-const db = new Database(testDbPath);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-db.exec(`
-  CREATE TABLE records (
-    id TEXT PRIMARY KEY,
-    log_type TEXT NOT NULL CHECK(log_type IN ('todo','people_note','idea','daily_log','project','learning')),
-    title TEXT,
-    text TEXT NOT NULL,
-    capture_date TEXT NOT NULL,
-    person TEXT,
-    status TEXT NOT NULL DEFAULT 'open',
-    due_date TEXT,
-    category TEXT,
-    theme TEXT,
-    period TEXT,
-    source_origin TEXT NOT NULL DEFAULT 'mustard-app',
-    source_date TEXT,
-    tags TEXT NOT NULL DEFAULT '[]',
-    confidence TEXT,
-    created_by TEXT,
-    source_url TEXT,
-    delegate TEXT,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-`);
+// Create temp database with mustard schema using core
+const db = getDb(testDbPath);
+initSchema(db);
 
 db.prepare(`
   INSERT INTO records (id, log_type, title, text, capture_date, status)
