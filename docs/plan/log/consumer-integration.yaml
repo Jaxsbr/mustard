@@ -16,3 +16,10 @@ entries:
     result: pass
     timestamp: "2026-04-03T04:30:00Z"
     tokens: ~5000
+  - task: 2
+    story: US-I1
+    type: implement
+    description: "Created cli/ package — package.json (mustard-cli, ESM, mustard-core workspace dep, bin mustard), tsconfig.json (ES2022+), src/index.ts with shebang, parseArgs strict mode, all 11 subcommands as thin core wrappers. source_origin: 'mustard-cli'. Unknown flags rejected. Human-readable output. Added cli to root workspaces and .gitignore. Build passes, 146 tests pass."
+    result: pass
+    timestamp: "2026-04-03T04:35:00Z"
+    tokens: ~15000
