@@ -11,13 +11,13 @@ Extract a shared `core/` TypeScript package from the existing MCP server, contai
 ### Done-when (observable)
 
 #### US-C1 — Core package scaffold
-- [ ] `core/package.json` exists with `name: "mustard-core"`, `type: "module"`, `better-sqlite3` in dependencies, and a `build` script [US-C1]
-- [ ] `core/tsconfig.json` exists targeting ES2022+ with ESM module output to `core/dist/` [US-C1]
-- [ ] `core/src/db.ts` exports `getDb`, `initSchema`, `checkFtsHealth`, `rebuildFts`, `closeDb` [US-C1]
-- [ ] `core/src/db.ts` `initSchema` creates identical tables, indexes, triggers, and runs identical migrations as `mcp/src/db.ts` (same CREATE TABLE, same CHECK constraints, same FTS5 config) [US-C1]
-- [ ] Root `package.json` has `"workspaces": ["core", "mcp", "tui"]` (or equivalent) [US-C1]
-- [ ] `npm run build` in `core/` succeeds and produces `core/dist/db.js` [US-C1]
-- [ ] `cd mcp && npm install && npm run build` still succeeds after workspace configuration [US-C1]
+- [x] `core/package.json` exists with `name: "mustard-core"`, `type: "module"`, `better-sqlite3` in dependencies, and a `build` script [US-C1]
+- [x] `core/tsconfig.json` exists targeting ES2022+ with ESM module output to `core/dist/` [US-C1]
+- [x] `core/src/db.ts` exports `getDb`, `initSchema`, `checkFtsHealth`, `rebuildFts`, `closeDb` [US-C1]
+- [x] `core/src/db.ts` `initSchema` creates identical tables, indexes, triggers, and runs identical migrations as `mcp/src/db.ts` (same CREATE TABLE, same CHECK constraints, same FTS5 config) [US-C1]
+- [x] Root `package.json` has `"workspaces": ["core", "mcp", "tui"]` (or equivalent) [US-C1]
+- [x] `npm run build` in `core/` succeeds and produces `core/dist/db.js` [US-C1]
+- [x] `cd mcp && npm install && npm run build` still succeeds after workspace configuration [US-C1]
 
 #### US-C2 — Data operations
 - [ ] `core/src/types.ts` exports `RecordRow`, `CreateParams`, `UpdateParams`, `SearchParams`, `ListParams`, `LinkParams`, `GetContextParams`, `ProjectSummaryParams` interfaces [US-C2]
