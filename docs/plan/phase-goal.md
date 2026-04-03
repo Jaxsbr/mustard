@@ -55,15 +55,15 @@ Integrate consumers with the shared core library. Create a new CLI package (`mus
 - [x] Running `mtui` opens the terminal browser with the same behavior as before [US-I3]
 
 #### US-I4 — Documentation and install guide
-- [ ] README.md has a "CLI installation" section with `cd cli && npm install && npm run build && npm link` instructions and example usage of at least 3 commands (create, search, list) [US-I4]
-- [ ] README.md TUI section updated to reference `mtui` command instead of `mustard` [US-I4]
-- [ ] README.md has a "Quick start for external users" section covering: clone, install, build, and configure MCP client + CLI [US-I4]
-- [ ] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `cli/` as a consumer of core alongside MCP and TUI [US-I4]
-- [ ] `docs/architecture/ARCHITECTURE.md` directory layout includes `cli/` entry [US-I4]
-- [ ] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes CLI row (Role: shell interface, DB access: read/write via core, Language: TypeScript) [US-I4]
-- [ ] `AGENTS.md` directory layout includes `cli/` entry [US-I4]
-- [ ] `AGENTS.md` module responsibilities table includes CLI row [US-I4]
-- [ ] Recommendations 2 and 3 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [US-I4]
+- [x] README.md has a "CLI installation" section with `cd cli && npm install && npm run build && npm link` instructions and example usage of at least 3 commands (create, search, list) [US-I4]
+- [x] README.md TUI section updated to reference `mtui` command instead of `mustard` [US-I4]
+- [x] README.md has a "Quick start for external users" section covering: clone, install, build, and configure MCP client + CLI [US-I4]
+- [x] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `cli/` as a consumer of core alongside MCP and TUI [US-I4]
+- [x] `docs/architecture/ARCHITECTURE.md` directory layout includes `cli/` entry [US-I4]
+- [x] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes CLI row (Role: shell interface, DB access: read/write via core, Language: TypeScript) [US-I4]
+- [x] `AGENTS.md` directory layout includes `cli/` entry [US-I4]
+- [x] `AGENTS.md` module responsibilities table includes CLI row [US-I4]
+- [x] Recommendations 2 and 3 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [US-I4]
 
 ### Golden principles (phase-relevant)
 - no-silent-pass — CLI and MCP tests must assert on actual output, not just "doesn't throw"
