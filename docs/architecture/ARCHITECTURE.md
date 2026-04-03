@@ -4,19 +4,23 @@
 
 ## System overview
 
-Mustard is a personal knowledge store backed by SQLite, accessed via MCP (Model Context Protocol) and a terminal UI.
+Mustard is a personal knowledge store backed by SQLite, accessed via MCP (Model Context Protocol), a CLI, and a terminal UI.
 
 ```
 MCP Clients (Claude Desktop / Cursor / Claude Code)
   ↓ MCP (STDIO)
-Mustard MCP Server (TypeScript)          Mustard TUI (Node.js)
-  ↓ imports                               ↓ imports
-Mustard Core (TypeScript) ← shared data-access library  ↓ better-sqlite3
-SQLite Database (data/mustard.db)
-  ├── records table (6 types, unified)
-  ├── links table (knowledge graph)
-  └── records_fts (FTS5 full-text search)
+Mustard MCP Server (TypeScript)    Mustard CLI (TypeScript)    Mustard TUI (Node.js)
+  ↓ imports                         ↓ imports                   ↓ imports
+  └────────────────────────── Mustard Core (TypeScript) ───────────────┘
+                              shared data-access library
+                                        ↓
+                              SQLite Database (data/mustard.db)
+                                ├── records table (6 types, unified)
+                                ├── links table (knowledge graph)
+                                └── records_fts (FTS5 full-text search)
 ```
+
+> **Planned for `consumer-integration` phase:** CLI package added as a new core consumer. MCP migrated from inline SQL to core imports. TUI command renamed from `mustard` to `mtui`.
 
 See `mustard.flow.yaml` in this directory for the visual flow-mo diagram. **Update `mustard.flow.yaml` when adding modules, tools, or data flows.**
 
@@ -34,6 +38,11 @@ mustard/
 │   │   ├── summary.ts  — Daily and project summaries
 │   │   └── index.ts    — Public API re-exports
 │   ├── tests/          — Vitest test suite
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json
+├── cli/                — CLI binary (planned for consumer-integration phase)
+│   ├── src/
+│   │   └── index.ts    — Entry point, subcommand dispatcher, terminal formatting
 │   ├── dist/           — (gitignored) compiled output
 │   └── package.json
 ├── data/               — SQLite database, backup script, data docs
@@ -69,10 +78,11 @@ mustard/
 
 | Module | Role | DB access | Language |
 |--------|------|-----------|----------|
+| **cli** | Shell interface — subcommands for all mustard operations, used by humans and scheduled agents | Read/write (via core) | TypeScript |
 | **core** | Shared data-access library — db connection, schema, validation, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — hosts the SQLite database and backup infrastructure | N/A (is the database) | Bash (backup script) |
-| **mcp** | MCP server — exposes 11 tools for CRUD, search, linking, context retrieval, and summaries | Read/write | TypeScript |
-| **tui** | Terminal browser — arrow-key TUI with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
+| **mcp** | MCP server — thin transport layer over core, exposes 11 tools via STDIO | Read/write (via core) | TypeScript |
+| **tui** | Terminal browser — arrow-key TUI (`mtui` command) with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
 
 ## Data model
 

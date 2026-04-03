@@ -1,69 +1,71 @@
 ## Phase goal
 
-Extract a shared `core/` TypeScript package from the existing MCP server, containing the database layer, all data operations (CRUD, search, links, context, summaries), and shared types. Migrate the TUI to consume `core/` instead of reaching into `mcp/node_modules`. This decouples consumers from the MCP server and makes the TUI independently installable.
+Integrate consumers with the shared core library. Create a new CLI package (`mustard` command) as a thin wrapper over core. Migrate the MCP server from inline SQL to core imports. Rename the TUI command from `mustard` to `mtui`. Update all documentation to reflect the new CLI, MCP migration, and TUI rename.
 
 ### Stories in scope
-- US-C1 — Create core package with database and schema layer
-- US-C2 — Extract data operations and shared types into core
-- US-C3 — Core test suite
-- US-C4 — Migrate TUI to import core for reads
+- US-I1 — Create CLI package with core dependency
+- US-I2 — Migrate MCP tools to import core
+- US-I3 — Rename TUI command from mustard to mtui
+- US-I4 — CLI and MCP documentation and install guide
 
 ### Done-when (observable)
 
-#### US-C1 — Core package scaffold
-- [x] `core/package.json` exists with `name: "mustard-core"`, `type: "module"`, `better-sqlite3` in dependencies, and a `build` script [US-C1]
-- [x] `core/tsconfig.json` exists targeting ES2022+ with ESM module output to `core/dist/` [US-C1]
-- [x] `core/src/db.ts` exports `getDb`, `initSchema`, `checkFtsHealth`, `rebuildFts`, `closeDb` [US-C1]
-- [x] `core/src/db.ts` `initSchema` creates identical tables, indexes, triggers, and runs identical migrations as `mcp/src/db.ts` (same CREATE TABLE, same CHECK constraints, same FTS5 config) [US-C1]
-- [x] Root `package.json` has `"workspaces": ["core", "mcp", "tui"]` (or equivalent) [US-C1]
-- [x] `npm run build` in `core/` succeeds and produces `core/dist/db.js` [US-C1]
-- [x] `cd mcp && npm install && npm run build` still succeeds after workspace configuration [US-C1]
+#### US-I1 — CLI package
+- [ ] `cli/package.json` exists with `name: "mustard-cli"`, `type: "module"`, `mustard-core` as workspace dependency, and `bin: { "mustard": "dist/index.js" }` [US-I1]
+- [ ] `cli/tsconfig.json` exists targeting ES2022+ with ESM module output to `cli/dist/` [US-I1]
+- [ ] `cli/src/index.ts` is the entry point with `#!/usr/bin/env node` shebang and a subcommand dispatcher [US-I1]
+- [ ] `mustard create --type todo --text "test"` creates a record via `core.createRecord` with `source_origin: 'mustard-cli'` and prints the created record [US-I1]
+- [ ] `mustard get <id>` fetches and displays a single record via `core.getRecord` [US-I1]
+- [ ] `mustard update <id> --status done` updates a record via `core.updateRecord` and prints the result [US-I1]
+- [ ] `mustard delete <id>` deletes a record via `core.deleteRecord` and prints confirmation [US-I1]
+- [ ] `mustard search "query"` runs FTS search via `core.searchRecords` with optional `--type`, `--person`, `--status`, `--limit` flags [US-I1]
+- [ ] `mustard list` lists records via `core.listRecords` with optional `--type`, `--person`, `--status`, `--delegate`, `--sort`, `--limit` flags [US-I1]
+- [ ] `mustard link <source> <target> --relation <rel>` creates a link via `core.linkRecords` [US-I1]
+- [ ] `mustard unlink <source> <target> --relation <rel>` removes a link via `core.unlinkRecords` [US-I1]
+- [ ] `mustard context <id>` retrieves context via `core.getContext` with optional `--depth`, `--since`, `--limit` flags [US-I1]
+- [ ] `mustard daily` runs daily summary via `core.dailySummary` with optional `--date` flag [US-I1]
+- [ ] `mustard project <id-or-title>` runs project summary via `core.projectSummary` [US-I1]
+- [ ] `mustard --help` prints usage with all subcommands listed [US-I1]
+- [ ] Each subcommand supports `--help` showing its flags [US-I1]
+- [ ] CLI exits with code 0 on success and code 1 on errors (invalid args, record not found, validation failure) [US-I1]
+- [ ] Root `package.json` workspaces array includes `cli` [US-I1]
+- [ ] `npm run build` in `cli/` succeeds and produces `cli/dist/index.js` [US-I1]
+- [ ] `cd cli && npm link` installs `mustard` command globally and it runs without error [US-I1]
+- [ ] CLI argument parsing rejects unknown flags with a helpful error message rather than silently ignoring them [US-I1]
+- [ ] CLI `--text` and `--title` values are passed through to core as-is — no shell interpolation or eval on user input [US-I1]
 
-#### US-C2 — Data operations
-- [x] `core/src/types.ts` exports `RecordRow`, `CreateParams`, `UpdateParams`, `SearchParams`, `ListParams`, `LinkParams`, `GetContextParams`, `ProjectSummaryParams` interfaces [US-C2]
-- [x] `core/src/records.ts` exports `getRecord` returning `RecordRow | null` and `createRecord` returning `RecordRow` [US-C2]
-- [x] `core/src/records.ts` exports `updateRecord` returning `RecordRow` and `deleteRecord` returning `{ id, log_type, title }` [US-C2]
-- [x] `core/src/records.ts` rejects invalid `log_type` values and empty `text` with thrown errors [US-C2]
-- [x] `core/src/search.ts` exports `searchRecords` returning `RecordRow[]` and `listRecords` returning `{ records: RecordRow[], total: number }` [US-C2]
-- [x] `core/src/links.ts` exports `linkRecords` returning `{ id, source_id, target_id, relation }` and `unlinkRecords` returning `{ changes: number }` [US-C2]
-- [x] `core/src/links.ts` rejects self-links (source_id === target_id) with a thrown error [US-C2]
-- [x] `core/src/context.ts` exports `getContext` returning `{ anchors: RecordRow[], linked: LinkedRecord[] }` [US-C2]
-- [x] `core/src/summary.ts` exports `dailySummary` and `projectSummary` returning structured data objects (not strings) [US-C2]
-- [x] `core/src/index.ts` re-exports all public functions and types [US-C2]
-- [x] `VALID_LOG_TYPES` and default status map are exported from core [US-C2]
-- [x] `npm run build` in `core/` succeeds with all modules compiled [US-C2]
+#### US-I2 — MCP migration to core
+- [ ] `mcp/package.json` lists `mustard-core` as a workspace dependency [US-I2]
+- [ ] `mcp/src/server.ts` imports `getDb`, `initSchema` from `mustard-core` instead of `./db.js` [US-I2]
+- [ ] `mcp/src/server.ts` imports data functions (`getRecord`, `createRecord`, `updateRecord`, `deleteRecord`, `searchRecords`, `listRecords`, `linkRecords`, `unlinkRecords`, `getContext`, `dailySummary`, `projectSummary`) from `mustard-core` [US-I2]
+- [ ] `mcp/src/server.ts` imports types (`RecordRow`, `CreateParams`, `SearchParams`, `ListParams`, `LinkParams`, `GetContextParams`, `ProjectSummaryParams`) from `mustard-core` [US-I2]
+- [ ] MCP tool handlers call core functions (which return typed objects) and format results into markdown text for MCP responses [US-I2]
+- [ ] `mcp/src/format.ts` exists with formatting functions (`formatRecordFull`, `formatRecordSummary`, `formatSearchResults`, `formatListResults`, `formatDailySummary`, `formatProjectSummary`, `formatContext`) that convert core typed objects to markdown strings [US-I2]
+- [ ] MCP `create_record` tool passes `source_origin: 'mustard-mcp'` to `core.createRecord` (consumer-specific value preserved) [US-I2]
+- [ ] `mcp/src/tools/` directory is deleted — all tool logic consolidated into `server.ts` calling core + format [US-I2]
+- [ ] `mcp/src/db.ts` is deleted — database access fully delegated to `mustard-core` [US-I2]
+- [ ] `better-sqlite3` removed from `mcp/package.json` dependencies (owned by core, not MCP) [US-I2]
+- [ ] `npm run build` in `mcp/` succeeds [US-I2]
+- [ ] Existing MCP test suite passes (or is updated to reflect new import paths) [US-I2]
+- [ ] All 11 MCP tools produce the same output format as before migration (backward-compatible) [US-I2]
 
-#### US-C3 — Core tests
-- [x] `core/tests/db.test.ts` exists and tests schema creation on a fresh temp database (tables, indexes, FTS triggers all created) [US-C3]
-- [x] `core/tests/records.test.ts` exists and tests create, get, update, delete with assertions on returned data shapes [US-C3]
-- [x] `core/tests/search.test.ts` exists and tests FTS search and list with filter/sort params [US-C3]
-- [x] `core/tests/links.test.ts` exists and tests link, unlink, self-link rejection, and idempotent link creation [US-C3]
-- [x] `core/tests/context.test.ts` exists and tests getContext at depth 1 and depth 2 [US-C3]
-- [x] `core/tests/summary.test.ts` exists and tests dailySummary and projectSummary with deterministic dates [US-C3]
-- [x] `npm test` in `core/` runs all tests and all pass [US-C3]
-- [x] Root `package.json` `test` script includes `core` package tests [US-C3]
+#### US-I3 — TUI command rename
+- [ ] `tui/package.json` bin field changed from `"mustard"` to `"mtui"` [US-I3]
+- [ ] `cd tui && npm link` installs `mtui` command globally and it launches correctly [US-I3]
+- [ ] Running `mtui` opens the terminal browser with the same behavior as before [US-I3]
 
-#### US-C4 — TUI migration
-- [x] `tui/src/db.js` imports `getDb` and `initSchema` (or equivalent read functions) from `mustard-core`, not from `mcp/node_modules` [US-C4]
-- [x] `tui/package.json` has `"mustard-core": "*"` (or workspace protocol) in dependencies [US-C4]
-- [x] `grep -r "mcp/node_modules" tui/` returns no matches [US-C4]
-- [x] TUI opens database with `{ readonly: true }` (read-only safety boundary preserved) [US-C4]
-- [x] TUI's per-type ordering (ORDER_BY map) and filtering (FILTER map) produce the same query results as before migration [US-C4]
-- [x] `node tui/tests/db.test.js` passes (existing TUI verification test) [US-C4]
-- [x] `cd tui && npm link` succeeds and `mustard` command launches without `mcp/` being built [US-C4]
-- [x] README.md TUI setup section no longer mentions needing MCP installed first [US-C4]
-
-#### Phase-level documentation
-- [x] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `core/` between consumers (MCP, TUI) and SQLite [phase]
-- [x] `docs/architecture/ARCHITECTURE.md` directory layout includes `core/` with description [phase]
-- [x] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes core (Role: shared data-access library, DB access: read/write, Language: TypeScript) [phase]
-- [x] `docs/architecture/mustard.flow.yaml` updated with core layer in the data flow [phase]
-- [x] `AGENTS.md` directory layout includes `core/` entry [phase]
-- [x] `AGENTS.md` module responsibilities table includes core [phase]
-- [x] Recommendations 1 and 4 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [phase]
+#### US-I4 — Documentation and install guide
+- [ ] README.md has a "CLI installation" section with `cd cli && npm install && npm run build && npm link` instructions and example usage of at least 3 commands (create, search, list) [US-I4]
+- [ ] README.md TUI section updated to reference `mtui` command instead of `mustard` [US-I4]
+- [ ] README.md has a "Quick start for external users" section covering: clone, install, build, and configure MCP client + CLI [US-I4]
+- [ ] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `cli/` as a consumer of core alongside MCP and TUI [US-I4]
+- [ ] `docs/architecture/ARCHITECTURE.md` directory layout includes `cli/` entry [US-I4]
+- [ ] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes CLI row (Role: shell interface, DB access: read/write via core, Language: TypeScript) [US-I4]
+- [ ] `AGENTS.md` directory layout includes `cli/` entry [US-I4]
+- [ ] `AGENTS.md` module responsibilities table includes CLI row [US-I4]
+- [ ] Recommendations 2 and 3 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [US-I4]
 
 ### Golden principles (phase-relevant)
-- no-silent-pass — core tests must make real assertions on return values, not just "doesn't throw"
-- no-bare-except — no empty catch blocks in core; errors propagate or are handled with specific recovery
-- error-path-coverage — validation errors (invalid log_type, empty text, self-link) have explicit test coverage
-- agents-consistency — AGENTS.md updated to reflect core/ addition
+- no-silent-pass — CLI and MCP tests must assert on actual output, not just "doesn't throw"
+- error-path-coverage — validation errors (invalid type, missing text, record not found) have test coverage in CLI
+- agents-consistency — AGENTS.md updated to reflect cli/ addition and TUI rename
