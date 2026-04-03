@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "description": "Personal knowledge store — monorepo for MCP server, TUI, and data layer",
+  "workspaces": [
+    "core",
+    "mcp",
+    "tui"
+  ],
   "scripts": {
     "test": "cd mcp && npm test && cd .. && node tui/tests/db.test.js",
     "test:mcp": "cd mcp && npm test",

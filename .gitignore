@@ -22,6 +22,8 @@ data/backups/
 
 # Node
 node_modules/
+core/node_modules/
+core/dist/
 mcp/node_modules/
 mcp/dist/
 tui/node_modules/
