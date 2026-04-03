@@ -24,12 +24,12 @@ config:
 state:
   # --- Lifecycle (owner: iterator) ---
   phase: consumer-integration
-  phase_complete: false
+  phase_complete: true
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 7
-  next_task: "[US-I4] Update README, ARCHITECTURE.md, AGENTS.md, and thesis with CLI, MCP migration, and TUI rename documentation"
+  task_number: 8
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 

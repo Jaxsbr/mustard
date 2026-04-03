@@ -46,6 +46,20 @@ entries:
     notes: "✓ US-I2 complete"
     timestamp: "2026-04-03T04:47:00Z"
     tokens: ~20000
+  - task: 7
+    story: US-I4
+    type: implement
+    description: "Updated README (CLI install section with 6 example commands, TUI renamed to mtui, quick start for external users), ARCHITECTURE.md (removed planned marker, updated MCP dir layout, TUI section), AGENTS.md (added cli/ to layout + module table), thesis (recommendations 2+3 struck through). All 9 criteria met."
+    result: pass
+    notes: "✓ US-I4 complete"
+    timestamp: "2026-04-03T04:51:00Z"
+    tokens: ~8000
+  - task: 8
+    type: gate
+    description: "Phase Completion Gate — all 47 done-when criteria met across 4 stories (US-I1: 22, US-I2: 13, US-I3: 3, US-I4: 9). Verify passes (146 tests: 53 core + 91 mcp + 2 tui). AGENTS.md consistent with cli/ addition and MCP migration. Error-path coverage: CLI rejects unknown commands/flags, MCP catches core exceptions."
+    result: pass
+    timestamp: "2026-04-03T04:52:00Z"
+    tokens: ~5000
   - task: 4
     story: US-I1
     type: gate
