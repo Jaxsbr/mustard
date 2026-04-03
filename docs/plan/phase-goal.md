@@ -34,14 +34,14 @@ Extract a shared `core/` TypeScript package from the existing MCP server, contai
 - [x] `npm run build` in `core/` succeeds with all modules compiled [US-C2]
 
 #### US-C3 — Core tests
-- [ ] `core/tests/db.test.ts` exists and tests schema creation on a fresh temp database (tables, indexes, FTS triggers all created) [US-C3]
-- [ ] `core/tests/records.test.ts` exists and tests create, get, update, delete with assertions on returned data shapes [US-C3]
-- [ ] `core/tests/search.test.ts` exists and tests FTS search and list with filter/sort params [US-C3]
-- [ ] `core/tests/links.test.ts` exists and tests link, unlink, self-link rejection, and idempotent link creation [US-C3]
-- [ ] `core/tests/context.test.ts` exists and tests getContext at depth 1 and depth 2 [US-C3]
-- [ ] `core/tests/summary.test.ts` exists and tests dailySummary and projectSummary with deterministic dates [US-C3]
-- [ ] `npm test` in `core/` runs all tests and all pass [US-C3]
-- [ ] Root `package.json` `test` script includes `core` package tests [US-C3]
+- [x] `core/tests/db.test.ts` exists and tests schema creation on a fresh temp database (tables, indexes, FTS triggers all created) [US-C3]
+- [x] `core/tests/records.test.ts` exists and tests create, get, update, delete with assertions on returned data shapes [US-C3]
+- [x] `core/tests/search.test.ts` exists and tests FTS search and list with filter/sort params [US-C3]
+- [x] `core/tests/links.test.ts` exists and tests link, unlink, self-link rejection, and idempotent link creation [US-C3]
+- [x] `core/tests/context.test.ts` exists and tests getContext at depth 1 and depth 2 [US-C3]
+- [x] `core/tests/summary.test.ts` exists and tests dailySummary and projectSummary with deterministic dates [US-C3]
+- [x] `npm test` in `core/` runs all tests and all pass [US-C3]
+- [x] Root `package.json` `test` script includes `core` package tests [US-C3]
 
 #### US-C4 — TUI migration
 - [ ] `tui/src/db.js` imports `getDb` and `initSchema` (or equivalent read functions) from `mustard-core`, not from `mcp/node_modules` [US-C4]
