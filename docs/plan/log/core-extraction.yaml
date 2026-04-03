@@ -16,3 +16,11 @@ entries:
     result: pass
     timestamp: "2026-04-03T01:58:00Z"
     tokens: ~12000
+  - task: 2
+    story: US-C1
+    type: implement
+    description: "Created core/ package scaffold — package.json (mustard-core, ESM, better-sqlite3), tsconfig.json (ES2022+), src/db.ts (extracted from mcp/src/db.ts with identical schema/migrations/FTS), src/index.ts barrel. Configured npm workspaces in root package.json. Build and tests pass."
+    result: pass
+    notes: "✓ US-C1 complete"
+    timestamp: "2026-04-03T02:02:00Z"
+    tokens: ~8000

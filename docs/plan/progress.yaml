@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 2
-  next_task: "[US-C1] Implement core/ package scaffold — create core/package.json, core/tsconfig.json, core/src/db.ts (extract from mcp/src/db.ts), configure npm workspaces in root package.json"
+  task_number: 3
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
