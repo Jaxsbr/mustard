@@ -23,7 +23,7 @@ config:
 
 state:
   # --- Lifecycle (owner: iterator) ---
-  phase: core-extraction
+  phase: consumer-integration
   phase_complete: true
   status: running
 
@@ -36,14 +36,14 @@ state:
   # --- Review (owner: iterator) ---
   review_stage: review_posted
   review_complete: true
-  pr_number: 3
+  pr_number: 4
 
   # --- Retrospective (owner: retro) ---
   retro_complete: true
 
   # --- Tracking (owner: iterator) ---
   completed_stories:
-    - US-C1
-    - US-C2
-    - US-C3
-    - US-C4
+    - US-I3
+    - US-I1
+    - US-I2
+    - US-I4

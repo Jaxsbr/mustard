@@ -16,17 +16,12 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
-    "better-sqlite3": "^12.8.0",
-    "crypto-js": "^4.2.0",
-    "drizzle-orm": "^0.45.1",
-    "uuid": "^13.0.0",
+    "mustard-core": "*",
     "yaml": "^2.8.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.0",
-    "drizzle-kit": "^0.31.10",
     "typescript": "^6.0.2",
     "vitest": "^4.1.1"
   }

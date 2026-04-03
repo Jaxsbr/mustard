@@ -2,8 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { parse as parseYaml } from 'yaml'
-import Database from 'better-sqlite3'
-import { initSchema, rebuildFts } from './db.js'
+import { getDb, initSchema, rebuildFts, type Database } from 'mustard-core'
 
 const DEFAULT_DATA_DIR = path.join(process.env.HOME ?? '', 'dev', 'mustard-data')
 
@@ -133,8 +132,7 @@ export function migrate(
     console.error(`[migrate] Backed up existing DB to ${backup}`)
   }
 
-  const db = new Database(resolvedDbPath)
-  db.pragma('journal_mode = WAL')
+  const db = getDb(resolvedDbPath)
   initSchema(db)
 
   const yamlFiles = findYamlFiles(dataDir).filter(

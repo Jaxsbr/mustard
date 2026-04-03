@@ -4,7 +4,7 @@
   "description": "Terminal UI for browsing Mustard records",
   "type": "module",
   "bin": {
-    "mustard": "src/index.js"
+    "mtui": "src/index.js"
   },
   "scripts": {
     "start": "node src/index.js"

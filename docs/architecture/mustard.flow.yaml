@@ -29,17 +29,26 @@
       "height": 56
   - "id": "mcp_server"
     "position":
-      "x": 200
+      "x": 290
       "y": 116
     "data":
       "label": "MCP Server (TypeScript)"
       "shape": "rectangle"
       "width": 180
       "height": 56
+  - "id": "cli"
+    "position":
+      "x": 80
+      "y": 232
+    "data":
+      "label": "Mustard CLI (TypeScript)"
+      "shape": "rectangle"
+      "width": 180
+      "height": 56
   - "id": "tui"
     "position":
-      "x": 430
-      "y": 116
+      "x": 560
+      "y": 232
     "data":
       "label": "Mustard TUI (Node.js)"
       "shape": "rectangle"
@@ -47,8 +56,8 @@
       "height": 56
   - "id": "core"
     "position":
-      "x": 310
-      "y": 232
+      "x": 290
+      "y": 348
     "data":
       "label": "Mustard Core (TypeScript)"
       "shape": "rectangle"
@@ -56,8 +65,8 @@
       "height": 56
   - "id": "sqlite_db"
     "position":
-      "x": 320
-      "y": 358
+      "x": 310
+      "y": 464
     "data":
       "label": "SQLite (records, links, FTS5)"
       "shape": "circle"
@@ -65,8 +74,8 @@
       "height": 140
   - "id": "backup"
     "position":
-      "x": 310
-      "y": 548
+      "x": 290
+      "y": 664
     "data":
       "label": "Backup System (bash)"
       "shape": "rectangle"
@@ -104,21 +113,29 @@
     "marker_end": "arrow"
     "label": "imports"
     "source_handle": "bottom-source"
+    "target_handle": "top-target"
+  - "id": "e_cli_core"
+    "source": "cli"
+    "target": "core"
+    "marker_start": "none"
+    "marker_end": "arrow"
+    "label": "imports"
+    "source_handle": "right-source"
     "target_handle": "left-target"
   - "id": "e_tui_core"
     "source": "tui"
     "target": "core"
     "marker_start": "none"
     "marker_end": "arrow"
-    "label": "imports (read-only)"
-    "source_handle": "bottom-source"
+    "label": "imports"
+    "source_handle": "left-source"
     "target_handle": "right-target"
   - "id": "e_core_sqlite"
     "source": "core"
     "target": "sqlite_db"
     "marker_start": "none"
     "marker_end": "arrow"
-    "label": "better-sqlite3"
+    "label": "read/write"
     "source_handle": "bottom-source"
     "target_handle": "top-target"
   - "id": "e_sqlite_backup"

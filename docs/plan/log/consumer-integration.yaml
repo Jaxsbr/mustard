@@ -1,0 +1,81 @@
+# Phase log: consumer-integration
+# Started: 2026-04-03T04:26:05Z
+
+entries:
+  - task: 0
+    story: phase
+    type: setup
+    description: "Phase start — archived core-extraction (reconciliation R0-R5), created build/consumer-integration branch, wrote phase-goal.md with 4 stories (US-I1-I4), 146 tests pass."
+    result: pass
+    timestamp: "2026-04-03T04:26:05Z"
+    tokens: ~10000
+  - task: 1
+    story: US-I1
+    type: investigate
+    description: "Reviewed core API (13 functions, all param interfaces exported), core/tui tsconfig patterns, TUI bin config (currently claims 'mustard' name). Plan: use Node.js built-in parseArgs, mirror core tsconfig, all 11 subcommands as thin wrappers over core."
+    result: pass
+    timestamp: "2026-04-03T04:30:00Z"
+    tokens: ~5000
+  - task: 2
+    story: US-I1
+    type: implement
+    description: "Created cli/ package — package.json (mustard-cli, ESM, mustard-core workspace dep, bin mustard), tsconfig.json (ES2022+), src/index.ts with shebang, parseArgs strict mode, all 11 subcommands as thin core wrappers. source_origin: 'mustard-cli'. Unknown flags rejected. Human-readable output. Added cli to root workspaces and .gitignore. Build passes, 146 tests pass."
+    result: pass
+    timestamp: "2026-04-03T04:35:00Z"
+    tokens: ~15000
+  - task: 3
+    story: US-I3
+    type: implement
+    description: "Changed tui/package.json bin from 'mustard' to 'mtui'. npm link installs /opt/homebrew/bin/mtui. All 3 US-I3 criteria met. 146 tests pass."
+    result: pass
+    notes: "✓ US-I3 complete"
+    timestamp: "2026-04-03T04:37:00Z"
+    tokens: ~3000
+  - task: 5
+    story: US-I2
+    type: investigate
+    description: "Read server.ts (262 lines), all 5 tool files, db.ts (341 lines), package.json. Tools return formatted markdown; core returns typed objects. Plan: create format.ts to bridge, rewrite server.ts to import core + format, delete tools/ and db.ts, remove better-sqlite3 from MCP deps. Also clean up unused deps (crypto-js, drizzle-orm, uuid, yaml)."
+    result: pass
+    timestamp: "2026-04-03T04:42:00Z"
+    tokens: ~10000
+  - task: 6
+    story: US-I2
+    type: implement
+    description: "Created format.ts (12 functions bridging core typed objects to same markdown output). Rewrote server.ts to import from mustard-core + format.ts. Updated migrate.ts to import from core. Deleted mcp/src/tools/ (5 files) and mcp/src/db.ts. Removed better-sqlite3/crypto-js/drizzle-orm/uuid from MCP deps. Updated test imports with adapter functions. All 146 tests pass."
+    result: pass
+    notes: "✓ US-I2 complete"
+    timestamp: "2026-04-03T04:47:00Z"
+    tokens: ~20000
+  - task: 7
+    story: US-I4
+    type: implement
+    description: "Updated README (CLI install section with 6 example commands, TUI renamed to mtui, quick start for external users), ARCHITECTURE.md (removed planned marker, updated MCP dir layout, TUI section), AGENTS.md (added cli/ to layout + module table), thesis (recommendations 2+3 struck through). All 9 criteria met."
+    result: pass
+    notes: "✓ US-I4 complete"
+    timestamp: "2026-04-03T04:51:00Z"
+    tokens: ~8000
+  - task: 8
+    type: gate
+    description: "Phase Completion Gate — all 47 done-when criteria met across 4 stories (US-I1: 22, US-I2: 13, US-I3: 3, US-I4: 9). Verify passes (146 tests: 53 core + 91 mcp + 2 tui). AGENTS.md consistent with cli/ addition and MCP migration. Error-path coverage: CLI rejects unknown commands/flags, MCP catches core exceptions."
+    result: pass
+    timestamp: "2026-04-03T04:52:00Z"
+    tokens: ~5000
+  - task: 9
+    type: review
+    description: "Created PR #4 from build/consumer-integration to main. review-pr posted: 0 critical, 3 concerns (flow diagram missing core/cli nodes, racy link idempotent detection, consumer-integration.md still says draft). Queued handle-pr-review."
+    result: pass
+    timestamp: "2026-04-03T04:55:00Z"
+    tokens: ~15000
+  - task: 10
+    type: review
+    description: "handle-pr-review: fixed 2 (flow diagram restored core/cli nodes, consumer-integration.md status→shipped). Challenged 1 (racy link detection — theoretical, single-user SQLite). All 146 tests pass. Summary posted."
+    result: pass
+    timestamp: "2026-04-03T04:58:00Z"
+    tokens: ~10000
+  - task: 4
+    story: US-I1
+    type: gate
+    description: "US-I1 Story Completion Gate — all 22 criteria met. npm link verified after TUI rename. Global mustard command works: create, get, update, delete, search, list, link, unlink, context, daily, project. US-I3 also completed (3/3 criteria)."
+    result: pass
+    timestamp: "2026-04-03T04:39:00Z"
+    tokens: ~3000

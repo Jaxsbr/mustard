@@ -4,18 +4,20 @@
 
 ## System overview
 
-Mustard is a personal knowledge store backed by SQLite, accessed via MCP (Model Context Protocol) and a terminal UI.
+Mustard is a personal knowledge store backed by SQLite, accessed via MCP (Model Context Protocol), a CLI, and a terminal UI.
 
 ```
 MCP Clients (Claude Desktop / Cursor / Claude Code)
   ↓ MCP (STDIO)
-Mustard MCP Server (TypeScript)          Mustard TUI (Node.js)
-  ↓ imports                               ↓ imports
-Mustard Core (TypeScript) ← shared data-access library  ↓ better-sqlite3
-SQLite Database (data/mustard.db)
-  ├── records table (6 types, unified)
-  ├── links table (knowledge graph)
-  └── records_fts (FTS5 full-text search)
+Mustard MCP Server (TypeScript)    Mustard CLI (TypeScript)    Mustard TUI (Node.js)
+  ↓ imports                         ↓ imports                   ↓ imports
+  └────────────────────────── Mustard Core (TypeScript) ───────────────┘
+                              shared data-access library
+                                        ↓
+                              SQLite Database (data/mustard.db)
+                                ├── records table (6 types, unified)
+                                ├── links table (knowledge graph)
+                                └── records_fts (FTS5 full-text search)
 ```
 
 See `mustard.flow.yaml` in this directory for the visual flow-mo diagram. **Update `mustard.flow.yaml` when adding modules, tools, or data flows.**
@@ -36,6 +38,11 @@ mustard/
 │   ├── tests/          — Vitest test suite
 │   ├── dist/           — (gitignored) compiled output
 │   └── package.json
+├── cli/                — CLI binary (`mustard` command)
+│   ├── src/
+│   │   └── index.ts    — Entry point, subcommand dispatcher, terminal formatting
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json
 ├── data/               — SQLite database, backup script, data docs
 │   ├── mustard.db      — (gitignored) live database
 │   ├── backups/        — (gitignored) timestamped snapshots
@@ -43,9 +50,9 @@ mustard/
 │   └── docs/           — data-layer documentation, incident reports
 ├── mcp/                — TypeScript MCP server
 │   ├── src/
-│   │   ├── server.ts   — MCP server setup, tool registration, STDIO transport
-│   │   ├── db.ts       — SQLite connection, schema init, FTS triggers, migrations
-│   │   └── tools/      — Tool implementations (crud, search, links, context, summary)
+│   │   ├── server.ts   — MCP server setup, tool registration (imports core), STDIO transport
+│   │   ├── format.ts   — Converts core typed objects to MCP markdown responses
+│   │   └── migrate.ts  — YAML-to-SQLite migration utility
 │   ├── tests/          — Vitest test suite
 │   ├── dist/           — (gitignored) compiled output
 │   ├── package.json
@@ -69,10 +76,11 @@ mustard/
 
 | Module | Role | DB access | Language |
 |--------|------|-----------|----------|
+| **cli** | Shell interface — subcommands for all mustard operations, used by humans and scheduled agents | Read/write (via core) | TypeScript |
 | **core** | Shared data-access library — db connection, schema, validation, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — hosts the SQLite database and backup infrastructure | N/A (is the database) | Bash (backup script) |
-| **mcp** | MCP server — exposes 11 tools for CRUD, search, linking, context retrieval, and summaries | Read/write | TypeScript |
-| **tui** | Terminal browser — arrow-key TUI with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
+| **mcp** | MCP server — thin transport layer over core, exposes 11 tools via STDIO | Read/write (via core) | TypeScript |
+| **tui** | Terminal browser — arrow-key TUI (`mtui` command) with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
 
 ## Data model
 
@@ -235,13 +243,13 @@ cd mustard/tui
 npm link
 ```
 
-This installs the `mustard` command globally. Run from any terminal:
+This installs the `mtui` command globally. Run from any terminal:
 
 ```bash
-mustard
+mtui
 ```
 
-> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`.
+> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`. If you had the old `mustard` TUI command, run `npm unlink -g mustard-tui` first.
 
 ### 4. Database
 

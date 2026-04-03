@@ -6,34 +6,78 @@ A personal knowledge store accessed by AI agents via MCP (Model Context Protocol
 
 | Module | Description |
 |---|---|
+| `core/` | Shared data-access library — db, schema, CRUD, search, links, context, summaries |
+| `cli/` | CLI binary (`mustard` command) — thin wrapper over core for humans and scheduled agents |
 | `data/` | SQLite database, backup script, data documentation |
-| `mcp/` | TypeScript MCP server — 11 tools for CRUD, search, linking, context, and summaries |
-| `tui/` | Node.js terminal UI for browsing records |
+| `mcp/` | TypeScript MCP server — 11 tools via STDIO, imports core for data operations |
+| `tui/` | Node.js terminal UI (`mtui` command) — read-only browser with tabs per record type |
 
-## Quickstart
-
-### 1. Clone and build
+## Quick start for external users
 
 ```bash
+# 1. Clone and install
 git clone https://github.com/Jaxsbr/mustard.git
 cd mustard
-
-# Install and build MCP server
-cd mcp
 npm install
-npm run build
-cd ..
+
+# 2. Build all packages
+cd core && npm run build && cd ..
+cd cli && npm run build && cd ..
+cd mcp && npm run build && cd ..
+
+# 3. Install the CLI
+cd cli && npm link && cd ..
+
+# 4. Verify
+mustard --help
 ```
 
-### 2. Connect an MCP client
+The database is created automatically at `data/mustard.db` on first use. Override with `MUSTARD_DB=/path/to/db`.
 
-The MCP server uses STDIO transport. You need to tell your MCP client where `server.js` lives using the **absolute path** on your machine. Find it with:
+## CLI installation
+
+The CLI provides direct read/write access to the mustard knowledge store from any terminal.
+
+```bash
+cd mustard/cli
+npm install
+npm run build
+npm link
+```
+
+Example commands:
+
+```bash
+# Create a record
+mustard create --type todo --text "Review PR #42" --title "PR Review"
+
+# Search records
+mustard search "coaching insights" --type people_note
+
+# List open todos
+mustard list --type todo --status open
+
+# Daily summary
+mustard daily
+
+# Get a record by ID
+mustard get <uuid>
+
+# Link two records
+mustard link <source-id> <target-id> --relation assigned_to
+```
+
+Run `mustard <command> --help` for command-specific options.
+
+## MCP server setup
+
+The MCP server uses STDIO transport. Tell your MCP client the **absolute path** to `server.js`:
 
 ```bash
 echo "$(pwd)/mcp/dist/server.js"
 ```
 
-Then add the mustard server to your MCP client config. Replace `/absolute/path/to/mustard` with your actual path in the examples below.
+Replace `/absolute/path/to/mustard` in the configs below.
 
 **Claude Desktop** — edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
@@ -48,7 +92,7 @@ Then add the mustard server to your MCP client config. Replace `/absolute/path/t
 ```
 Then **quit and relaunch** Claude Desktop (Cmd+Q, not just close the window).
 
-**Claude Code** — edit `.mcp.json` in your project root (the directory you run `claude` from):
+**Claude Code** — edit `.mcp.json` in your project root:
 ```json
 {
   "mcpServers": {
@@ -59,7 +103,7 @@ Then **quit and relaunch** Claude Desktop (Cmd+Q, not just close the window).
   }
 }
 ```
-Then restart Claude Code. Run `/mcp` to verify the mustard server shows as connected.
+Then restart Claude Code. Run `/mcp` to verify.
 
 **Cursor** — edit `~/.cursor/mcp.json`:
 ```json
@@ -74,29 +118,28 @@ Then restart Claude Code. Run `/mcp` to verify the mustard server shows as conne
 ```
 Then restart Cursor.
 
-> **Troubleshooting:** If the server shows as "failed", verify the path is correct with `node /absolute/path/to/mustard/mcp/dist/server.js` — it should print "Mustard MCP server running on stdio". If you get a module error, run `cd mcp && npm install && npm run build`.
+> **Troubleshooting:** If the server shows as "failed", verify with `node /absolute/path/to/mustard/mcp/dist/server.js` — it should print "Mustard MCP server running on stdio". If you get a module error, run `cd mcp && npm install && npm run build`.
 
-### 3. Install the TUI (optional)
+## TUI installation (optional)
 
-The terminal UI lets you browse records directly.
+The terminal UI lets you browse records in an arrow-key interface.
 
 ```bash
-# From the mustard root directory:
-cd tui
+cd mustard/tui
 npm link
 ```
 
-This installs the `mustard` command globally. Run it from any terminal:
+This installs the `mtui` command globally:
 
 ```bash
-mustard
+mtui
 ```
 
-> **Note:** `npm link` creates a global symlink. If you move the mustard directory, run `npm link` again from `tui/`.
+> **Note:** If you had the old `mustard` TUI command, run `npm unlink -g mustard-tui` first to remove it.
 
-### 4. Database
+## Database
 
-The MCP server creates `data/mustard.db` automatically on first use. If you have an existing database, place it at `data/mustard.db` or set the `MUSTARD_DB` environment variable to point to it.
+The MCP server and CLI create `data/mustard.db` automatically on first use. If you have an existing database, place it at `data/mustard.db` or set `MUSTARD_DB`.
 
 ## Architecture
 
