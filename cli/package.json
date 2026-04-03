@@ -1,0 +1,23 @@
+{
+  "name": "mustard-cli",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "CLI for the Mustard personal knowledge store",
+  "bin": {
+    "mustard": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "mustard-core": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2"
+  }
+}
