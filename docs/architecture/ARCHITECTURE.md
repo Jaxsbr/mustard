@@ -111,16 +111,37 @@ FTS5 virtual table indexes: title, text, person, tags, source_url. Triggers auto
 | project_summary | Structured project overview (team, todos, activity, ideas) |
 | daily_summary | Daily overview (overdue, due today, open, logs, recent) |
 
-## Backup infrastructure
+## Reliability infrastructure
 
-Daily automated backups via launchd (macOS) or cron.
+### FTS5 health check
+
+The MCP server runs `checkFtsHealth()` on every startup (called at the end of `initSchema`). This exists because `PRAGMA integrity_check` does not validate FTS5 virtual table internals — the INC-2026-04-02 incident passed integrity checks despite corrupt FTS.
+
+The health check:
+1. Attempts a `SELECT rowid FROM records_fts LIMIT 1` query
+2. If the query succeeds, FTS is healthy — no action needed
+3. If the query fails, drops and recreates the FTS table, rebuilds triggers, and repopulates from the `records` table
+4. If the rebuild also fails, logs the error and continues (search unavailable, but writes work)
+
+FTS is derived data — it can always be rebuilt from the `records` table without data loss.
+
+### Daily backup
+
+Automated backups via launchd (macOS) or cron.
 
 1. **WAL checkpoint** — flushes write-ahead log for consistent snapshot
 2. **Copy** — timestamped backup to `data/backups/`
 3. **Verify** — integrity check + non-zero record count
 4. **Prune** — delete backups older than 7 days
 
-See the setup guide below for configuration.
+### Recovery runbook
+
+`data/docs/RECOVERY.md` documents step-by-step procedures for three failure scenarios:
+1. **FTS corruption** (most common) — records intact, rebuild FTS in place
+2. **Full B-tree corruption** — restore from daily backup
+3. **No backup available** — selective export/import without carrying FTS corruption
+
+See the setup guide below for backup configuration.
 
 ## Setup guide
 

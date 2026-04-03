@@ -257,6 +257,7 @@ export function initSchema(db: Database.Database): void {
   }
 
   createFtsTriggers(db)
+  checkFtsHealth(db)
 }
 
 function createFtsTriggers(db: Database.Database): void {
@@ -286,6 +287,47 @@ function createFtsTriggers(db: Database.Database): void {
 
 export function rebuildFts(db: Database.Database): void {
   db.exec("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
+}
+
+/**
+ * FTS5 health check — runs on every MCP startup.
+ *
+ * PRAGMA integrity_check does NOT validate FTS5 virtual table internals
+ * (see INC-2026-04-02). This function performs an actual FTS query to
+ * verify the index is readable, and auto-rebuilds if corrupt.
+ *
+ * FTS is derived data — safe to rebuild from the records table at any time.
+ */
+export function checkFtsHealth(db: Database.Database): void {
+  try {
+    // Attempt a real FTS query — this is what actually fails when the index is corrupt
+    db.prepare("SELECT rowid FROM records_fts LIMIT 1").get()
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error(`[mustard] FTS5 health check failed: ${message}`)
+    console.error('[mustard] Rebuilding FTS5 index from records table...')
+
+    try {
+      // Drop and recreate — rebuild alone may fail on a badly corrupt index
+      db.exec('DROP TABLE IF EXISTS records_fts')
+      db.exec(`
+        CREATE VIRTUAL TABLE records_fts USING fts5(
+          title, text, person, tags, source_url,
+          content='records', content_rowid='rowid'
+        );
+      `)
+      createFtsTriggers(db)
+      rebuildFts(db)
+
+      // Verify the rebuild worked
+      const count = db.prepare("SELECT count(*) as n FROM records").get() as { n: number }
+      console.error(`[mustard] FTS5 index rebuilt successfully (${count.n} records indexed)`)
+    } catch (rebuildErr) {
+      const rebuildMessage = rebuildErr instanceof Error ? rebuildErr.message : String(rebuildErr)
+      console.error(`[mustard] FTS5 rebuild failed: ${rebuildMessage}`)
+      console.error('[mustard] Search will be unavailable. See data/docs/RECOVERY.md for manual recovery.')
+    }
+  }
 }
 
 export function closeDb(): void {

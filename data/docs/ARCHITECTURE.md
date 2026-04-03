@@ -68,5 +68,23 @@ sqlite3 mustard.db "SELECT count(*) FROM records;"
 ### Known limitations
 
 - **Not crash-safe during copy.** If a writer is active and WAL checkpoint fails, the backup may include a stale WAL state. In practice this is low-risk at 06:00 with no active sessions.
-- **`integrity_check` does not cover FTS5.** The same false-positive from INC-2026-04-02 applies. A corrupted FTS index will pass `integrity_check`. A future improvement could add `INSERT INTO records_fts(records_fts) VALUES('integrity-check')` to validate FTS separately.
+- **`integrity_check` does not cover FTS5.** The same false-positive from INC-2026-04-02 applies. A corrupted FTS index will pass `integrity_check`. The MCP server now runs an FTS-specific health check on startup (see below) but the backup script does not.
 - **Local only.** Backups live on the same disk as the database. A disk failure loses both. Consider cloud sync or off-machine copy as a future enhancement.
+
+## FTS5 health check
+
+Added after INC-2026-04-02. The MCP server runs `checkFtsHealth()` on every startup as the final step of `initSchema()`.
+
+1. Attempts a `SELECT rowid FROM records_fts LIMIT 1` query against the FTS index
+2. If it succeeds — FTS is healthy, no action
+3. If it fails — drops the FTS table, recreates it with the current schema, rebuilds triggers, and repopulates from the `records` table
+4. If the rebuild also fails — logs the error to stderr, server continues with search unavailable
+
+FTS is a derived index. It can always be rebuilt from the `records` table without data loss.
+
+## Recovery runbook
+
+See [RECOVERY.md](./RECOVERY.md) for step-by-step procedures covering:
+1. **FTS corruption** (most common) — rebuild FTS in place
+2. **Full B-tree corruption** — restore from daily backup
+3. **No backup available** — selective export/import avoiding FTS carry-through

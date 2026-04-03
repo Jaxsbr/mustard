@@ -10,7 +10,7 @@ MCP server for the Mustard personal knowledge store. Exposes todos, people notes
 mcp/                    -- (subdirectory of mustard monorepo)
 ├── src/
 │   ├── server.ts       -- MCP server setup, tool registration, STDIO transport
-│   ├── db.ts           -- SQLite connection, schema init, FTS triggers, links table
+│   ├── db.ts           -- SQLite connection, schema init, FTS triggers, FTS health check, links table
 │   ├── tools/
 │   │   ├── search.ts   -- search_records (FTS5), list_records (browse)
 │   │   ├── crud.ts     -- get_record, create_record, update_record, delete_record
