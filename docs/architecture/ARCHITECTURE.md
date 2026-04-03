@@ -20,8 +20,6 @@ Mustard MCP Server (TypeScript)    Mustard CLI (TypeScript)    Mustard TUI (Node
                                 └── records_fts (FTS5 full-text search)
 ```
 
-> **Planned for `consumer-integration` phase:** CLI package added as a new core consumer. MCP migrated from inline SQL to core imports. TUI command renamed from `mustard` to `mtui`.
-
 See `mustard.flow.yaml` in this directory for the visual flow-mo diagram. **Update `mustard.flow.yaml` when adding modules, tools, or data flows.**
 
 ## Monorepo structure
@@ -40,7 +38,7 @@ mustard/
 │   ├── tests/          — Vitest test suite
 │   ├── dist/           — (gitignored) compiled output
 │   └── package.json
-├── cli/                — CLI binary (planned for consumer-integration phase)
+├── cli/                — CLI binary (`mustard` command)
 │   ├── src/
 │   │   └── index.ts    — Entry point, subcommand dispatcher, terminal formatting
 │   ├── dist/           — (gitignored) compiled output
@@ -52,9 +50,9 @@ mustard/
 │   └── docs/           — data-layer documentation, incident reports
 ├── mcp/                — TypeScript MCP server
 │   ├── src/
-│   │   ├── server.ts   — MCP server setup, tool registration, STDIO transport
-│   │   ├── db.ts       — SQLite connection, schema init, FTS triggers, migrations
-│   │   └── tools/      — Tool implementations (crud, search, links, context, summary)
+│   │   ├── server.ts   — MCP server setup, tool registration (imports core), STDIO transport
+│   │   ├── format.ts   — Converts core typed objects to MCP markdown responses
+│   │   └── migrate.ts  — YAML-to-SQLite migration utility
 │   ├── tests/          — Vitest test suite
 │   ├── dist/           — (gitignored) compiled output
 │   ├── package.json
@@ -245,13 +243,13 @@ cd mustard/tui
 npm link
 ```
 
-This installs the `mustard` command globally. Run from any terminal:
+This installs the `mtui` command globally. Run from any terminal:
 
 ```bash
-mustard
+mtui
 ```
 
-> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`.
+> **Note:** `npm link` creates a symlink. If you move the mustard directory, run `npm link` again from `tui/`. If you had the old `mustard` TUI command, run `npm unlink -g mustard-tui` first.
 
 ### 4. Database
 

@@ -7,6 +7,10 @@ Monorepo that consolidates the existing mustard-{function} projects (mustard-dat
 
 ```
 mustard/
+├── cli/                — CLI binary (`mustard` command, TypeScript)
+│   ├── src/            — index.ts (entry point, subcommand dispatcher)
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json    — mustard-cli package
 ├── core/               — Shared data-access library (TypeScript)
 │   ├── src/            — db, types, records, search, links, context, summary
 │   ├── tests/          — Vitest test suite (53 tests)
@@ -16,7 +20,7 @@ mustard/
 │   ├── backup.sh       — Daily backup (WAL checkpoint, copy, verify, prune)
 │   └── docs/           — Data-layer architecture and incident reports
 ├── mcp/                — TypeScript MCP server (11 tools)
-│   ├── src/            — Server, db, tools/ (search, crud, links, context, summary)
+│   ├── src/            — server.ts, format.ts, migrate.ts
 │   ├── tests/          — Vitest test suite
 │   ├── dist/           — (gitignored) compiled output
 │   └── AGENTS.md       — MCP-specific agent rules
@@ -37,10 +41,11 @@ mustard/
 
 | Module | Role | DB access | Language |
 |---|---|---|---|
+| **cli** | Shell interface — subcommands for all mustard operations, used by humans and scheduled agents | Read/write (via core) | TypeScript |
 | **core** | Shared data-access library — db, schema, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — SQLite database and backup infrastructure | N/A (is the database) | Bash |
-| **mcp** | MCP server — 11 tools for CRUD, search, linking, context, summaries | Read/write | TypeScript |
-| **tui** | Terminal browser — tabs per record type, detail views | Read-only (via core) | JavaScript (Node.js) |
+| **mcp** | MCP server — 11 tools via STDIO, imports core for data operations | Read/write (via core) | TypeScript |
+| **tui** | Terminal browser — `mtui` command, tabs per record type, detail views | Read-only (via core) | JavaScript (Node.js) |
 
 ## Documentation
 
