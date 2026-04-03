@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 3
-  next_task: null
+  next_task: "[US-I3] Rename TUI bin from mustard to mtui in tui/package.json"
   last_result: pass
   consecutive_fails: 0
 
