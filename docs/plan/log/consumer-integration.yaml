@@ -38,6 +38,14 @@ entries:
     result: pass
     timestamp: "2026-04-03T04:42:00Z"
     tokens: ~10000
+  - task: 6
+    story: US-I2
+    type: implement
+    description: "Created format.ts (12 functions bridging core typed objects to same markdown output). Rewrote server.ts to import from mustard-core + format.ts. Updated migrate.ts to import from core. Deleted mcp/src/tools/ (5 files) and mcp/src/db.ts. Removed better-sqlite3/crypto-js/drizzle-orm/uuid from MCP deps. Updated test imports with adapter functions. All 146 tests pass."
+    result: pass
+    notes: "✓ US-I2 complete"
+    timestamp: "2026-04-03T04:47:00Z"
+    tokens: ~20000
   - task: 4
     story: US-I1
     type: gate

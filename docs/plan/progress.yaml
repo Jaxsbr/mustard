@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 6
-  next_task: "[US-I2] Create mcp/src/format.ts with formatting functions that produce the same markdown output as current tools"
+  task_number: 7
+  next_task: "[US-I4] Update README, ARCHITECTURE.md, AGENTS.md, and thesis with CLI, MCP migration, and TUI rename documentation"
   last_result: pass
   consecutive_fails: 0
 
