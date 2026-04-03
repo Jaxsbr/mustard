@@ -31,3 +31,11 @@ entries:
     result: pass
     timestamp: "2026-04-03T02:03:00Z"
     tokens: ~1000
+  - task: 3
+    story: US-C2
+    type: implement
+    description: "Created types.ts (RecordRow, LinkedRecord, all param interfaces, VALID_LOG_TYPES, DEFAULT_STATUS), records.ts (CRUD returning typed objects, throws on invalid input), search.ts (searchRecords → RecordRow[], listRecords → {records, total}), links.ts (linkRecords → {id,source_id,target_id,relation}, unlinkRecords → {changes}), context.ts (getContext → {anchors, linked}), summary.ts (dailySummary, projectSummary → structured data). Updated index.ts barrel."
+    result: pass
+    notes: "✓ US-C2 complete"
+    timestamp: "2026-04-03T02:06:00Z"
+    tokens: ~10000

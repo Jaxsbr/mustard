@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 3
-  next_task: "[US-C2] Implement core/src/types.ts and core/src/records.ts — define shared interfaces (RecordRow, CreateParams, UpdateParams), extract CRUD operations returning typed data objects instead of formatted strings"
+  task_number: 4
+  next_task: "[US-C3] Implement core test suite — create core/tests/ with vitest tests for db, records, search, links, context, summary against temp databases"
   last_result: pass
   consecutive_fails: 0
 

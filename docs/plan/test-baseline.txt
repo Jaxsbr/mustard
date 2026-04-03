@@ -12,8 +12,8 @@
 
  Test Files  1 passed (1)
       Tests  91 passed (91)
-   Start at  15:02:53
-   Duration  176ms (transform 43ms, setup 0ms, import 58ms, tests 51ms, environment 0ms)
+   Start at  15:06:07
+   Duration  161ms (transform 43ms, setup 0ms, import 57ms, tests 42ms, environment 0ms)
 
 PASS: getRecords("todo") returns 1 record
 PASS: getRecords("people_note") returns 1 record
