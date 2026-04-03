@@ -9,3 +9,10 @@ entries:
     result: pass
     timestamp: "2026-04-03T04:26:05Z"
     tokens: ~10000
+  - task: 1
+    story: US-I1
+    type: investigate
+    description: "Reviewed core API (13 functions, all param interfaces exported), core/tui tsconfig patterns, TUI bin config (currently claims 'mustard' name). Plan: use Node.js built-in parseArgs, mirror core tsconfig, all 11 subcommands as thin wrappers over core."
+    result: pass
+    timestamp: "2026-04-03T04:30:00Z"
+    tokens: ~5000

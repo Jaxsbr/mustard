@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 1
-  next_task: "[US-I1] Investigate: review core API surface, tsconfig patterns, and TUI bin config to plan CLI package scaffold"
+  task_number: 2
+  next_task: "[US-I1] Create CLI package scaffold — package.json, tsconfig.json, entry point with subcommand dispatcher and all 11 subcommands calling core functions"
   last_result: pass
   consecutive_fails: 0
 
