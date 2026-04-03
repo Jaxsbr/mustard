@@ -54,3 +54,11 @@ entries:
     result: pass
     timestamp: "2026-04-03T02:12:00Z"
     tokens: ~3000
+  - task: 6
+    story: US-C4
+    type: implement
+    description: "Migrated TUI: replaced createRequire hack with mustard-core import in db.js and tests/db.test.js. Added mustard-core as workspace dependency. Updated README and ARCHITECTURE.md to remove MCP dependency notes. All 146 tests pass."
+    result: pass
+    notes: "✓ US-C4 complete"
+    timestamp: "2026-04-03T02:14:00Z"
+    tokens: ~5000

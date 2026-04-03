@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 6
-  next_task: "[US-C4] Implement TUI migration — replace createRequire hack with mustard-core import in tui/src/db.js and tui/tests/db.test.js, add workspace dependency"
+  task_number: 7
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
