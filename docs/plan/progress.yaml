@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 5
-  next_task: "[US-I2] Investigate: read MCP server.ts and all tools to plan migration to core imports"
+  task_number: 6
+  next_task: "[US-I2] Create mcp/src/format.ts with formatting functions that produce the same markdown output as current tools"
   last_result: pass
   consecutive_fails: 0
 

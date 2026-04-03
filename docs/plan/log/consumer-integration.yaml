@@ -31,6 +31,13 @@ entries:
     notes: "✓ US-I3 complete"
     timestamp: "2026-04-03T04:37:00Z"
     tokens: ~3000
+  - task: 5
+    story: US-I2
+    type: investigate
+    description: "Read server.ts (262 lines), all 5 tool files, db.ts (341 lines), package.json. Tools return formatted markdown; core returns typed objects. Plan: create format.ts to bridge, rewrite server.ts to import core + format, delete tools/ and db.ts, remove better-sqlite3 from MCP deps. Also clean up unused deps (crypto-js, drizzle-orm, uuid, yaml)."
+    result: pass
+    timestamp: "2026-04-03T04:42:00Z"
+    tokens: ~10000
   - task: 4
     story: US-I1
     type: gate
