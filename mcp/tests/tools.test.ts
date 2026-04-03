@@ -1,17 +1,107 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import Database from 'better-sqlite3'
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
-import { initSchema, rebuildFts } from '../src/db.js'
-import { searchRecords, listRecords } from '../src/tools/search.js'
-import { getRecord, createRecord, updateRecord, deleteRecord } from '../src/tools/crud.js'
-import { linkRecords, unlinkRecords } from '../src/tools/links.js'
-import { getContext, projectSummary } from '../src/tools/context.js'
-import { dailySummary } from '../src/tools/summary.js'
+import {
+  getDb, initSchema, rebuildFts,
+  getRecord as coreGetRecord,
+  createRecord as coreCreateRecord,
+  updateRecord as coreUpdateRecord,
+  deleteRecord as coreDeleteRecord,
+  searchRecords as coreSearchRecords,
+  listRecords as coreListRecords,
+  linkRecords as coreLinkRecords,
+  unlinkRecords as coreUnlinkRecords,
+  getContext as coreGetContext,
+  dailySummary as coreDailySummary,
+  projectSummary as coreProjectSummary,
+  type Database,
+} from 'mustard-core'
+import {
+  formatGetRecord, formatCreateRecord, formatUpdateRecord, formatDeleteRecord,
+  formatSearchResults, formatListResults,
+  formatLinkResult, formatUnlinkResult,
+  formatContext, formatDailySummary, formatProjectSummary,
+} from '../src/format.js'
 
 const TEST_DB_PATH = path.join(os.tmpdir(), `mustard-test-${Date.now()}.db`)
 let db: Database.Database
+
+// Adapter functions — match the old string-returning signatures for test compatibility
+function searchRecords(database: Database.Database, params: { query: string; type?: string; person?: string; status?: string; limit?: number }): string {
+  return formatSearchResults(coreSearchRecords(database, params), params.query)
+}
+
+function listRecords(database: Database.Database, params: { type?: string; person?: string; status?: string; delegate?: string | null; sort?: 'newest' | 'oldest'; limit?: number }): string {
+  const { records, total } = coreListRecords(database, params)
+  return formatListResults(records, total, params)
+}
+
+function getRecord(database: Database.Database, id: string): string {
+  return formatGetRecord(coreGetRecord(database, id), id)
+}
+
+function createRecord(database: Database.Database, params: { log_type: string; text: string; title?: string | null; person?: string | null; status?: string | null; due_date?: string | null; category?: string | null; theme?: string | null; period?: string | null; tags?: string[]; source_url?: string | null; delegate?: string | null }): string {
+  try {
+    return formatCreateRecord(coreCreateRecord(database, params))
+  } catch (err) {
+    return err instanceof Error ? err.message : String(err)
+  }
+}
+
+function updateRecord(database: Database.Database, params: { id: string; text?: string; title?: string | null; person?: string | null; status?: string | null; due_date?: string | null; category?: string | null; theme?: string | null; period?: string | null; tags?: string[]; source_url?: string | null; delegate?: string | null }): string {
+  try {
+    const { id, ...rest } = params
+    const hasUpdates = Object.values(rest).some(v => v !== undefined)
+    if (!hasUpdates) return 'No fields to update.'
+    return formatUpdateRecord(coreUpdateRecord(database, params))
+  } catch (err) {
+    return err instanceof Error ? err.message : String(err)
+  }
+}
+
+function deleteRecord(database: Database.Database, id: string): string {
+  try {
+    return formatDeleteRecord(coreDeleteRecord(database, id))
+  } catch (err) {
+    return err instanceof Error ? err.message : String(err)
+  }
+}
+
+function linkRecords(database: Database.Database, params: { source_id: string; target_id: string; relation: string }): string {
+  try {
+    const sourceRec = coreGetRecord(database, params.source_id)
+    const targetRec = coreGetRecord(database, params.target_id)
+    const sourceLabel = sourceRec ? (sourceRec.title ?? sourceRec.log_type) : params.source_id
+    const targetLabel = targetRec ? (targetRec.title ?? targetRec.log_type) : params.target_id
+
+    const existed = !!database.prepare('SELECT 1 FROM links WHERE source_id = ? AND target_id = ? AND relation = ?')
+      .get(params.source_id, params.target_id, params.relation)
+
+    const link = coreLinkRecords(database, params)
+    return formatLinkResult(link, sourceLabel, targetLabel, existed)
+  } catch (err) {
+    return err instanceof Error ? err.message : String(err)
+  }
+}
+
+function unlinkRecords(database: Database.Database, params: { source_id: string; target_id: string; relation: string }): string {
+  const { changes } = coreUnlinkRecords(database, params)
+  return formatUnlinkResult(changes, params)
+}
+
+function getContext(database: Database.Database, params: { record_id?: string; person?: string; project?: string; since?: string; depth?: number; limit?: number }): string {
+  const result = coreGetContext(database, params)
+  return formatContext(result.anchors, result.linked)
+}
+
+function dailySummary(database: Database.Database, date?: string): string {
+  return formatDailySummary(coreDailySummary(database, date))
+}
+
+function projectSummary(database: Database.Database, params: { record_id?: string; title?: string; reference_date?: string }): string {
+  return formatProjectSummary(coreProjectSummary(database, params), params)
+}
 
 function seedTestData(database: Database.Database): void {
   const insert = database.prepare(`
@@ -40,9 +130,7 @@ function seedTestData(database: Database.Database): void {
 }
 
 beforeAll(() => {
-  db = new Database(TEST_DB_PATH)
-  db.pragma('journal_mode = WAL')
-  db.pragma('foreign_keys = ON')
+  db = getDb(TEST_DB_PATH)
   initSchema(db)
   seedTestData(db)
 })
@@ -749,9 +837,7 @@ describe('project_summary', () => {
 describe('migration — project type on old schema', () => {
   it('migrates an existing DB without project in CHECK and preserves data', () => {
     const migrationDbPath = path.join(os.tmpdir(), `mustard-migration-${Date.now()}.db`)
-    const migrationDb = new Database(migrationDbPath)
-    migrationDb.pragma('journal_mode = WAL')
-    migrationDb.pragma('foreign_keys = ON')
+    const migrationDb = getDb(migrationDbPath)
 
     // Create OLD schema (without 'project')
     migrationDb.exec(`
@@ -813,9 +899,7 @@ describe('migration — project type on old schema', () => {
 
   it('initSchema is idempotent — running twice does not error or lose data', () => {
     const idempotentDbPath = path.join(os.tmpdir(), `mustard-idempotent-${Date.now()}.db`)
-    const idempotentDb = new Database(idempotentDbPath)
-    idempotentDb.pragma('journal_mode = WAL')
-    idempotentDb.pragma('foreign_keys = ON')
+    const idempotentDb = getDb(idempotentDbPath)
 
     // First run
     initSchema(idempotentDb)
@@ -1015,9 +1099,7 @@ describe('delegate field', () => {
 describe('migration — learning type + new columns on old schema', () => {
   it('migrates old schema to include learning type and new columns', () => {
     const migrationDbPath = path.join(os.tmpdir(), `mustard-learning-mig-${Date.now()}.db`)
-    const migrationDb = new Database(migrationDbPath)
-    migrationDb.pragma('journal_mode = WAL')
-    migrationDb.pragma('foreign_keys = ON')
+    const migrationDb = getDb(migrationDbPath)
 
     // Create old schema (with project but without learning/source_url/delegate)
     migrationDb.exec(`
@@ -1082,9 +1164,7 @@ describe('migration — learning type + new columns on old schema', () => {
 
   it('initSchema is idempotent with new schema', () => {
     const dbPath2 = path.join(os.tmpdir(), `mustard-idem2-${Date.now()}.db`)
-    const iDb = new Database(dbPath2)
-    iDb.pragma('journal_mode = WAL')
-    iDb.pragma('foreign_keys = ON')
+    const iDb = getDb(dbPath2)
 
     initSchema(iDb)
     iDb.prepare(`

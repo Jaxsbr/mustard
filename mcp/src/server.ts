@@ -1,19 +1,32 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
-import { getDb, initSchema } from './db.js'
-import { searchRecords, listRecords } from './tools/search.js'
-import { getRecord, createRecord, updateRecord, deleteRecord } from './tools/crud.js'
-import { linkRecords, unlinkRecords } from './tools/links.js'
-import { getContext, projectSummary } from './tools/context.js'
-import { dailySummary } from './tools/summary.js'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  getDb, initSchema,
+  getRecord, createRecord, updateRecord, deleteRecord,
+  searchRecords, listRecords,
+  linkRecords, unlinkRecords,
+  getContext, dailySummary, projectSummary,
+} from 'mustard-core'
+import {
+  formatGetRecord, formatCreateRecord, formatUpdateRecord, formatDeleteRecord,
+  formatSearchResults, formatListResults,
+  formatLinkResult, formatUnlinkResult,
+  formatContext, formatDailySummary, formatProjectSummary,
+} from './format.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const monorepoRoot = path.resolve(__dirname, '..', '..')
+const dbPath = process.env.MUSTARD_DB || path.join(monorepoRoot, 'data', 'mustard.db')
 
 const server = new McpServer({
   name: 'mustard',
   version: '1.0.0',
 })
 
-const db = getDb()
+const db = getDb(dbPath)
 initSchema(db)
 
 server.tool(
@@ -36,8 +49,8 @@ server.tool(
       .describe('Max results to return (default 10)'),
   },
   async ({ query, type, person, status, limit }) => {
-    const result = searchRecords(db, { query, type, person, status, limit })
-    return { content: [{ type: 'text', text: result }] }
+    const results = searchRecords(db, { query, type, person, status, limit })
+    return { content: [{ type: 'text' as const, text: formatSearchResults(results, query) }] }
   },
 )
 
@@ -69,8 +82,8 @@ server.tool(
       .describe('Max results (default 25)'),
   },
   async ({ type, person, status, delegate, sort, limit }) => {
-    const result = listRecords(db, { type, person, status, delegate, sort, limit })
-    return { content: [{ type: 'text', text: result }] }
+    const { records, total } = listRecords(db, { type, person, status, delegate, sort, limit })
+    return { content: [{ type: 'text' as const, text: formatListResults(records, total, { type, person, status }) }] }
   },
 )
 
@@ -81,8 +94,8 @@ server.tool(
     id: z.string().uuid().describe('Record UUID'),
   },
   async ({ id }) => {
-    const result = getRecord(db, id)
-    return { content: [{ type: 'text', text: result }] }
+    const record = getRecord(db, id)
+    return { content: [{ type: 'text' as const, text: formatGetRecord(record, id) }] }
   },
 )
 
@@ -110,8 +123,13 @@ server.tool(
       .describe('Delegation mode: null (human), "agent" (automated), "assisted" (agent prep, human review)'),
   },
   async (params) => {
-    const result = createRecord(db, params)
-    return { content: [{ type: 'text', text: result }] }
+    try {
+      const record = createRecord(db, { ...params, source_origin: 'mustard-mcp' })
+      return { content: [{ type: 'text' as const, text: formatCreateRecord(record) }] }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return { content: [{ type: 'text' as const, text: message }] }
+    }
   },
 )
 
@@ -137,8 +155,17 @@ server.tool(
       .describe('Delegation mode (null to clear)'),
   },
   async ({ id, ...rest }) => {
-    const result = updateRecord(db, { id, ...rest })
-    return { content: [{ type: 'text', text: result }] }
+    try {
+      const hasUpdates = Object.values(rest).some(v => v !== undefined)
+      if (!hasUpdates) {
+        return { content: [{ type: 'text' as const, text: 'No fields to update.' }] }
+      }
+      const record = updateRecord(db, { id, ...rest })
+      return { content: [{ type: 'text' as const, text: formatUpdateRecord(record) }] }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return { content: [{ type: 'text' as const, text: message }] }
+    }
   },
 )
 
@@ -149,8 +176,13 @@ server.tool(
     id: z.string().uuid().describe('Record UUID to delete'),
   },
   async ({ id }) => {
-    const result = deleteRecord(db, id)
-    return { content: [{ type: 'text', text: result }] }
+    try {
+      const deleted = deleteRecord(db, id)
+      return { content: [{ type: 'text' as const, text: formatDeleteRecord(deleted) }] }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return { content: [{ type: 'text' as const, text: message }] }
+    }
   },
 )
 
@@ -168,8 +200,22 @@ server.tool(
       ),
   },
   async ({ source_id, target_id, relation }) => {
-    const result = linkRecords(db, { source_id, target_id, relation })
-    return { content: [{ type: 'text', text: result }] }
+    try {
+      const sourceRec = getRecord(db, source_id)
+      const targetRec = getRecord(db, target_id)
+      const sourceLabel = sourceRec ? (sourceRec.title ?? sourceRec.log_type) : source_id
+      const targetLabel = targetRec ? (targetRec.title ?? targetRec.log_type) : target_id
+
+      // Pre-check for idempotent detection
+      const existed = !!db.prepare('SELECT 1 FROM links WHERE source_id = ? AND target_id = ? AND relation = ?')
+        .get(source_id, target_id, relation)
+
+      const link = linkRecords(db, { source_id, target_id, relation })
+      return { content: [{ type: 'text' as const, text: formatLinkResult(link, sourceLabel, targetLabel, existed) }] }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return { content: [{ type: 'text' as const, text: message }] }
+    }
   },
 )
 
@@ -182,8 +228,8 @@ server.tool(
     relation: z.string().min(1).describe('Relationship type to remove'),
   },
   async ({ source_id, target_id, relation }) => {
-    const result = unlinkRecords(db, { source_id, target_id, relation })
-    return { content: [{ type: 'text', text: result }] }
+    const { changes } = unlinkRecords(db, { source_id, target_id, relation })
+    return { content: [{ type: 'text' as const, text: formatUnlinkResult(changes, { source_id, target_id, relation }) }] }
   },
 )
 
@@ -217,7 +263,7 @@ server.tool(
   },
   async ({ record_id, person, project, since, depth, limit }) => {
     const result = getContext(db, { record_id, person, project, since, depth, limit })
-    return { content: [{ type: 'text', text: result }] }
+    return { content: [{ type: 'text' as const, text: formatContext(result.anchors, result.linked) }] }
   },
 )
 
@@ -230,7 +276,7 @@ server.tool(
   },
   async ({ record_id, title }) => {
     const result = projectSummary(db, { record_id, title })
-    return { content: [{ type: 'text', text: result }] }
+    return { content: [{ type: 'text' as const, text: formatProjectSummary(result, { record_id, title }) }] }
   },
 )
 
@@ -245,7 +291,7 @@ server.tool(
   },
   async ({ date }) => {
     const result = dailySummary(db, date)
-    return { content: [{ type: 'text', text: result }] }
+    return { content: [{ type: 'text' as const, text: formatDailySummary(result) }] }
   },
 )
 
