@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 4
-  next_task: "[US-R2] Implement Terraform configs: REST API v1 with SQS direct integration, API key via usage plan, DLQ, variables, outputs, README"
+  task_number: 5
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 

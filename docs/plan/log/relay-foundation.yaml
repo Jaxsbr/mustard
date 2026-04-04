@@ -38,3 +38,11 @@ entries:
     result: pass
     timestamp: "2026-04-04T05:05:00Z"
     tokens: ~10000
+  - task: 4
+    story: US-R2
+    type: implement
+    description: "Created relay/infra/ — main.tf (REST API v1 + SQS direct integration, no Lambda, API key via usage plan, DLQ maxReceiveCount:3, IAM role), variables.tf (region, queue_name, api_name), outputs.tf (endpoint, key, queue URLs), README.md (deploy + smoke tests). terraform validate passes. .gitignore updated for Terraform state."
+    result: pass
+    notes: "✓ US-R2 complete"
+    timestamp: "2026-04-04T05:06:00Z"
+    tokens: ~12000
