@@ -28,6 +28,15 @@ mustard/
 ├── tui/                — Node.js terminal UI (read-only)
 │   ├── src/            — index.js, db.js, render.js
 │   └── tests/          — Verification tests
+├── relay/              — Relay module (typed message bridge via AWS SQS)
+│   ├── contracts/      — Message envelope types and JSON Schema validators
+│   ├── sync/           — SQS polling daemon and message handlers
+│   │   ├── src/        — index.ts (daemon), dispatcher.ts, handlers/
+│   │   └── tests/      — Vitest test suite
+│   ├── infra/          — Terraform configs (API Gateway + SQS)
+│   ├── app/            — Android capture app (Kotlin, Docker build)
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json    — mustard-relay package
 ├── docs/
 │   ├── architecture/   — ARCHITECTURE.md + flow-mo diagram
 │   ├── product/        — PRD + per-phase specs
@@ -46,6 +55,7 @@ mustard/
 | **core** | Shared data-access library — db, schema, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — SQLite database and backup infrastructure | N/A (is the database) | Bash |
 | **mcp** | MCP server — 11 tools via STDIO, imports core for data operations | Read/write (via core) | TypeScript |
+| **relay** | Message bridge — typed envelope system connecting mobile/external devices to mustard via AWS SQS. Contracts, sync daemon, Android app, Terraform infra. | Read/write (via core) | TypeScript + Kotlin |
 | **tui** | Terminal browser — `mtui` command, tabs per record type, detail views | Read-only (via core) | JavaScript (Node.js) |
 
 ## Documentation

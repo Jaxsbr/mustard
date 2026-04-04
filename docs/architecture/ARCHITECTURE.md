@@ -13,6 +13,12 @@ Mustard MCP Server (TypeScript)    Mustard CLI (TypeScript)    Mustard TUI (Node
   ↓ imports                         ↓ imports                   ↓ imports
   └────────────────────────── Mustard Core (TypeScript) ───────────────┘
                               shared data-access library
+                                        ↑ imports
+                              Relay Sync Daemon (TypeScript)
+                                        ↑ SQS poll
+                              AWS SQS Queue ← API Gateway (REST)
+                                               ↑ POST /message
+                              Android App (Kotlin) / curl / agents
                                         ↓
                               SQLite Database (data/mustard.db)
                                 ├── records table (6 types, unified)
@@ -63,6 +69,13 @@ mustard/
 │   │   ├── db.js       — Imports from mustard-core
 │   │   └── render.js   — Terminal rendering, tab bar, list/detail/expand views
 │   └── package.json
+├── relay/              — Relay module (typed message bridge)
+│   ├── contracts/      — Message envelope types + JSON Schema
+│   ├── sync/           — SQS polling daemon + handlers
+│   ├── infra/          — Terraform configs (API Gateway + SQS)
+│   ├── app/            — Android capture app (Kotlin)
+│   ├── dist/           — (gitignored) compiled output
+│   └── package.json
 ├── docs/
 │   ├── architecture/   — This file + flow-mo diagram
 │   └── product/        — PRD + per-phase specs
@@ -80,6 +93,7 @@ mustard/
 | **core** | Shared data-access library — db connection, schema, validation, CRUD, search, links, context, summaries | Read/write | TypeScript |
 | **data** | Persistence layer — hosts the SQLite database and backup infrastructure | N/A (is the database) | Bash (backup script) |
 | **mcp** | MCP server — thin transport layer over core, exposes 11 tools via STDIO | Read/write (via core) | TypeScript |
+| **relay** | Message bridge — typed envelope system connecting mobile/external devices to mustard via AWS SQS. Contracts define message types, sync daemon polls and dispatches, Android app captures from share sheet. | Read/write (via core) | TypeScript + Kotlin |
 | **tui** | Terminal browser — arrow-key TUI (`mtui` command) with tabs per record type, detail views, text expansion | Read-only (via core) | JavaScript (Node.js) |
 
 ## Data model
@@ -132,6 +146,50 @@ FTS5 virtual table indexes: title, text, person, tags, source_url. Triggers auto
 | get_context | Record + linked records (depth 1-2, date filter, limit) |
 | project_summary | Structured project overview (team, todos, activity, ideas) |
 | daily_summary | Daily overview (overdue, due today, open, logs, recent) |
+
+## Relay infrastructure
+
+The relay module is a typed message bridge that connects mobile devices (and external agents) to mustard through an AWS-hosted cloud queue.
+
+### Data flow
+
+```
+Android App / curl / agent
+  → POST /message (x-api-key header)
+  → API Gateway REST API (API key auth via usage plan)
+  → SQS SendMessage (direct integration, no Lambda)
+  → SQS Queue ←→ Dead-letter queue (after 3 failed receives)
+  ← Sync Daemon polls SQS (configurable interval, default 60s)
+  → Validate against contract schema (Ajv)
+  → Dispatch to registered handler by message type
+  → Handler: create mustard record + queue for research processing
+```
+
+### Message envelope
+
+Every message is a typed `RelayMessage` with `type`, `version`, `payload`, and `metadata`. The dispatcher routes by `type` to registered handlers. Adding a new message type = define contract + JSON schema + write handler.
+
+### Contracts
+
+- `relay/contracts/types.ts` — `RelayMessage` envelope interface
+- `relay/contracts/research-request.ts` — `ResearchRequestPayload` interface
+- `relay/contracts/research-request.schema.json` — JSON Schema (draft-07)
+- `relay/contracts/index.ts` — `CONTRACT_REGISTRY` map with Ajv validators
+
+### Infrastructure
+
+Terraform configs in `relay/infra/` define all AWS resources. REST API v1 is used (not HTTP API v2) because HTTP API v2 does not support API keys/usage plans. See `relay/infra/README.md` for deploy steps.
+
+### Sync daemon
+
+Node.js daemon in `relay/sync/` polls SQS and dispatches messages. Runs as a launchd service (`com.mustard.relay-sync.plist`). Error handling:
+- Malformed JSON / unknown type / schema failure → logged and deleted
+- Handler errors → NOT deleted (retry, eventually moves to DLQ)
+- Network errors → logged, polling continues
+
+### Android app
+
+Minimal Kotlin app in `relay/app/` with share sheet integration. Docker-based build (no Android Studio). API key stored in `local.properties` → `BuildConfig`.
 
 ## Reliability infrastructure
 
