@@ -60,3 +60,11 @@ entries:
     result: pass
     timestamp: "2026-04-04T05:10:00Z"
     tokens: ~3000
+  - task: 6
+    story: US-R3
+    type: implement
+    description: "Created sync daemon — pollOnce() receives SQS messages, validates against CONTRACT_REGISTRY, dispatches to handler, deletes on success. Error handling: malformed JSON/unknown type/schema failure → log+delete; handler throws → don't delete (retry to DLQ); network error → log+continue. LaunchD plist with RunAtLoad+KeepAlive. @aws-sdk/client-sqs added. 7 new tests (14 total relay). 160 total tests pass."
+    result: pass
+    notes: "✓ US-R3 complete"
+    timestamp: "2026-04-04T05:11:00Z"
+    tokens: ~15000

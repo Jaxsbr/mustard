@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 6
-  next_task: "[US-R3] Implement sync daemon: polling loop with SQS receive/delete, schema validation, dispatch, error handling, launchd plist, and end-to-end test"
+  task_number: 7
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
