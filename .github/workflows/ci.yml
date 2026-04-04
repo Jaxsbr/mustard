@@ -4,24 +4,211 @@ on:
   pull_request:
     branches: [main]
 
+# Cancel in-flight runs for the same PR
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
-  ci:
+  # ── Change detection ─────────────────────────────────────────────
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      core: ${{ steps.filter.outputs.core }}
+      cli: ${{ steps.filter.outputs.cli }}
+      mcp: ${{ steps.filter.outputs.mcp }}
+      relay-backend: ${{ steps.filter.outputs.relay-backend }}
+      relay-infra: ${{ steps.filter.outputs.relay-infra }}
+      relay-app: ${{ steps.filter.outputs.relay-app }}
+      tui: ${{ steps.filter.outputs.tui }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            core:
+              - 'core/**'
+            cli:
+              - 'cli/**'
+            mcp:
+              - 'mcp/**'
+            relay-backend:
+              - 'relay/contracts/**'
+              - 'relay/sync/**'
+              - 'relay/package.json'
+              - 'relay/tsconfig.json'
+            relay-infra:
+              - 'relay/infra/**'
+            relay-app:
+              - 'relay/app/**'
+            tui:
+              - 'tui/**'
+
+  # ── Core (TypeScript) ───────────────────────────────────────────
+  core:
+    needs: changes
+    if: needs.changes.outputs.core == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
       - run: npm ci
-
       - name: Typecheck
-        run: npm run typecheck
-
+        run: npm run typecheck -w core
       - name: Build
-        run: npm run build
-
+        run: npm run build -w core
       - name: Test
-        run: npm test
+        run: npm test -w core
+
+  # ── CLI (TypeScript) ────────────────────────────────────────────
+  cli:
+    needs: changes
+    if: needs.changes.outputs.core == 'true' || needs.changes.outputs.cli == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build core (dependency)
+        run: npm run build -w core
+      - name: Typecheck
+        run: npm run typecheck -w cli
+      - name: Build
+        run: npm run build -w cli
+
+  # ── MCP (TypeScript) ────────────────────────────────────────────
+  mcp:
+    needs: changes
+    if: needs.changes.outputs.core == 'true' || needs.changes.outputs.mcp == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build core (dependency)
+        run: npm run build -w core
+      - name: Typecheck
+        run: npm run typecheck -w mcp
+      - name: Build
+        run: npm run build -w mcp
+      - name: Test
+        run: npm test -w mcp
+
+  # ── TUI (JavaScript) ───────────────────────────────────────────
+  tui:
+    needs: changes
+    if: needs.changes.outputs.core == 'true' || needs.changes.outputs.tui == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build core (dependency)
+        run: npm run build -w core
+      - name: Test
+        run: node tui/tests/db.test.js
+
+  # ── Relay backend (TypeScript) ──────────────────────────────────
+  relay-backend:
+    needs: changes
+    if: needs.changes.outputs.core == 'true' || needs.changes.outputs.relay-backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build core (dependency)
+        run: npm run build -w core
+      - name: Typecheck
+        run: npm run typecheck -w relay
+      - name: Build
+        run: npm run build -w relay
+      - name: Test
+        run: npm test -w relay
+
+  # ── Relay infra (Terraform) ────────────────────────────────────
+  relay-infra:
+    needs: changes
+    if: needs.changes.outputs.relay-infra == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.5"
+      - name: Terraform init
+        working-directory: relay/infra
+        run: terraform init -backend=false
+      - name: Terraform format check
+        working-directory: relay/infra
+        run: terraform fmt -check -recursive
+      - name: Terraform validate
+        working-directory: relay/infra
+        run: terraform validate
+
+  # ── Relay app (Android / Kotlin) ────────────────────────────────
+  relay-app:
+    needs: changes
+    if: needs.changes.outputs.relay-app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Build debug APK
+        working-directory: relay/app
+        run: ./gradlew assembleDebug
+
+  # ── CI gate (single required check) ────────────────────────────
+  # This job always runs and is the only required status check.
+  # It passes when all conditional jobs either succeed or are skipped.
+  ci:
+    runs-on: ubuntu-latest
+    needs:
+      - core
+      - cli
+      - mcp
+      - tui
+      - relay-backend
+      - relay-infra
+      - relay-app
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          results=( \
+            "${{ needs.core.result }}" \
+            "${{ needs.cli.result }}" \
+            "${{ needs.mcp.result }}" \
+            "${{ needs.tui.result }}" \
+            "${{ needs.relay-backend.result }}" \
+            "${{ needs.relay-infra.result }}" \
+            "${{ needs.relay-app.result }}" \
+          )
+          for r in "${results[@]}"; do
+            if [[ "$r" != "success" && "$r" != "skipped" ]]; then
+              echo "Job failed or was cancelled: $r"
+              exit 1
+            fi
+          done
+          echo "All checks passed or were skipped."
