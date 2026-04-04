@@ -9,3 +9,10 @@ entries:
     result: pass
     timestamp: "2026-04-04T04:51:10Z"
     tokens: ~15000
+  - task: 1
+    story: US-R1
+    type: investigate
+    description: "Reviewed core types (CreateParams, RecordRow), workspace config (4 packages), monorepo pattern (ESM, vitest, TS 6). Plan: relay/ as single TS package with contracts/ (types + JSON Schema) and sync/src/ (dispatcher + daemon) as siblings. Contracts imported via relative paths. relay added to root workspaces."
+    result: pass
+    timestamp: "2026-04-04T04:56:00Z"
+    tokens: ~8000
