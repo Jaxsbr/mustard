@@ -1,4 +1,3 @@
-// CI verification — remove after confirming checks
 import {
   SQSClient,
   ReceiveMessageCommand,
