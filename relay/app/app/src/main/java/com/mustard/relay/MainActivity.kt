@@ -1,4 +1,4 @@
-package com.jaco.mustardrelay
+package com.mustard.relay
 
 import android.content.Intent
 import android.os.Bundle

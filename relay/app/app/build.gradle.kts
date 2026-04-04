@@ -13,11 +13,11 @@ if (localPropsFile.exists()) {
 }
 
 android {
-    namespace = "com.jaco.mustardrelay"
+    namespace = "com.mustard.relay"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.jaco.mustardrelay"
+        applicationId = "com.mustard.relay"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
