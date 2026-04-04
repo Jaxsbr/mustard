@@ -40,16 +40,16 @@ Build the **relay** module — a typed message bridge inside the mustard monorep
 - [x] Sync daemon deserializes SQS message body with try/catch — malformed JSON is logged and deleted, not retried [US-R3]
 
 #### US-R4 — Android capture app with share sheet
-- [ ] `relay/app/` contains a complete Android project scaffold per `~/dev/.docs/learning/android-app-build-guide-agent.md`: root `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`, and `app/` module with `build.gradle.kts`, `AndroidManifest.xml`, Kotlin source, and XML layout [US-R4]
-- [ ] `AndroidManifest.xml` declares an intent filter for `android.intent.action.SEND` with `mimeType="text/plain"` so the app appears in the Android share sheet [US-R4]
-- [ ] `MainActivity.kt` handles the `SEND` intent: extracts shared text, parses URLs from it, pre-fills the URL field — when shared text contains no recognizable URL, the full text is shown in the URL field for manual editing [US-R4]
-- [ ] Capture form (XML layout) has: URL input field, "Why it's relevant" text area, Send button [US-R4]
-- [ ] Send button POSTs a valid `RelayMessage` JSON (type: `research-request`, version: 1) to the API Gateway endpoint using OkHttp, with `x-api-key` header from `BuildConfig` [US-R4]
-- [ ] API endpoint URL and API key are read from `local.properties` and exposed via `BuildConfig` fields in `build.gradle.kts` — `local.properties` is gitignored [US-R4]
-- [ ] App shows success toast/feedback on 200 response and error message on failure (non-200 or network error) [US-R4]
-- [ ] `relay/app/build.sh` builds a debug APK using Docker (android-sdk image), outputting `app/build/outputs/apk/debug/app-debug.apk` [US-R4]
-- [ ] Input validation: URL field rejects empty values, both fields enforce max length 2000 characters, Send button is disabled until URL is non-empty [US-R4]
-- [ ] Android app: API key stored in `local.properties` → `BuildConfig`, not hardcoded in Kotlin source. `local.properties` is in `.gitignore` [US-R4]
+- [x] `relay/app/` contains a complete Android project scaffold per `~/dev/.docs/learning/android-app-build-guide-agent.md`: root `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`, and `app/` module with `build.gradle.kts`, `AndroidManifest.xml`, Kotlin source, and XML layout [US-R4]
+- [x] `AndroidManifest.xml` declares an intent filter for `android.intent.action.SEND` with `mimeType="text/plain"` so the app appears in the Android share sheet [US-R4]
+- [x] `MainActivity.kt` handles the `SEND` intent: extracts shared text, parses URLs from it, pre-fills the URL field — when shared text contains no recognizable URL, the full text is shown in the URL field for manual editing [US-R4]
+- [x] Capture form (XML layout) has: URL input field, "Why it's relevant" text area, Send button [US-R4]
+- [x] Send button POSTs a valid `RelayMessage` JSON (type: `research-request`, version: 1) to the API Gateway endpoint using OkHttp, with `x-api-key` header from `BuildConfig` [US-R4]
+- [x] API endpoint URL and API key are read from `local.properties` and exposed via `BuildConfig` fields in `build.gradle.kts` — `local.properties` is gitignored [US-R4]
+- [x] App shows success toast/feedback on 200 response and error message on failure (non-200 or network error) [US-R4]
+- [x] `relay/app/build.sh` builds a debug APK using Docker (android-sdk image), outputting `app/build/outputs/apk/debug/app-debug.apk` [US-R4]
+- [x] Input validation: URL field rejects empty values, both fields enforce max length 2000 characters, Send button is disabled until URL is non-empty [US-R4]
+- [x] Android app: API key stored in `local.properties` → `BuildConfig`, not hardcoded in Kotlin source. `local.properties` is in `.gitignore` [US-R4]
 
 #### US-R5 — Research-request contract implementation
 - [ ] `relay/sync/src/handlers/research-request.ts` creates a mustard learning record via `mustard-core` `createRecord` with: `log_type: 'learning'`, `source_origin: 'mustard-relay'`, `source_url` from payload URL, `text` from payload relevance_note, `status: 'captured'`, tags from payload [US-R5]
