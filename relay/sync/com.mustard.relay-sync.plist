@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.mustard.relay-sync</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>/absolute/path/to/mustard/relay/dist/sync/src/index.js</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>RELAY_SQS_QUEUE_URL</key>
+    <string>YOUR_SQS_QUEUE_URL</string>
+    <key>AWS_REGION</key>
+    <string>YOUR_AWS_REGION</string>
+    <key>RELAY_POLL_INTERVAL_MS</key>
+    <string>60000</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/mustard-relay-sync.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/mustard-relay-sync.err</string>
+</dict>
+</plist>
