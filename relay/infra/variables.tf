@@ -1,3 +1,4 @@
+# CI verification — remove after confirming checks
 variable "region" {
   description = "AWS region. Defaults to CLI profile region if omitted."
   type        = string

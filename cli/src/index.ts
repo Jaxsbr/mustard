@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// CI verification — remove after confirming checks
 
 import { parseArgs } from 'node:util'
 import path from 'node:path'

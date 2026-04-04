@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// CI verification — remove after confirming checks
 
 import { openDb, closeDb, getRecords } from './db.js';
 import {
