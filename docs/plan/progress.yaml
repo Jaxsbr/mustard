@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 1
-  next_task: null
+  next_task: "[US-R1] Investigate: review core types, plan relay/ directory structure, contract pattern, and dispatcher design before implementing"
   last_result: pass
   consecutive_fails: 0
 

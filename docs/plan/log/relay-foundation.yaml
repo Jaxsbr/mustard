@@ -1,4 +1,11 @@
 # Phase log: relay-foundation
 # Started: 2026-04-04T04:51:10Z
 
-entries: []
+entries:
+  - task: 0
+    story: phase
+    type: setup
+    description: "Phase start — archived consumer-integration (reconciliation R0-R5 all no-ops, already reconciled in-phase), created build/relay-foundation branch, wrote phase-goal.md with 5 stories (US-R1-R5), 146 tests pass."
+    result: pass
+    timestamp: "2026-04-04T04:51:10Z"
+    tokens: ~15000
