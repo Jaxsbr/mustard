@@ -20,12 +20,12 @@ Build the **relay** module — a typed message bridge inside the mustard monorep
 - [x] Test: dispatcher routes a `research-request` message to the correct handler and throws/logs on unknown type (vitest, `relay/sync/tests/dispatcher.test.ts`) [US-R1]
 
 #### US-R2 — AWS relay queue infrastructure
-- [ ] `relay/infra/main.tf` defines: AWS provider (no hardcoded account/region — uses default CLI profile), SQS standard queue, dead-letter queue (maxReceiveCount: 3), API Gateway HTTP API, POST `/message` route with SQS `SendMessage` direct integration (no Lambda), API key via usage plan, IAM execution role [US-R2]
-- [ ] `relay/infra/variables.tf` declares configurable inputs: `region` (optional, defaults to CLI profile), `queue_name`, `api_name` — no hardcoded account IDs [US-R2]
-- [ ] `relay/infra/outputs.tf` exports: `api_endpoint_url`, `api_key_value`, `sqs_queue_url`, `sqs_dlq_url` [US-R2]
-- [ ] `relay/infra/README.md` documents manual deploy steps: prerequisites (AWS CLI profile configured, Terraform installed), `terraform init`, `terraform plan`, `terraform apply`, and post-deploy smoke tests [US-R2]
-- [ ] Test: `terraform validate` passes on `relay/infra/` (syntax and provider schema check, no AWS credentials required) [US-R2]
-- [ ] Terraform config enforces API key requirement on the POST `/message` route (verified by `terraform validate` + config inspection, live 403 test is a post-deploy smoke test) [US-R2]
+- [x] `relay/infra/main.tf` defines: AWS provider (no hardcoded account/region — uses default CLI profile), SQS standard queue, dead-letter queue (maxReceiveCount: 3), API Gateway REST API (v1 — HTTP API v2 lacks API key support), POST `/message` route with SQS `SendMessage` direct integration (no Lambda), API key via usage plan, IAM execution role [US-R2]
+- [x] `relay/infra/variables.tf` declares configurable inputs: `region` (optional, defaults to CLI profile), `queue_name`, `api_name` — no hardcoded account IDs [US-R2]
+- [x] `relay/infra/outputs.tf` exports: `api_endpoint_url`, `api_key_value`, `sqs_queue_url`, `sqs_dlq_url` [US-R2]
+- [x] `relay/infra/README.md` documents manual deploy steps: prerequisites (AWS CLI profile configured, Terraform installed), `terraform init`, `terraform plan`, `terraform apply`, and post-deploy smoke tests [US-R2]
+- [x] Test: `terraform validate` passes on `relay/infra/` (syntax and provider schema check, no AWS credentials required) [US-R2]
+- [x] Terraform config enforces API key requirement on the POST `/message` route (verified by `terraform validate` + config inspection, live 403 test is a post-deploy smoke test) [US-R2]
 
 #### US-R3 — Sync daemon with SQS polling and dispatch
 - [ ] `relay/sync/src/index.ts` implements a polling loop: receive messages from SQS, validate against contract schema, dispatch to handler, delete from queue on success [US-R3]
