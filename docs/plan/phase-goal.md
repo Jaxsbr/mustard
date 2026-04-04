@@ -60,8 +60,8 @@ Build the **relay** module — a typed message bridge inside the mustard monorep
 - [x] Test: research-request handler creates a mustard learning record (verified via `getRecord`) and writes a pending entry to a test research-queue file (vitest, `relay/sync/tests/handlers/research-request.test.ts`) [US-R5]
 
 #### Phase-level criteria
-- [ ] `relay/` directory structure, module responsibility, and relay data flow are documented in ARCHITECTURE.md (updated at phase completion by reconciliation, not at spec time) [phase]
-- [ ] `AGENTS.md` module table includes `relay` with role description and DB access column [phase]
+- [x] `relay/` directory structure, module responsibility, and relay data flow are documented in ARCHITECTURE.md (updated at phase completion by reconciliation, not at spec time) [phase]
+- [x] `AGENTS.md` module table includes `relay` with role description and DB access column [phase]
 
 ### Golden principles (phase-relevant)
 - **Clarity over complexity** — SQS direct integration (no Lambda), Terraform with plan-before-apply (no one-click deploys), flat contract files, Docker build (no Android Studio), minimal dependencies

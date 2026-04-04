@@ -98,3 +98,16 @@ entries:
     notes: "✓ US-R5 complete"
     timestamp: "2026-04-04T05:19:00Z"
     tokens: ~15000
+  - task: 11
+    story: phase
+    type: implement
+    description: "Updated AGENTS.md (relay in layout + module table) and ARCHITECTURE.md (system diagram with relay data flow, monorepo structure, module table, dedicated relay section). Both phase-level criteria met."
+    result: pass
+    timestamp: "2026-04-04T05:21:00Z"
+    tokens: ~8000
+  - task: 12
+    type: gate
+    description: "Phase Completion Gate — all 40 done-when criteria met across 5 stories (US-R1: 6, US-R2: 6, US-R3: 10, US-R4: 10, US-R5: 6) + 2 phase-level. Verify passes (164 tests: 53 core + 91 mcp + 18 relay + 2 tui). AGENTS.md consistent. Error-path coverage verified."
+    result: pass
+    timestamp: "2026-04-04T05:22:00Z"
+    tokens: ~5000

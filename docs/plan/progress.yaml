@@ -24,12 +24,12 @@ config:
 state:
   # --- Lifecycle (owner: iterator) ---
   phase: relay-foundation
-  phase_complete: false
+  phase_complete: true
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 11
-  next_task: "[phase] Update AGENTS.md and ARCHITECTURE.md with relay module documentation"
+  task_number: 12
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
