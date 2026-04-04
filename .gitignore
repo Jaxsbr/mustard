@@ -29,6 +29,9 @@ core/dist/
 mcp/node_modules/
 mcp/dist/
 tui/node_modules/
+relay/node_modules/
+relay/dist/
+relay/app/local.properties
 
 # Python
 __pycache__/

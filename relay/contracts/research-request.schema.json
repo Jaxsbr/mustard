@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "research-request",
+  "title": "ResearchRequestPayload",
+  "description": "Payload for research-request relay messages",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "relevance_note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["url", "relevance_note"],
+  "additionalProperties": false
+}
