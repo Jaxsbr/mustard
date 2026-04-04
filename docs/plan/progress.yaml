@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 5
-  next_task: "[US-R3] Investigate: review @aws-sdk/client-sqs API, plan sync daemon polling loop, launchd plist, and test mocking strategy"
+  task_number: 6
+  next_task: "[US-R3] Implement sync daemon: polling loop with SQS receive/delete, schema validation, dispatch, error handling, launchd plist, and end-to-end test"
   last_result: pass
   consecutive_fails: 0
 

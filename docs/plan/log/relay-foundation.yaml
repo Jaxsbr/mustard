@@ -53,3 +53,10 @@ entries:
     result: pass
     timestamp: "2026-04-04T05:08:00Z"
     tokens: ~1000
+  - task: 5b
+    story: US-R3
+    type: investigate
+    description: "Planned sync daemon: SQS ReceiveMessage/DeleteMessage via @aws-sdk/client-sqs, setInterval polling with RELAY_POLL_INTERVAL_MS (default 60s). Error strategy: malformed JSON/unknown type/schema failure → log+delete, handler throws → don't delete (retry to DLQ), network errors → log+continue. Tests mock SQS client."
+    result: pass
+    timestamp: "2026-04-04T05:10:00Z"
+    tokens: ~3000
