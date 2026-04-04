@@ -68,3 +68,10 @@ entries:
     notes: "✓ US-R3 complete"
     timestamp: "2026-04-04T05:11:00Z"
     tokens: ~15000
+  - task: 7
+    story: US-R4
+    type: investigate
+    description: "Read android-app-build-guide-agent.md and install guide. Plan: single app module, Kotlin + OkHttp + XML layouts, minSdk 26, SEND intent filter for text/plain, URL parsing from shared text, local.properties → BuildConfig for API key, Docker build via thyrlian/android-sdk."
+    result: pass
+    timestamp: "2026-04-04T05:13:00Z"
+    tokens: ~5000
