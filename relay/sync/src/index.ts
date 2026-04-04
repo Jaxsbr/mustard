@@ -5,7 +5,11 @@ import {
 } from '@aws-sdk/client-sqs'
 import { CONTRACT_REGISTRY } from '../../contracts/index.js'
 import type { RelayMessage } from '../../contracts/types.js'
-import { dispatch } from './dispatcher.js'
+import { dispatch, registerHandler } from './dispatcher.js'
+import { handleResearchRequest } from './handlers/research-request.js'
+
+// Register all handlers
+registerHandler('research-request', handleResearchRequest)
 
 const POLL_INTERVAL = parseInt(process.env.RELAY_POLL_INTERVAL_MS ?? '60000', 10)
 const QUEUE_URL = process.env.RELAY_SQS_QUEUE_URL ?? ''
