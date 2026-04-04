@@ -12,8 +12,8 @@
 
  Test Files  6 passed (6)
       Tests  53 passed (53)
-   Start at  18:13:35
-   Duration  159ms (transform 156ms, setup 0ms, import 263ms, tests 56ms, environment 0ms)
+   Start at  18:17:55
+   Duration  206ms (transform 123ms, setup 0ms, import 231ms, tests 70ms, environment 0ms)
 
 
 > mustard-mcp@1.0.0 test
@@ -25,8 +25,8 @@
 
  Test Files  1 passed (1)
       Tests  91 passed (91)
-   Start at  18:13:35
-   Duration  262ms (transform 81ms, setup 0ms, import 104ms, tests 88ms, environment 0ms)
+   Start at  18:17:55
+   Duration  178ms (transform 48ms, setup 0ms, import 64ms, tests 49ms, environment 0ms)
 
 
 > mustard-relay@1.0.0 test
@@ -36,10 +36,10 @@
  RUN  v4.1.2 /Users/jacobusbrink/dev/mustard/relay
 
 
- Test Files  2 passed (2)
-      Tests  14 passed (14)
-   Start at  18:13:36
-   Duration  205ms (transform 43ms, setup 0ms, import 177ms, tests 9ms, environment 0ms)
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  18:17:56
+   Duration  166ms (transform 83ms, setup 0ms, import 204ms, tests 28ms, environment 0ms)
 
 PASS: getRecords("todo") returns 1 record
 PASS: getRecords("people_note") returns 1 record

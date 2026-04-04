@@ -90,3 +90,11 @@ entries:
     result: pass
     timestamp: "2026-04-04T05:17:00Z"
     tokens: ~5000
+  - task: 10
+    story: US-R5
+    type: implement
+    description: "Created research-request handler — createRecord via core (learning, source_origin: mustard-relay, captured), appends to pulse research-queue.json (pending, source: relay). Graceful fallback on pulse write failure. PULSE_DATA_PATH + MUSTARD_DB configurable. Handler registered in daemon. 4 new tests (18 total relay). 164 total tests pass."
+    result: pass
+    notes: "✓ US-R5 complete"
+    timestamp: "2026-04-04T05:19:00Z"
+    tokens: ~15000
