@@ -6,15 +6,15 @@
   <string>com.mustard.relay-sync</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/opt/homebrew/bin/node</string>
-    <string>/Users/jacobusbrink/dev/mustard/relay/dist/sync/src/index.js</string>
+    <string>/path/to/node</string>
+    <string>/path/to/mustard/relay/dist/sync/src/index.js</string>
   </array>
   <key>EnvironmentVariables</key>
   <dict>
     <key>RELAY_SQS_QUEUE_URL</key>
-    <string>https://sqs.ap-southeast-2.amazonaws.com/331396412564/mustard-relay</string>
+    <string>YOUR_SQS_QUEUE_URL</string>
     <key>AWS_REGION</key>
-    <string>ap-southeast-2</string>
+    <string>YOUR_AWS_REGION</string>
     <key>RELAY_POLL_INTERVAL_MS</key>
     <string>60000</string>
   </dict>
