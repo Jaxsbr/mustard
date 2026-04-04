@@ -28,13 +28,13 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 13
-  next_task: "[review] review-pr pr=6 auto=true"
+  task_number: 14
+  next_task: "[review] handle-pr-review pr=6 auto=true"
   last_result: pass
   consecutive_fails: 0
 
   # --- Review (owner: iterator) ---
-  review_stage: pr_created
+  review_stage: review_posted
   review_complete: false
   pr_number: 6
 
