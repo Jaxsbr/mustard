@@ -12,12 +12,12 @@ Build the **relay** module — a typed message bridge inside the mustard monorep
 ### Done-when (observable)
 
 #### US-R1 — Relay message envelope and contract registry
-- [ ] `relay/contracts/types.ts` exports `RelayMessage` interface with fields: `type` (string), `version` (number), `payload` (generic), `metadata` (object with `id`, `source`, `timestamp`) [US-R1]
-- [ ] `relay/contracts/research-request.ts` exports `ResearchRequestPayload` interface with fields: `url` (string), `relevance_note` (string), `tags` (optional string array) [US-R1]
-- [ ] `relay/contracts/` includes a JSON Schema file per message type (e.g., `research-request.schema.json`) as the language-neutral source of truth — TypeScript types and Android JSON construction both reference this schema [US-R1]
-- [ ] `relay/contracts/index.ts` exports a `CONTRACT_REGISTRY` map from message type string to JSON schema validator, with `research-request` as the first entry [US-R1]
-- [ ] `relay/sync/src/dispatcher.ts` exports a `dispatch` function that routes `RelayMessage.type` to registered handler functions and rejects unknown types with a logged error [US-R1]
-- [ ] Test: dispatcher routes a `research-request` message to the correct handler and throws/logs on unknown type (vitest, `relay/sync/tests/dispatcher.test.ts`) [US-R1]
+- [x] `relay/contracts/types.ts` exports `RelayMessage` interface with fields: `type` (string), `version` (number), `payload` (generic), `metadata` (object with `id`, `source`, `timestamp`) [US-R1]
+- [x] `relay/contracts/research-request.ts` exports `ResearchRequestPayload` interface with fields: `url` (string), `relevance_note` (string), `tags` (optional string array) [US-R1]
+- [x] `relay/contracts/` includes a JSON Schema file per message type (e.g., `research-request.schema.json`) as the language-neutral source of truth — TypeScript types and Android JSON construction both reference this schema [US-R1]
+- [x] `relay/contracts/index.ts` exports a `CONTRACT_REGISTRY` map from message type string to JSON schema validator, with `research-request` as the first entry [US-R1]
+- [x] `relay/sync/src/dispatcher.ts` exports a `dispatch` function that routes `RelayMessage.type` to registered handler functions and rejects unknown types with a logged error [US-R1]
+- [x] Test: dispatcher routes a `research-request` message to the correct handler and throws/logs on unknown type (vitest, `relay/sync/tests/dispatcher.test.ts`) [US-R1]
 
 #### US-R2 — AWS relay queue infrastructure
 - [ ] `relay/infra/main.tf` defines: AWS provider (no hardcoded account/region — uses default CLI profile), SQS standard queue, dead-letter queue (maxReceiveCount: 3), API Gateway HTTP API, POST `/message` route with SQS `SendMessage` direct integration (no Lambda), API key via usage plan, IAM execution role [US-R2]
