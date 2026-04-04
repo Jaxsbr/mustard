@@ -16,3 +16,11 @@ entries:
     result: pass
     timestamp: "2026-04-04T04:56:00Z"
     tokens: ~8000
+  - task: 2
+    story: US-R1
+    type: implement
+    description: "Created relay/ package — contracts/types.ts (RelayMessage envelope), contracts/research-request.ts (payload type), research-request.schema.json (draft-07), contracts/index.ts (CONTRACT_REGISTRY with Ajv validation), sync/src/dispatcher.ts (routes by type, rejects unknown). 7 tests pass. relay added to root workspaces. 153 total tests pass."
+    result: pass
+    notes: "✓ US-R1 complete"
+    timestamp: "2026-04-04T05:00:00Z"
+    tokens: ~15000

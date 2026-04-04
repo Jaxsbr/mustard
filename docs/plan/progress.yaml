@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 2
-  next_task: "[US-R1] Implement relay/ package scaffold with contracts (RelayMessage envelope, ResearchRequestPayload, JSON Schema, CONTRACT_REGISTRY) and dispatcher"
+  task_number: 3
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 
