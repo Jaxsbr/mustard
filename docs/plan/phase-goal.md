@@ -1,71 +1,73 @@
 ## Phase goal
 
-Integrate consumers with the shared core library. Create a new CLI package (`mustard` command) as a thin wrapper over core. Migrate the MCP server from inline SQL to core imports. Rename the TUI command from `mustard` to `mtui`. Update all documentation to reflect the new CLI, MCP migration, and TUI rename.
+Build the **relay** module — a typed message bridge inside the mustard monorepo that connects mobile devices (and eventually other machines/agents) to mustard through an AWS-hosted cloud queue. The relay introduces an extensible contract system so new message types can be added over time without infrastructure changes. The first contract implemented is `research-request`, replacing the current email-to-pulse workflow with a one-gesture mobile capture.
 
 ### Stories in scope
-- US-I1 — Create CLI package with core dependency
-- US-I2 — Migrate MCP tools to import core
-- US-I3 — Rename TUI command from mustard to mtui
-- US-I4 — CLI and MCP documentation and install guide
+- US-R1 — Relay message envelope and contract registry
+- US-R2 — AWS relay queue infrastructure
+- US-R3 — Sync daemon with SQS polling and dispatch
+- US-R4 — Android capture app with share sheet
+- US-R5 — Research-request contract implementation
 
 ### Done-when (observable)
 
-#### US-I1 — CLI package
-- [x] `cli/package.json` exists with `name: "mustard-cli"`, `type: "module"`, `mustard-core` as workspace dependency, and `bin: { "mustard": "dist/index.js" }` [US-I1]
-- [x] `cli/tsconfig.json` exists targeting ES2022+ with ESM module output to `cli/dist/` [US-I1]
-- [x] `cli/src/index.ts` is the entry point with `#!/usr/bin/env node` shebang and a subcommand dispatcher [US-I1]
-- [x] `mustard create --type todo --text "test"` creates a record via `core.createRecord` with `source_origin: 'mustard-cli'` and prints the created record [US-I1]
-- [x] `mustard get <id>` fetches and displays a single record via `core.getRecord` [US-I1]
-- [x] `mustard update <id> --status done` updates a record via `core.updateRecord` and prints the result [US-I1]
-- [x] `mustard delete <id>` deletes a record via `core.deleteRecord` and prints confirmation [US-I1]
-- [x] `mustard search "query"` runs FTS search via `core.searchRecords` with optional `--type`, `--person`, `--status`, `--limit` flags [US-I1]
-- [x] `mustard list` lists records via `core.listRecords` with optional `--type`, `--person`, `--status`, `--delegate`, `--sort`, `--limit` flags [US-I1]
-- [x] `mustard link <source> <target> --relation <rel>` creates a link via `core.linkRecords` [US-I1]
-- [x] `mustard unlink <source> <target> --relation <rel>` removes a link via `core.unlinkRecords` [US-I1]
-- [x] `mustard context <id>` retrieves context via `core.getContext` with optional `--depth`, `--since`, `--limit` flags [US-I1]
-- [x] `mustard daily` runs daily summary via `core.dailySummary` with optional `--date` flag [US-I1]
-- [x] `mustard project <id-or-title>` runs project summary via `core.projectSummary` [US-I1]
-- [x] `mustard --help` prints usage with all subcommands listed [US-I1]
-- [x] Each subcommand supports `--help` showing its flags [US-I1]
-- [x] CLI exits with code 0 on success and code 1 on errors (invalid args, record not found, validation failure) [US-I1]
-- [x] Root `package.json` workspaces array includes `cli` [US-I1]
-- [x] `npm run build` in `cli/` succeeds and produces `cli/dist/index.js` [US-I1]
-- [x] `cd cli && npm link` installs `mustard` command globally and it runs without error [US-I1]
-- [x] CLI argument parsing rejects unknown flags with a helpful error message rather than silently ignoring them [US-I1]
-- [x] CLI `--text` and `--title` values are passed through to core as-is — no shell interpolation or eval on user input [US-I1]
+#### US-R1 — Relay message envelope and contract registry
+- [ ] `relay/contracts/types.ts` exports `RelayMessage` interface with fields: `type` (string), `version` (number), `payload` (generic), `metadata` (object with `id`, `source`, `timestamp`) [US-R1]
+- [ ] `relay/contracts/research-request.ts` exports `ResearchRequestPayload` interface with fields: `url` (string), `relevance_note` (string), `tags` (optional string array) [US-R1]
+- [ ] `relay/contracts/` includes a JSON Schema file per message type (e.g., `research-request.schema.json`) as the language-neutral source of truth — TypeScript types and Android JSON construction both reference this schema [US-R1]
+- [ ] `relay/contracts/index.ts` exports a `CONTRACT_REGISTRY` map from message type string to JSON schema validator, with `research-request` as the first entry [US-R1]
+- [ ] `relay/sync/src/dispatcher.ts` exports a `dispatch` function that routes `RelayMessage.type` to registered handler functions and rejects unknown types with a logged error [US-R1]
+- [ ] Test: dispatcher routes a `research-request` message to the correct handler and throws/logs on unknown type (vitest, `relay/sync/tests/dispatcher.test.ts`) [US-R1]
 
-#### US-I2 — MCP migration to core
-- [x] `mcp/package.json` lists `mustard-core` as a workspace dependency [US-I2]
-- [x] `mcp/src/server.ts` imports `getDb`, `initSchema` from `mustard-core` instead of `./db.js` [US-I2]
-- [x] `mcp/src/server.ts` imports data functions (`getRecord`, `createRecord`, `updateRecord`, `deleteRecord`, `searchRecords`, `listRecords`, `linkRecords`, `unlinkRecords`, `getContext`, `dailySummary`, `projectSummary`) from `mustard-core` [US-I2]
-- [x] `mcp/src/server.ts` imports types (`RecordRow`, `CreateParams`, `SearchParams`, `ListParams`, `LinkParams`, `GetContextParams`, `ProjectSummaryParams`) from `mustard-core` [US-I2]
-- [x] MCP tool handlers call core functions (which return typed objects) and format results into markdown text for MCP responses [US-I2]
-- [x] `mcp/src/format.ts` exists with formatting functions (`formatRecordFull`, `formatRecordSummary`, `formatSearchResults`, `formatListResults`, `formatDailySummary`, `formatProjectSummary`, `formatContext`) that convert core typed objects to markdown strings [US-I2]
-- [x] MCP `create_record` tool passes `source_origin: 'mustard-mcp'` to `core.createRecord` (consumer-specific value preserved) [US-I2]
-- [x] `mcp/src/tools/` directory is deleted — all tool logic consolidated into `server.ts` calling core + format [US-I2]
-- [x] `mcp/src/db.ts` is deleted — database access fully delegated to `mustard-core` [US-I2]
-- [x] `better-sqlite3` removed from `mcp/package.json` dependencies (owned by core, not MCP) [US-I2]
-- [x] `npm run build` in `mcp/` succeeds [US-I2]
-- [x] Existing MCP test suite passes (or is updated to reflect new import paths) [US-I2]
-- [x] All 11 MCP tools produce the same output format as before migration (backward-compatible) [US-I2]
+#### US-R2 — AWS relay queue infrastructure
+- [ ] `relay/infra/main.tf` defines: AWS provider (no hardcoded account/region — uses default CLI profile), SQS standard queue, dead-letter queue (maxReceiveCount: 3), API Gateway HTTP API, POST `/message` route with SQS `SendMessage` direct integration (no Lambda), API key via usage plan, IAM execution role [US-R2]
+- [ ] `relay/infra/variables.tf` declares configurable inputs: `region` (optional, defaults to CLI profile), `queue_name`, `api_name` — no hardcoded account IDs [US-R2]
+- [ ] `relay/infra/outputs.tf` exports: `api_endpoint_url`, `api_key_value`, `sqs_queue_url`, `sqs_dlq_url` [US-R2]
+- [ ] `relay/infra/README.md` documents manual deploy steps: prerequisites (AWS CLI profile configured, Terraform installed), `terraform init`, `terraform plan`, `terraform apply`, and post-deploy smoke tests [US-R2]
+- [ ] Test: `terraform validate` passes on `relay/infra/` (syntax and provider schema check, no AWS credentials required) [US-R2]
+- [ ] Terraform config enforces API key requirement on the POST `/message` route (verified by `terraform validate` + config inspection, live 403 test is a post-deploy smoke test) [US-R2]
 
-#### US-I3 — TUI command rename
-- [x] `tui/package.json` bin field changed from `"mustard"` to `"mtui"` [US-I3]
-- [x] `cd tui && npm link` installs `mtui` command globally and it launches correctly [US-I3]
-- [x] Running `mtui` opens the terminal browser with the same behavior as before [US-I3]
+#### US-R3 — Sync daemon with SQS polling and dispatch
+- [ ] `relay/sync/src/index.ts` implements a polling loop: receive messages from SQS, validate against contract schema, dispatch to handler, delete from queue on success [US-R3]
+- [ ] Polling interval is configurable via environment variable `RELAY_POLL_INTERVAL_MS` (default: 60000) [US-R3]
+- [ ] Invalid messages (unknown type, schema validation failure) are logged with full message body and deleted from the queue (not retried) [US-R3]
+- [ ] `relay/sync/com.mustard.relay-sync.plist` is a launchd service template that runs the daemon with `RunAtLoad: true` and `KeepAlive: true` [US-R3]
+- [ ] Daemon reads AWS credentials from standard AWS credential chain (env vars or `~/.aws/credentials`) and SQS queue URL + region from env vars [US-R3]
+- [ ] Daemon logs and continues polling when SQS is unreachable (network error, auth failure, invalid queue URL) — does not crash or exit [US-R3]
+- [ ] Messages that fail handler processing (handler throws) are NOT deleted from SQS — they remain for retry on the next poll, moving to the dead-letter queue after max receives [US-R3]
+- [ ] Test: sync daemon processes a mock SQS message end-to-end through dispatcher to handler (vitest, `relay/sync/tests/sync.test.ts`) [US-R3]
+- [ ] Sync daemon validates incoming message `type` field against the contract registry before dispatch — unknown types are rejected, not passed to handlers [US-R3]
+- [ ] Sync daemon deserializes SQS message body with try/catch — malformed JSON is logged and deleted, not retried [US-R3]
 
-#### US-I4 — Documentation and install guide
-- [x] README.md has a "CLI installation" section with `cd cli && npm install && npm run build && npm link` instructions and example usage of at least 3 commands (create, search, list) [US-I4]
-- [x] README.md TUI section updated to reference `mtui` command instead of `mustard` [US-I4]
-- [x] README.md has a "Quick start for external users" section covering: clone, install, build, and configure MCP client + CLI [US-I4]
-- [x] `docs/architecture/ARCHITECTURE.md` system overview diagram includes `cli/` as a consumer of core alongside MCP and TUI [US-I4]
-- [x] `docs/architecture/ARCHITECTURE.md` directory layout includes `cli/` entry [US-I4]
-- [x] `docs/architecture/ARCHITECTURE.md` module responsibilities table includes CLI row (Role: shell interface, DB access: read/write via core, Language: TypeScript) [US-I4]
-- [x] `AGENTS.md` directory layout includes `cli/` entry [US-I4]
-- [x] `AGENTS.md` module responsibilities table includes CLI row [US-I4]
-- [x] Recommendations 2 and 3 in `docs/architecture/THESIS-2026-04-03-architectural-roadmap.md` are struck through with `~~strikethrough~~` [US-I4]
+#### US-R4 — Android capture app with share sheet
+- [ ] `relay/app/` contains a complete Android project scaffold per `~/dev/.docs/learning/android-app-build-guide-agent.md`: root `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`, and `app/` module with `build.gradle.kts`, `AndroidManifest.xml`, Kotlin source, and XML layout [US-R4]
+- [ ] `AndroidManifest.xml` declares an intent filter for `android.intent.action.SEND` with `mimeType="text/plain"` so the app appears in the Android share sheet [US-R4]
+- [ ] `MainActivity.kt` handles the `SEND` intent: extracts shared text, parses URLs from it, pre-fills the URL field — when shared text contains no recognizable URL, the full text is shown in the URL field for manual editing [US-R4]
+- [ ] Capture form (XML layout) has: URL input field, "Why it's relevant" text area, Send button [US-R4]
+- [ ] Send button POSTs a valid `RelayMessage` JSON (type: `research-request`, version: 1) to the API Gateway endpoint using OkHttp, with `x-api-key` header from `BuildConfig` [US-R4]
+- [ ] API endpoint URL and API key are read from `local.properties` and exposed via `BuildConfig` fields in `build.gradle.kts` — `local.properties` is gitignored [US-R4]
+- [ ] App shows success toast/feedback on 200 response and error message on failure (non-200 or network error) [US-R4]
+- [ ] `relay/app/build.sh` builds a debug APK using Docker (android-sdk image), outputting `app/build/outputs/apk/debug/app-debug.apk` [US-R4]
+- [ ] Input validation: URL field rejects empty values, both fields enforce max length 2000 characters, Send button is disabled until URL is non-empty [US-R4]
+- [ ] Android app: API key stored in `local.properties` → `BuildConfig`, not hardcoded in Kotlin source. `local.properties` is in `.gitignore` [US-R4]
+
+#### US-R5 — Research-request contract implementation
+- [ ] `relay/sync/src/handlers/research-request.ts` creates a mustard learning record via `mustard-core` `createRecord` with: `log_type: 'learning'`, `source_origin: 'mustard-relay'`, `source_url` from payload URL, `text` from payload relevance_note, `status: 'captured'`, tags from payload [US-R5]
+- [ ] Handler appends an entry to pulse `research-queue.json` with `status: 'pending'`, `source: 'relay'`, `link` from payload URL, `summary` from relevance_note, enabling the existing research-processor to pick it up [US-R5]
+- [ ] If mustard record creation succeeds but pulse queue write fails, handler logs a warning with the mustard record ID — record is preserved, research can be triggered manually [US-R5]
+- [ ] Research queue path is configurable via `PULSE_DATA_PATH` environment variable (default: `~/dev/pulse/data`) [US-R5]
+- [ ] Handler returns the created mustard record ID for logging/confirmation [US-R5]
+- [ ] Test: research-request handler creates a mustard learning record (verified via `getRecord`) and writes a pending entry to a test research-queue file (vitest, `relay/sync/tests/handlers/research-request.test.ts`) [US-R5]
+
+#### Phase-level criteria
+- [ ] `relay/` directory structure, module responsibility, and relay data flow are documented in ARCHITECTURE.md (updated at phase completion by reconciliation, not at spec time) [phase]
+- [ ] `AGENTS.md` module table includes `relay` with role description and DB access column [phase]
 
 ### Golden principles (phase-relevant)
-- no-silent-pass — CLI and MCP tests must assert on actual output, not just "doesn't throw"
-- error-path-coverage — validation errors (invalid type, missing text, record not found) have test coverage in CLI
-- agents-consistency — AGENTS.md updated to reflect cli/ addition and TUI rename
+- **Clarity over complexity** — SQS direct integration (no Lambda), Terraform with plan-before-apply (no one-click deploys), flat contract files, Docker build (no Android Studio), minimal dependencies
+- **Faithful stewardship** — AWS free tier (SQS: 1M requests/mo free, API Gateway HTTP API: 1M requests/mo free for 12 months), near-zero ongoing cost at personal scale
+- **Safety and ethics** — API key auth, input validation, schema validation on ingest, secrets in gitignored files
+- **Continuous improvement** — extensible contract pattern enables future message types without infrastructure changes
+- no-silent-pass — tests must assert on actual output, not just "doesn't throw"
+- error-path-coverage — error paths (unknown types, malformed JSON, network failures) have test coverage
+- agents-consistency — AGENTS.md updated to reflect relay/ addition
