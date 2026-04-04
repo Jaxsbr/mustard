@@ -52,12 +52,12 @@ Build the **relay** module — a typed message bridge inside the mustard monorep
 - [x] Android app: API key stored in `local.properties` → `BuildConfig`, not hardcoded in Kotlin source. `local.properties` is in `.gitignore` [US-R4]
 
 #### US-R5 — Research-request contract implementation
-- [ ] `relay/sync/src/handlers/research-request.ts` creates a mustard learning record via `mustard-core` `createRecord` with: `log_type: 'learning'`, `source_origin: 'mustard-relay'`, `source_url` from payload URL, `text` from payload relevance_note, `status: 'captured'`, tags from payload [US-R5]
-- [ ] Handler appends an entry to pulse `research-queue.json` with `status: 'pending'`, `source: 'relay'`, `link` from payload URL, `summary` from relevance_note, enabling the existing research-processor to pick it up [US-R5]
-- [ ] If mustard record creation succeeds but pulse queue write fails, handler logs a warning with the mustard record ID — record is preserved, research can be triggered manually [US-R5]
-- [ ] Research queue path is configurable via `PULSE_DATA_PATH` environment variable (default: `~/dev/pulse/data`) [US-R5]
-- [ ] Handler returns the created mustard record ID for logging/confirmation [US-R5]
-- [ ] Test: research-request handler creates a mustard learning record (verified via `getRecord`) and writes a pending entry to a test research-queue file (vitest, `relay/sync/tests/handlers/research-request.test.ts`) [US-R5]
+- [x] `relay/sync/src/handlers/research-request.ts` creates a mustard learning record via `mustard-core` `createRecord` with: `log_type: 'learning'`, `source_origin: 'mustard-relay'`, `source_url` from payload URL, `text` from payload relevance_note, `status: 'captured'`, tags from payload [US-R5]
+- [x] Handler appends an entry to pulse `research-queue.json` with `status: 'pending'`, `source: 'relay'`, `link` from payload URL, `summary` from relevance_note, enabling the existing research-processor to pick it up [US-R5]
+- [x] If mustard record creation succeeds but pulse queue write fails, handler logs a warning with the mustard record ID — record is preserved, research can be triggered manually [US-R5]
+- [x] Research queue path is configurable via `PULSE_DATA_PATH` environment variable (default: `~/dev/pulse/data`) [US-R5]
+- [x] Handler returns the created mustard record ID for logging/confirmation [US-R5]
+- [x] Test: research-request handler creates a mustard learning record (verified via `getRecord`) and writes a pending entry to a test research-queue file (vitest, `relay/sync/tests/handlers/research-request.test.ts`) [US-R5]
 
 #### Phase-level criteria
 - [ ] `relay/` directory structure, module responsibility, and relay data flow are documented in ARCHITECTURE.md (updated at phase completion by reconciliation, not at spec time) [phase]
