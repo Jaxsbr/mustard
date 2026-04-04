@@ -6,8 +6,8 @@
   <string>com.mustard.relay-sync</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/node</string>
-    <string>/absolute/path/to/mustard/relay/dist/sync/src/index.js</string>
+    <string>/path/to/node</string>
+    <string>/path/to/mustard/relay/dist/sync/src/index.js</string>
   </array>
   <key>EnvironmentVariables</key>
   <dict>

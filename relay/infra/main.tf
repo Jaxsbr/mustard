@@ -125,6 +125,8 @@ resource "aws_api_gateway_integration_response" "ok" {
   response_templates = {
     "application/json" = "{\"status\": \"queued\"}"
   }
+
+  depends_on = [aws_api_gateway_integration.sqs]
 }
 
 # --- Deployment + Stage ---
