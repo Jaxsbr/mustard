@@ -32,6 +32,11 @@ tui/node_modules/
 relay/node_modules/
 relay/dist/
 relay/app/local.properties
+relay/infra/.terraform/
+relay/infra/.terraform.lock.hcl
+relay/infra/terraform.tfstate
+relay/infra/terraform.tfstate.backup
+relay/infra/*.tfvars
 
 # Python
 __pycache__/
