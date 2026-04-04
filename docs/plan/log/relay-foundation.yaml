@@ -31,3 +31,10 @@ entries:
     result: pass
     timestamp: "2026-04-04T05:02:00Z"
     tokens: ~2000
+  - task: 3
+    story: US-R2
+    type: investigate
+    description: "Researched Terraform patterns. Key finding: API Gateway HTTP API v2 doesn't support API keys/usage plans (REST API v1 feature). Decision: use REST API v1 with AWS integration type for SQS SendMessage (no Lambda). REST v1 supports native api_key_required + usage plans."
+    result: pass
+    timestamp: "2026-04-04T05:05:00Z"
+    tokens: ~10000

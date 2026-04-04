@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 3
-  next_task: "[US-R2] Investigate: review Terraform HCL patterns for API Gateway HTTP API → SQS direct integration, plan relay/infra/ file structure"
+  task_number: 4
+  next_task: "[US-R2] Implement Terraform configs: REST API v1 with SQS direct integration, API key via usage plan, DLQ, variables, outputs, README"
   last_result: pass
   consecutive_fails: 0
 
