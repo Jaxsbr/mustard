@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 8
-  next_task: "[US-R4] Implement Android capture app: project scaffold, share sheet intent, capture form, OkHttp POST, BuildConfig secrets, Docker build script"
+  task_number: 9
+  next_task: null
   last_result: pass
   consecutive_fails: 0
 

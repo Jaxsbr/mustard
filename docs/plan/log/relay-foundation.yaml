@@ -75,3 +75,11 @@ entries:
     result: pass
     timestamp: "2026-04-04T05:13:00Z"
     tokens: ~5000
+  - task: 8
+    story: US-R4
+    type: implement
+    description: "Created relay/app/ — complete Android project scaffold per build guide. Kotlin + OkHttp + XML layouts, minSdk 26. SEND intent filter for share sheet. URL extraction from shared text. Capture form with URL + note fields + Send button. POSTs RelayMessage JSON with x-api-key. API endpoint/key from local.properties → BuildConfig. Success/error toast. Docker build.sh. Input validation: max 2000 chars, empty URL rejected, Send disabled until URL non-empty. 160 tests pass."
+    result: pass
+    notes: "✓ US-R4 complete"
+    timestamp: "2026-04-04T05:15:00Z"
+    tokens: ~15000
