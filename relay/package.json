@@ -14,8 +14,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.750.0",
-    "ajv": "^8.17.0",
-    "mustard-core": "*"
+    "ajv": "^8.17.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

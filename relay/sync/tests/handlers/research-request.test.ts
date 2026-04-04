@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { getDb, initSchema, getRecord } from 'mustard-core'
 import { handleResearchRequest } from '../../src/handlers/research-request.js'
 import type { RelayMessage } from '../../../contracts/types.js'
 
@@ -27,14 +26,11 @@ function makeResearchMessage(overrides: Record<string, unknown> = {}): RelayMess
 describe('research-request handler', () => {
   let tmpDir: string
   let originalPulsePath: string | undefined
-  let originalMustardDb: string | undefined
 
   beforeEach(() => {
     tmpDir = mkdtempSync(join(tmpdir(), 'relay-test-'))
     originalPulsePath = process.env.PULSE_DATA_PATH
-    originalMustardDb = process.env.MUSTARD_DB
     process.env.PULSE_DATA_PATH = tmpDir
-    process.env.MUSTARD_DB = join(tmpDir, 'test.db')
   })
 
   afterEach(() => {
@@ -43,31 +39,13 @@ describe('research-request handler', () => {
     } else {
       delete process.env.PULSE_DATA_PATH
     }
-    if (originalMustardDb !== undefined) {
-      process.env.MUSTARD_DB = originalMustardDb
-    } else {
-      delete process.env.MUSTARD_DB
-    }
     rmSync(tmpDir, { recursive: true, force: true })
   })
 
-  it('creates a mustard learning record and writes to research queue', async () => {
+  it('writes a pending entry to the research queue', async () => {
     const msg = makeResearchMessage()
-    const recordId = await handleResearchRequest(msg)
+    const entryId = await handleResearchRequest(msg)
 
-    // Verify mustard record was created
-    const db = getDb(process.env.MUSTARD_DB!)
-    initSchema(db)
-    const record = getRecord(db, recordId)
-    expect(record).not.toBeNull()
-    expect(record!.log_type).toBe('learning')
-    expect(record!.source_origin).toBe('mustard-relay')
-    expect(record!.source_url).toBe('https://example.com/article')
-    expect(record!.text).toBe('Relevant to AI agents')
-    expect(record!.status).toBe('captured')
-    expect(JSON.parse(record!.tags)).toEqual(['ai', 'research'])
-
-    // Verify research queue entry
     const queuePath = join(tmpDir, 'research-queue.json')
     const queue = JSON.parse(readFileSync(queuePath, 'utf-8'))
     expect(queue).toHaveLength(1)
@@ -76,28 +54,21 @@ describe('research-request handler', () => {
     expect(queue[0].source).toBe('relay')
     expect(queue[0].status).toBe('pending')
     expect(queue[0].tags).toEqual(['ai', 'research'])
+    expect(queue[0].id).toBe(entryId)
   })
 
-  it('returns the created record ID', async () => {
+  it('returns a queue entry ID', async () => {
     const msg = makeResearchMessage()
-    const recordId = await handleResearchRequest(msg)
-    expect(recordId).toBeTruthy()
-    expect(typeof recordId).toBe('string')
+    const entryId = await handleResearchRequest(msg)
+    expect(entryId).toBeTruthy()
+    expect(typeof entryId).toBe('string')
   })
 
-  it('preserves mustard record even when pulse queue write fails', async () => {
-    // Set an invalid pulse path to force write failure
+  it('throws when pulse queue path is invalid', async () => {
     process.env.PULSE_DATA_PATH = '/nonexistent/path/that/does/not/exist'
 
     const msg = makeResearchMessage()
-    const recordId = await handleResearchRequest(msg)
-
-    // Record should still exist
-    const db = getDb(process.env.MUSTARD_DB!)
-    initSchema(db)
-    const record = getRecord(db, recordId)
-    expect(record).not.toBeNull()
-    expect(record!.source_origin).toBe('mustard-relay')
+    await expect(handleResearchRequest(msg)).rejects.toThrow()
   })
 
   it('appends to existing research queue entries', async () => {
