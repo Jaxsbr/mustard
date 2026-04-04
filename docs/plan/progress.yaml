@@ -45,3 +45,4 @@ state:
   completed_stories:
     - US-R1
     - US-R2
+    - US-R3

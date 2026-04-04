@@ -28,16 +28,16 @@ Build the **relay** module — a typed message bridge inside the mustard monorep
 - [x] Terraform config enforces API key requirement on the POST `/message` route (verified by `terraform validate` + config inspection, live 403 test is a post-deploy smoke test) [US-R2]
 
 #### US-R3 — Sync daemon with SQS polling and dispatch
-- [ ] `relay/sync/src/index.ts` implements a polling loop: receive messages from SQS, validate against contract schema, dispatch to handler, delete from queue on success [US-R3]
-- [ ] Polling interval is configurable via environment variable `RELAY_POLL_INTERVAL_MS` (default: 60000) [US-R3]
-- [ ] Invalid messages (unknown type, schema validation failure) are logged with full message body and deleted from the queue (not retried) [US-R3]
-- [ ] `relay/sync/com.mustard.relay-sync.plist` is a launchd service template that runs the daemon with `RunAtLoad: true` and `KeepAlive: true` [US-R3]
-- [ ] Daemon reads AWS credentials from standard AWS credential chain (env vars or `~/.aws/credentials`) and SQS queue URL + region from env vars [US-R3]
-- [ ] Daemon logs and continues polling when SQS is unreachable (network error, auth failure, invalid queue URL) — does not crash or exit [US-R3]
-- [ ] Messages that fail handler processing (handler throws) are NOT deleted from SQS — they remain for retry on the next poll, moving to the dead-letter queue after max receives [US-R3]
-- [ ] Test: sync daemon processes a mock SQS message end-to-end through dispatcher to handler (vitest, `relay/sync/tests/sync.test.ts`) [US-R3]
-- [ ] Sync daemon validates incoming message `type` field against the contract registry before dispatch — unknown types are rejected, not passed to handlers [US-R3]
-- [ ] Sync daemon deserializes SQS message body with try/catch — malformed JSON is logged and deleted, not retried [US-R3]
+- [x] `relay/sync/src/index.ts` implements a polling loop: receive messages from SQS, validate against contract schema, dispatch to handler, delete from queue on success [US-R3]
+- [x] Polling interval is configurable via environment variable `RELAY_POLL_INTERVAL_MS` (default: 60000) [US-R3]
+- [x] Invalid messages (unknown type, schema validation failure) are logged with full message body and deleted from the queue (not retried) [US-R3]
+- [x] `relay/sync/com.mustard.relay-sync.plist` is a launchd service template that runs the daemon with `RunAtLoad: true` and `KeepAlive: true` [US-R3]
+- [x] Daemon reads AWS credentials from standard AWS credential chain (env vars or `~/.aws/credentials`) and SQS queue URL + region from env vars [US-R3]
+- [x] Daemon logs and continues polling when SQS is unreachable (network error, auth failure, invalid queue URL) — does not crash or exit [US-R3]
+- [x] Messages that fail handler processing (handler throws) are NOT deleted from SQS — they remain for retry on the next poll, moving to the dead-letter queue after max receives [US-R3]
+- [x] Test: sync daemon processes a mock SQS message end-to-end through dispatcher to handler (vitest, `relay/sync/tests/sync.test.ts`) [US-R3]
+- [x] Sync daemon validates incoming message `type` field against the contract registry before dispatch — unknown types are rejected, not passed to handlers [US-R3]
+- [x] Sync daemon deserializes SQS message body with try/catch — malformed JSON is logged and deleted, not retried [US-R3]
 
 #### US-R4 — Android capture app with share sheet
 - [ ] `relay/app/` contains a complete Android project scaffold per `~/dev/.docs/learning/android-app-build-guide-agent.md`: root `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`, and `app/` module with `build.gradle.kts`, `AndroidManifest.xml`, Kotlin source, and XML layout [US-R4]
