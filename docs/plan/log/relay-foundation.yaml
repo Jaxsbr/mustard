@@ -83,3 +83,10 @@ entries:
     notes: "✓ US-R4 complete"
     timestamp: "2026-04-04T05:15:00Z"
     tokens: ~15000
+  - task: 9
+    story: US-R5
+    type: investigate
+    description: "Read pulse research-queue.json format: { link, summary, source, queued_at, status, id, tags }. Handler must: createRecord via core (learning, source_origin: 'mustard-relay'), append to research-queue.json (status: pending, source: relay). Graceful fallback if pulse write fails."
+    result: pass
+    timestamp: "2026-04-04T05:17:00Z"
+    tokens: ~5000

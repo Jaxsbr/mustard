@@ -28,8 +28,8 @@ state:
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 9
-  next_task: "[US-R5] Investigate: review core createRecord API, pulse research-queue.json format, plan handler implementation"
+  task_number: 10
+  next_task: "[US-R5] Implement research-request handler: create mustard learning record via core, append to pulse research-queue.json, test with getRecord verification"
   last_result: pass
   consecutive_fails: 0
 
