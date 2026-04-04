@@ -46,3 +46,10 @@ entries:
     notes: "✓ US-R2 complete"
     timestamp: "2026-04-04T05:06:00Z"
     tokens: ~12000
+  - task: 5
+    story: US-R3
+    type: investigate-queue
+    description: "Queued investigate for US-R3 (sync daemon). Need to plan SQS polling, message processing, error handling, and launchd plist."
+    result: pass
+    timestamp: "2026-04-04T05:08:00Z"
+    tokens: ~1000

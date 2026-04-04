@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 5
-  next_task: null
+  next_task: "[US-R3] Investigate: review @aws-sdk/client-sqs API, plan sync daemon polling loop, launchd plist, and test mocking strategy"
   last_result: pass
   consecutive_fails: 0
 
