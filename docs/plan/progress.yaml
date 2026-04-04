@@ -29,7 +29,7 @@ state:
 
   # --- Task orchestration (owner: iterator) ---
   task_number: 11
-  next_task: null
+  next_task: "[phase] Update AGENTS.md and ARCHITECTURE.md with relay module documentation"
   last_result: pass
   consecutive_fails: 0
 
