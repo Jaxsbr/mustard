@@ -24,3 +24,10 @@ entries:
     notes: "✓ US-R1 complete"
     timestamp: "2026-04-04T05:00:00Z"
     tokens: ~15000
+  - task: 3
+    story: US-R2
+    type: investigate-queue
+    description: "Queued investigate task for US-R2 (Terraform infra). US-R2 is next in dependency order — API endpoint + queue URL needed by US-R3 (daemon) and US-R4 (Android app)."
+    result: pass
+    timestamp: "2026-04-04T05:02:00Z"
+    tokens: ~2000
