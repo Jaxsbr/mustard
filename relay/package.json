@@ -1,0 +1,24 @@
+{
+  "name": "mustard-relay",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Relay module — typed message bridge connecting mobile devices to mustard via AWS SQS",
+  "main": "dist/sync/src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.750.0",
+    "ajv": "^8.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.1"
+  }
+}

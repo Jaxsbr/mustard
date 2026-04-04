@@ -23,12 +23,12 @@ config:
 
 state:
   # --- Lifecycle (owner: iterator) ---
-  phase: consumer-integration
+  phase: relay-foundation
   phase_complete: true
   status: running
 
   # --- Task orchestration (owner: iterator) ---
-  task_number: 11
+  task_number: 14
   next_task: null
   last_result: pass
   consecutive_fails: 0
@@ -36,14 +36,15 @@ state:
   # --- Review (owner: iterator) ---
   review_stage: review_posted
   review_complete: true
-  pr_number: 4
+  pr_number: 6
 
   # --- Retrospective (owner: retro) ---
   retro_complete: true
 
   # --- Tracking (owner: iterator) ---
   completed_stories:
-    - US-I3
-    - US-I1
-    - US-I2
-    - US-I4
+    - US-R1
+    - US-R2
+    - US-R3
+    - US-R4
+    - US-R5

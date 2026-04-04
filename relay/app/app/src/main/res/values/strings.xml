@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mustard Relay</string>
+    <string name="url_hint">URL</string>
+    <string name="note_hint">Why it\'s relevant</string>
+    <string name="send_button">Send</string>
+</resources>

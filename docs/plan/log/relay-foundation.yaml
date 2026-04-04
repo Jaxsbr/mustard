@@ -1,0 +1,113 @@
+# Phase log: relay-foundation
+# Started: 2026-04-04T04:51:10Z
+
+entries:
+  - task: 0
+    story: phase
+    type: setup
+    description: "Phase start — archived consumer-integration (reconciliation R0-R5 all no-ops, already reconciled in-phase), created build/relay-foundation branch, wrote phase-goal.md with 5 stories (US-R1-R5), 146 tests pass."
+    result: pass
+    timestamp: "2026-04-04T04:51:10Z"
+    tokens: ~15000
+  - task: 1
+    story: US-R1
+    type: investigate
+    description: "Reviewed core types (CreateParams, RecordRow), workspace config (4 packages), monorepo pattern (ESM, vitest, TS 6). Plan: relay/ as single TS package with contracts/ (types + JSON Schema) and sync/src/ (dispatcher + daemon) as siblings. Contracts imported via relative paths. relay added to root workspaces."
+    result: pass
+    timestamp: "2026-04-04T04:56:00Z"
+    tokens: ~8000
+  - task: 2
+    story: US-R1
+    type: implement
+    description: "Created relay/ package — contracts/types.ts (RelayMessage envelope), contracts/research-request.ts (payload type), research-request.schema.json (draft-07), contracts/index.ts (CONTRACT_REGISTRY with Ajv validation), sync/src/dispatcher.ts (routes by type, rejects unknown). 7 tests pass. relay added to root workspaces. 153 total tests pass."
+    result: pass
+    notes: "✓ US-R1 complete"
+    timestamp: "2026-04-04T05:00:00Z"
+    tokens: ~15000
+  - task: 3
+    story: US-R2
+    type: investigate-queue
+    description: "Queued investigate task for US-R2 (Terraform infra). US-R2 is next in dependency order — API endpoint + queue URL needed by US-R3 (daemon) and US-R4 (Android app)."
+    result: pass
+    timestamp: "2026-04-04T05:02:00Z"
+    tokens: ~2000
+  - task: 3
+    story: US-R2
+    type: investigate
+    description: "Researched Terraform patterns. Key finding: API Gateway HTTP API v2 doesn't support API keys/usage plans (REST API v1 feature). Decision: use REST API v1 with AWS integration type for SQS SendMessage (no Lambda). REST v1 supports native api_key_required + usage plans."
+    result: pass
+    timestamp: "2026-04-04T05:05:00Z"
+    tokens: ~10000
+  - task: 4
+    story: US-R2
+    type: implement
+    description: "Created relay/infra/ — main.tf (REST API v1 + SQS direct integration, no Lambda, API key via usage plan, DLQ maxReceiveCount:3, IAM role), variables.tf (region, queue_name, api_name), outputs.tf (endpoint, key, queue URLs), README.md (deploy + smoke tests). terraform validate passes. .gitignore updated for Terraform state."
+    result: pass
+    notes: "✓ US-R2 complete"
+    timestamp: "2026-04-04T05:06:00Z"
+    tokens: ~12000
+  - task: 5
+    story: US-R3
+    type: investigate-queue
+    description: "Queued investigate for US-R3 (sync daemon). Need to plan SQS polling, message processing, error handling, and launchd plist."
+    result: pass
+    timestamp: "2026-04-04T05:08:00Z"
+    tokens: ~1000
+  - task: 5b
+    story: US-R3
+    type: investigate
+    description: "Planned sync daemon: SQS ReceiveMessage/DeleteMessage via @aws-sdk/client-sqs, setInterval polling with RELAY_POLL_INTERVAL_MS (default 60s). Error strategy: malformed JSON/unknown type/schema failure → log+delete, handler throws → don't delete (retry to DLQ), network errors → log+continue. Tests mock SQS client."
+    result: pass
+    timestamp: "2026-04-04T05:10:00Z"
+    tokens: ~3000
+  - task: 6
+    story: US-R3
+    type: implement
+    description: "Created sync daemon — pollOnce() receives SQS messages, validates against CONTRACT_REGISTRY, dispatches to handler, deletes on success. Error handling: malformed JSON/unknown type/schema failure → log+delete; handler throws → don't delete (retry to DLQ); network error → log+continue. LaunchD plist with RunAtLoad+KeepAlive. @aws-sdk/client-sqs added. 7 new tests (14 total relay). 160 total tests pass."
+    result: pass
+    notes: "✓ US-R3 complete"
+    timestamp: "2026-04-04T05:11:00Z"
+    tokens: ~15000
+  - task: 7
+    story: US-R4
+    type: investigate
+    description: "Read android-app-build-guide-agent.md and install guide. Plan: single app module, Kotlin + OkHttp + XML layouts, minSdk 26, SEND intent filter for text/plain, URL parsing from shared text, local.properties → BuildConfig for API key, Docker build via thyrlian/android-sdk."
+    result: pass
+    timestamp: "2026-04-04T05:13:00Z"
+    tokens: ~5000
+  - task: 8
+    story: US-R4
+    type: implement
+    description: "Created relay/app/ — complete Android project scaffold per build guide. Kotlin + OkHttp + XML layouts, minSdk 26. SEND intent filter for share sheet. URL extraction from shared text. Capture form with URL + note fields + Send button. POSTs RelayMessage JSON with x-api-key. API endpoint/key from local.properties → BuildConfig. Success/error toast. Docker build.sh. Input validation: max 2000 chars, empty URL rejected, Send disabled until URL non-empty. 160 tests pass."
+    result: pass
+    notes: "✓ US-R4 complete"
+    timestamp: "2026-04-04T05:15:00Z"
+    tokens: ~15000
+  - task: 9
+    story: US-R5
+    type: investigate
+    description: "Read pulse research-queue.json format: { link, summary, source, queued_at, status, id, tags }. Handler must: createRecord via core (learning, source_origin: 'mustard-relay'), append to research-queue.json (status: pending, source: relay). Graceful fallback if pulse write fails."
+    result: pass
+    timestamp: "2026-04-04T05:17:00Z"
+    tokens: ~5000
+  - task: 10
+    story: US-R5
+    type: implement
+    description: "Created research-request handler — createRecord via core (learning, source_origin: mustard-relay, captured), appends to pulse research-queue.json (pending, source: relay). Graceful fallback on pulse write failure. PULSE_DATA_PATH + MUSTARD_DB configurable. Handler registered in daemon. 4 new tests (18 total relay). 164 total tests pass."
+    result: pass
+    notes: "✓ US-R5 complete"
+    timestamp: "2026-04-04T05:19:00Z"
+    tokens: ~15000
+  - task: 11
+    story: phase
+    type: implement
+    description: "Updated AGENTS.md (relay in layout + module table) and ARCHITECTURE.md (system diagram with relay data flow, monorepo structure, module table, dedicated relay section). Both phase-level criteria met."
+    result: pass
+    timestamp: "2026-04-04T05:21:00Z"
+    tokens: ~8000
+  - task: 12
+    type: gate
+    description: "Phase Completion Gate — all 40 done-when criteria met across 5 stories (US-R1: 6, US-R2: 6, US-R3: 10, US-R4: 10, US-R5: 6) + 2 phase-level. Verify passes (164 tests: 53 core + 91 mcp + 18 relay + 2 tui). AGENTS.md consistent. Error-path coverage verified."
+    result: pass
+    timestamp: "2026-04-04T05:22:00Z"
+    tokens: ~5000

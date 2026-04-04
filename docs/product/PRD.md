@@ -45,3 +45,4 @@ The system is designed to be self-hosted: clone the repo, point your MCP clients
 | monorepo-foundation | Shipped | US-M1, US-M2, US-M3, US-M4, US-M5 | [phases/monorepo-foundation.md](phases/monorepo-foundation.md) |
 | core-extraction | Shipped | US-C1, US-C2, US-C3, US-C4 | [phases/core-extraction.md](phases/core-extraction.md) |
 | consumer-integration | Shipped | US-I1, US-I2, US-I3, US-I4 | [phases/consumer-integration.md](phases/consumer-integration.md) |
+| relay-foundation | Shipped | US-R1, US-R2, US-R3, US-R4, US-R5 | [phases/relay-foundation.md](phases/relay-foundation.md) |
