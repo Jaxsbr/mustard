@@ -11,9 +11,10 @@ function getPulseDataPath(): string {
   return process.env.PULSE_DATA_PATH ?? join(homedir(), 'dev', 'pulse', 'data')
 }
 
+// Assumes this file lives at relay/sync/src/handlers/ — 4 levels below monorepo root.
+// If this file moves, update the relative path. Use MUSTARD_DB env var to override.
 function getDbPath(): string {
   if (process.env.MUSTARD_DB) return process.env.MUSTARD_DB
-  // Resolve relative to monorepo root (relay/sync/src/handlers/ → 4 levels up)
   const __dirname = dirname(fileURLToPath(import.meta.url))
   return resolve(__dirname, '..', '..', '..', '..', 'data', 'mustard.db')
 }

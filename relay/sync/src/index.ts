@@ -119,7 +119,7 @@ export function startDaemon(options: SyncDaemonOptions = {}): NodeJS.Timeout {
 }
 
 // Run as standalone daemon when executed directly
-const isMain = process.argv[1]?.endsWith('index.js') || process.argv[1]?.endsWith('index.ts')
+const isMain = process.argv[1] && new URL(process.argv[1], 'file://').href === import.meta.url
 if (isMain && QUEUE_URL) {
   startDaemon()
 }
