@@ -18,3 +18,14 @@ output "sqs_dlq_url" {
   description = "SQS dead-letter queue URL"
   value       = aws_sqs_queue.dlq.id
 }
+
+output "relay_reader_access_key_id" {
+  description = "Access key ID for the mustard-relay-reader IAM user (sync daemon)"
+  value       = aws_iam_access_key.relay_reader.id
+}
+
+output "relay_reader_secret_access_key" {
+  description = "Secret access key for the mustard-relay-reader IAM user (sync daemon)"
+  value       = aws_iam_access_key.relay_reader.secret
+  sensitive   = true
+}
