@@ -10,6 +10,34 @@ Android app (share sheet / manual)
   -> handler dispatches by message type
 ```
 
+## Auth architecture
+
+```
+┌─────────────────┐    HTTPS + API key     ┌──────────────┐   IAM role (server-side)   ┌───────────┐
+│  Android app /  │ ────────────────────── │ API Gateway  │ ────────────────────────── │   SQS     │
+│  curl / script  │   x-api-key header     │  REST API    │   apigw-sqs-role           │   Queue   │
+└─────────────────┘                        └──────────────┘                            └─────┬─────┘
+                                                                                             │
+                                           ┌──────────────┐   AWS credentials (~/.aws)  ┌────┴──────┐
+                                           │  relay-sync  │ ◄──────────────────────────  │   SQS     │
+                                           │  daemon      │   sqs:ReceiveMessage         │   Poll    │
+                                           └──────────────┘   sqs:DeleteMessage          └───────────┘
+```
+
+Three distinct auth boundaries:
+
+| Boundary | Mechanism | Credentials | Scope |
+|---|---|---|---|
+| Client → API Gateway | API key via `x-api-key` header | Terraform output `api_key_value`, stored in `app/local.properties` | Grants access to POST /message only. Rate-limited by usage plan. No AWS credentials involved. |
+| API Gateway → SQS | IAM role (`mustard-relay-api-apigw-sqs-role`) | Assumed automatically by API Gateway at runtime | `sqs:SendMessage` on the relay queue only. Clients never see or use this role. |
+| Sync daemon → SQS | AWS credentials (`~/.aws/credentials`, default profile) | The operator's AWS profile (currently `mustard-admin`) | Needs `sqs:ReceiveMessage`, `sqs:DeleteMessage`, `sqs:GetQueueAttributes` on the relay queue. |
+
+Key implications:
+
+- **The Android app has no AWS credentials.** It authenticates to API Gateway with an API key over HTTPS. The API key is not an IAM credential — it cannot call AWS APIs directly.
+- **The API Gateway → SQS hop is server-side.** The IAM role is assumed by API Gateway itself, invisible to clients.
+- **Only the sync daemon and Terraform operator use AWS credentials.** The daemon picks them up from `~/.aws/credentials`. The operator uses them for `terraform apply` and needs broad IAM/SQS/API Gateway permissions.
+
 ## Prerequisites
 
 - **Terraform** >= 1.5: `brew install terraform`
