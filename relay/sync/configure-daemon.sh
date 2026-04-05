@@ -19,6 +19,15 @@ mask() {
   fi
 }
 
+xml_escape() {
+  local s="$1"
+  s="${s//&/&amp;}"
+  s="${s//</&lt;}"
+  s="${s//>/&gt;}"
+  s="${s//\"/&quot;}"
+  printf '%s' "$s"
+}
+
 plist_env() {
   [[ -f "$INSTALLED" ]] && /usr/libexec/PlistBuddy -c "Print :EnvironmentVariables:$1" "$INSTALLED" 2>/dev/null || true
 }
@@ -115,6 +124,14 @@ POLL_INTERVAL="${REPLY_VALUE:-60000}"
 
 # ---------- generate plist ----------
 
+X_NODE_PATH="$(xml_escape "$NODE_PATH")"
+X_SCRIPT_PATH="$(xml_escape "$SCRIPT_PATH")"
+X_QUEUE_URL="$(xml_escape "$QUEUE_URL")"
+X_REGION="$(xml_escape "$AWS_REGION_VAL")"
+X_ACCESS_KEY="$(xml_escape "$ACCESS_KEY")"
+X_SECRET_KEY="$(xml_escape "$SECRET_KEY")"
+X_POLL="$(xml_escape "$POLL_INTERVAL")"
+
 PLIST_CONTENT=$(cat <<PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -124,21 +141,21 @@ PLIST_CONTENT=$(cat <<PLISTEOF
   <string>${LABEL}</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${NODE_PATH}</string>
-    <string>${SCRIPT_PATH}</string>
+    <string>${X_NODE_PATH}</string>
+    <string>${X_SCRIPT_PATH}</string>
   </array>
   <key>EnvironmentVariables</key>
   <dict>
     <key>RELAY_SQS_QUEUE_URL</key>
-    <string>${QUEUE_URL}</string>
+    <string>${X_QUEUE_URL}</string>
     <key>AWS_REGION</key>
-    <string>${AWS_REGION_VAL}</string>
+    <string>${X_REGION}</string>
     <key>AWS_ACCESS_KEY_ID</key>
-    <string>${ACCESS_KEY}</string>
+    <string>${X_ACCESS_KEY}</string>
     <key>AWS_SECRET_ACCESS_KEY</key>
-    <string>${SECRET_KEY}</string>
+    <string>${X_SECRET_KEY}</string>
     <key>RELAY_POLL_INTERVAL_MS</key>
-    <string>${POLL_INTERVAL}</string>
+    <string>${X_POLL}</string>
   </dict>
   <key>RunAtLoad</key>
   <true/>
