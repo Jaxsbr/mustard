@@ -35,11 +35,7 @@ relay/app/local.properties
 relay/app/.gradle/
 relay/app/app/build/
 relay/app/build/
-relay/app/gradlew
-relay/app/gradlew.bat
-relay/app/gradle/
 relay/infra/.terraform/
-relay/infra/.terraform.lock.hcl
 relay/infra/terraform.tfstate
 relay/infra/terraform.tfstate.backup
 relay/infra/*.tfvars

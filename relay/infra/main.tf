@@ -25,8 +25,8 @@ resource "aws_sqs_queue" "dlq" {
 }
 
 resource "aws_sqs_queue" "main" {
-  name                      = var.queue_name
-  message_retention_seconds = 86400 # 1 day
+  name                       = var.queue_name
+  message_retention_seconds  = 86400 # 1 day
   visibility_timeout_seconds = 60
 
   redrive_policy = jsonencode({
