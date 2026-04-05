@@ -10,6 +10,47 @@ Android app (share sheet / manual)
   -> handler dispatches by message type
 ```
 
+## Auth architecture
+
+```
+┌─────────────────┐    HTTPS + API key     ┌──────────────┐   IAM role (server-side)   ┌───────────┐
+│  Android app /  │ ────────────────────── │ API Gateway  │ ────────────────────────── │   SQS     │
+│  curl / script  │   x-api-key header     │  REST API    │   apigw-sqs-role           │   Queue   │
+└─────────────────┘                        └──────────────┘                            └─────┬─────┘
+                                                                                             │
+                                           ┌──────────────┐   relay-reader credentials ┌────┴──────┐
+                                           │  relay-sync  │ ◄──────────────────────────  │   SQS     │
+                                           │  daemon      │   read + delete only        │   Poll    │
+                                           └──────────────┘                             └───────────┘
+```
+
+Three distinct auth boundaries:
+
+| Boundary | Mechanism | Credentials | Scope |
+|---|---|---|---|
+| Client → API Gateway | API key via `x-api-key` header | Terraform output `api_key_value`, stored in `app/local.properties` | POST /message only. Rate-limited by usage plan. No AWS credentials involved. |
+| API Gateway → SQS | IAM role (managed by Terraform) | Assumed automatically by API Gateway at runtime | Write to the relay queue only. Clients never see or use this role. |
+| Sync daemon → SQS | IAM user `mustard-relay-reader` | Explicit credentials set in the launchd plist env vars | Read and delete from relay queue and DLQ only. Cannot write, create, or manage any other resources. |
+
+Key implications:
+
+- **The Android app has no AWS credentials.** It authenticates to API Gateway with an API key over HTTPS. The API key is not an IAM credential — it cannot call AWS APIs directly.
+- **The API Gateway → SQS hop is server-side.** The IAM role is assumed by API Gateway itself, invisible to clients.
+- **The sync daemon uses dedicated, least-privilege credentials.** It can only consume messages — it cannot send messages, modify queues, or access any other AWS service.
+- **The operator (`mustard-admin`) is used only for infrastructure management** — running `terraform apply/destroy` and retrieving outputs. It is never embedded in running services.
+
+### IAM identity inventory
+
+All identities are managed in `infra/main.tf`. This is the complete list — if you see an identity not listed here, investigate.
+
+| Identity | Type | Purpose | Permissions | Where credentials live |
+|---|---|---|---|---|
+| `mustard-admin` | IAM user (manual) | Infrastructure operator. Runs Terraform, retrieves outputs, manages the AWS account. | Broad (admin-level). Not managed by Terraform — exists outside this repo. | `~/.aws/credentials` (default profile) |
+| `mustard-relay-reader` | IAM user (Terraform) | Sync daemon queue consumer. Created by `terraform apply`. | Read and delete on relay queue + DLQ only. Nothing else. | Launchd plist env vars (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) |
+| API Gateway SQS role | IAM role (Terraform) | Allows API Gateway to write messages into SQS. No human or app uses this directly. | Write to relay queue only. | Assumed by AWS automatically — no stored credentials. |
+
+**Rotation:** To rotate `mustard-relay-reader` credentials, run `terraform taint aws_iam_access_key.relay_reader && terraform apply`, then update the launchd plist with the new values and reload the daemon.
+
 ## Prerequisites
 
 - **Terraform** >= 1.5: `brew install terraform`
@@ -30,30 +71,21 @@ terraform apply    # type 'yes' to confirm
 Note the outputs:
 
 ```bash
-terraform output api_endpoint_url    # POST endpoint for the Android app
-terraform output api_key_value       # API key (sensitive)
-terraform output sqs_queue_url       # Queue URL for the sync daemon
-terraform output sqs_dlq_url         # Dead-letter queue URL
+terraform output api_endpoint_url              # POST endpoint for the Android app
+terraform output api_key_value                 # API key (sensitive)
+terraform output sqs_queue_url                 # Queue URL for the sync daemon
+terraform output sqs_dlq_url                   # Dead-letter queue URL
+terraform output relay_reader_access_key_id    # Sync daemon AWS access key ID
+terraform output relay_reader_secret_access_key # Sync daemon AWS secret (sensitive)
 ```
 
-This creates: API Gateway REST API, SQS queue + dead-letter queue, IAM role for the integration, API key + usage plan. All within AWS free tier at low usage.
+This creates: API Gateway REST API, SQS queue + dead-letter queue, IAM roles/users for each component, API key + usage plan. See [IAM identity inventory](#iam-identity-inventory) for the full list. All within AWS free tier at low usage.
 
 See `infra/README.md` for variables, smoke tests, and teardown.
 
 ## 2. Start the sync daemon
 
 The sync daemon polls SQS and dispatches messages to handlers.
-
-### Configure the launchd plist
-
-Edit `sync/com.mustard.relay-sync.plist` and set:
-
-- **Node path** — find yours with `which node` (e.g. `/opt/homebrew/bin/node`)
-- **Script path** — absolute path to `mustard/relay/dist/sync/src/index.js`
-- **RELAY_SQS_QUEUE_URL** — from `terraform output sqs_queue_url`
-- **AWS_REGION** — the region you deployed to (e.g. `ap-southeast-2`)
-
-AWS credentials are picked up automatically from `~/.aws/credentials` (default profile).
 
 ### Build the sync (if not already built)
 
@@ -63,28 +95,35 @@ npm install
 npm run build
 ```
 
-### Install and start
+### Configure, install, and start
+
+Run the interactive configuration script:
 
 ```bash
-cp sync/com.mustard.relay-sync.plist ~/Library/LaunchAgents/
-launchctl load ~/Library/LaunchAgents/com.mustard.relay-sync.plist
+bash sync/configure-daemon.sh
 ```
 
-### Verify
+The script prompts for each setting one by one. If the daemon is already installed, it shows the current value (secrets are masked) and uses it as the default — just press Enter to keep it. It then stops any running instance, installs the plist, starts the daemon, and tails the log so you can confirm it's working.
 
-```bash
-launchctl list | grep mustard
-tail -f /tmp/mustard-relay-sync.log
-```
+You'll need these Terraform outputs for the prompts:
 
-You should see: `[relay-sync] Starting daemon — polling <queue-url> every 60000ms`
+| Prompt | Source |
+|---|---|
+| `RELAY_SQS_QUEUE_URL` | `terraform output sqs_queue_url` |
+| `AWS_REGION` | The region you deployed to (e.g. `ap-southeast-2`) |
+| `AWS_ACCESS_KEY_ID` | `terraform output relay_reader_access_key_id` |
+| `AWS_SECRET_ACCESS_KEY` | `terraform output -raw relay_reader_secret_access_key` |
+
+These are the `mustard-relay-reader` credentials (see [IAM identity inventory](#iam-identity-inventory)). Do not use `mustard-admin` or any other broad-access credentials here.
 
 ### Stop / restart
 
 ```bash
+# Stop
 launchctl unload ~/Library/LaunchAgents/com.mustard.relay-sync.plist
-# edit plist if needed, then re-copy and load
-launchctl load ~/Library/LaunchAgents/com.mustard.relay-sync.plist
+
+# Reconfigure and restart
+bash sync/configure-daemon.sh
 ```
 
 ## 3. Build the Android app

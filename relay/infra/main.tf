@@ -66,6 +66,37 @@ resource "aws_iam_role_policy" "api_gateway_sqs" {
   })
 }
 
+# --- Least-privilege IAM user for the sync daemon (queue consumer) ---
+
+resource "aws_iam_user" "relay_reader" {
+  name = "mustard-relay-reader"
+}
+
+resource "aws_iam_user_policy" "relay_reader" {
+  name = "mustard-relay-reader-policy"
+  user = aws_iam_user.relay_reader.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+      ]
+      Resource = [
+        aws_sqs_queue.main.arn,
+        aws_sqs_queue.dlq.arn,
+      ]
+    }]
+  })
+}
+
+resource "aws_iam_access_key" "relay_reader" {
+  user = aws_iam_user.relay_reader.name
+}
+
 # --- API Gateway REST API ---
 # REST API v1 used instead of HTTP API v2 because HTTP API v2
 # does not support API keys or usage plans. REST API v1 provides

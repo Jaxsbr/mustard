@@ -15,6 +15,10 @@
     <string>YOUR_SQS_QUEUE_URL</string>
     <key>AWS_REGION</key>
     <string>YOUR_AWS_REGION</string>
+    <key>AWS_ACCESS_KEY_ID</key>
+    <string>YOUR_RELAY_READER_ACCESS_KEY_ID</string>
+    <key>AWS_SECRET_ACCESS_KEY</key>
+    <string>YOUR_RELAY_READER_SECRET_ACCESS_KEY</string>
     <key>RELAY_POLL_INTERVAL_MS</key>
     <string>60000</string>
   </dict>
